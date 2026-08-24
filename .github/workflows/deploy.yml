@@ -36,6 +36,10 @@ jobs:
         run: npm install
 
       - name: Build website
+        env:
+          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY || vars.VITE_GEMINI_API_KEY }}
+          VITE_ELEVENLABS_API_KEY: ${{ secrets.VITE_ELEVENLABS_API_KEY || vars.VITE_ELEVENLABS_API_KEY }}
+          VITE_IPINFO_TOKEN: ${{ secrets.VITE_IPINFO_TOKEN || vars.VITE_IPINFO_TOKEN }}
         run: npm run build
 
       - name: Upload artifact
