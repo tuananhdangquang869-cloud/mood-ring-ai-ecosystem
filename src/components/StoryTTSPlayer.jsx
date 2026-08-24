@@ -111,7 +111,7 @@ export default function StoryTTSPlayer({
   }
 
   return (
-    <div className={`story-tts-player-container ${variant} ${tts.isPlaying ? 'is-playing' : ''}`}>
+    <div className={`story-tts-player-container ${variant} ${tts.isPlaying ? 'is-playing' : ''} hidden md:block`}>
       {/* Glow highlight line */}
       <div className="tts-top-glow" />
 
