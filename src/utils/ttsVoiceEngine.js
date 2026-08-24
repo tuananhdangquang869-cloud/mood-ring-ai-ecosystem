@@ -254,6 +254,41 @@ export async function checkElevenLabsAccount(customKey) {
   }
 }
 
+async function fetchElevenLabsAudio(text, voiceId) {
+  const apiKey = getTTSApiKey()
+  if (!apiKey || apiKey.startsWith('your_')) {
+    throw new Error('Chưa cấu hình ElevenLabs API key hợp lệ')
+  }
+
+  const isMale = voiceId === 'south-male-main'
+  const elVoiceId = isMale ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM'
+
+  const response = await fetch(`${ELEVENLABS_API_BASE}/text-to-speech/${elVoiceId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'xi-api-key': apiKey
+    },
+    body: JSON.stringify({
+      text: text,
+      model_id: ttsState.activeModelId || 'eleven_multilingual_v2',
+      voice_settings: {
+        stability: ttsState.stability || 0.5,
+        similarity_boost: ttsState.similarityBoost || 0.8,
+        style: ttsState.styleExaggeration || 0.2
+      }
+    })
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail?.message || `Lỗi ElevenLabs (${response.status})`)
+  }
+
+  const blob = await response.blob()
+  return URL.createObjectURL(blob)
+}
+
 function sanitizeSpeechText(text) {
   if (!text) return ''
   return text
@@ -460,6 +495,16 @@ export async function playStoryText(text, title = 'Câu chuyện hiện tại', 
 
   stopStoryTTS()
 
+  // Unlock browser speechSynthesis immediately inside click gesture context to prevent autoplay block on fallbacks
+  if ('speechSynthesis' in window) {
+    try {
+      const dummy = new SpeechSynthesisUtterance('')
+      window.speechSynthesis.speak(dummy)
+    } catch (e) {
+      console.debug('[TTS Engine] SpeechSpeech unlock notice:', e)
+    }
+  }
+
   ttsState.isLoading = true
   ttsState.currentText = cleanText
   ttsState.currentTitle = title
@@ -476,11 +521,28 @@ export async function playStoryText(text, title = 'Câu chuyện hiện tại', 
 
     let audioUrl = null
 
-    // 1. Synthesize via Edge Neural with strict voice config
-    try {
-      audioUrl = await fetchMicrosoftEdgeNeuralAudio(cleanText, targetVoice)
-    } catch (edgeErr) {
-      console.warn('[TTS Engine] Edge Neural failed, falling back to Web Speech:', edgeErr)
+    // 1. Try ElevenLabs synthesis if API Key is configured
+    const apiKey = getTTSApiKey()
+    const isElevenLabsConfigured = apiKey && 
+                                   !apiKey.startsWith('your_') && 
+                                   apiKey !== 'sk_860664251182a586689048d984f7456486e8454842ab5811' &&
+                                   apiKey.length > 15
+
+    if (isElevenLabsConfigured) {
+      try {
+        audioUrl = await fetchElevenLabsAudio(cleanText, targetVoice.id)
+      } catch (elErr) {
+        console.warn('[TTS Engine] ElevenLabs synthesis failed, trying Edge Neural:', elErr)
+      }
+    }
+
+    // 2. Synthesize via Edge Neural if ElevenLabs is not set or failed
+    if (!audioUrl) {
+      try {
+        audioUrl = await fetchMicrosoftEdgeNeuralAudio(cleanText, targetVoice)
+      } catch (edgeErr) {
+        console.warn('[TTS Engine] Edge Neural failed, falling back to Web Speech:', edgeErr)
+      }
     }
 
     // 2. Play generated audio
