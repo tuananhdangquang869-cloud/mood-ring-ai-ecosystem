@@ -1,0 +1,645 @@
+/* ==========================================================================
+   FEATURE 24: E-BOOK & PDF PUBLISHING STUDIO STYLES
+   ========================================================================== */
+.ebook-exporter-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ebook-exporter-container.embedded {
+  padding: 0.25rem 0;
+}
+
+.ebook-header-banner {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.95));
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.08);
+}
+
+.ebook-badge-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ebook-subtag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #00f0ff;
+  letter-spacing: 1.5px;
+  display: block;
+}
+
+.ebook-main-title {
+  margin: 0.15rem 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.ebook-desc {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.ebook-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ebook-refresh-btn:hover {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: #00f0ff;
+  color: #00f0ff;
+}
+
+/* Workspace 2-Column Grid */
+.ebook-workspace-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .ebook-workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ebook-config-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ebook-panel-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.panel-box-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: 0.5px;
+  font-family: 'Space Mono', monospace;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.5rem;
+}
+
+.ebook-input-label {
+  display: block;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.ebook-text-input, .ebook-textarea-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.ebook-text-input:focus, .ebook-textarea-input:focus {
+  border-color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+/* Cover Presets Grid */
+.cover-presets-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cover-preset-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cover-preset-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(2px);
+}
+
+.cover-preset-card.active {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+
+.cover-thumb-preview {
+  width: 38px;
+  height: 48px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-mini-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.cover-preset-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.preset-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preset-desc {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Structure Toggles */
+.structure-toggles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.structure-toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.structure-toggle-item input[type="checkbox"] {
+  accent-color: #00f0ff;
+  cursor: pointer;
+}
+
+/* Right Column: Live Book Reader */
+.ebook-preview-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ebook-reader-card {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.reader-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(2, 6, 23, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.65rem 1rem;
+}
+
+.page-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.page-turn-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.page-turn-btn:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: #00f0ff;
+  color: #00f0ff;
+}
+
+.page-turn-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Paper Viewport */
+.paper-book-viewport {
+  padding: 1.5rem;
+  background: #060913;
+  min-height: 420px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.paper-book-sheet {
+  width: 100%;
+  max-width: 520px;
+  min-height: 380px;
+  background: #0d1322;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+  position: relative;
+}
+
+/* Live Cover Render */
+.live-cover-render {
+  border-radius: 8px;
+  padding: 2rem 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 340px;
+}
+
+.live-cover-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  border: 1px solid;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.live-cover-orb-center {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  margin: 1.2rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-cover-orb-inner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.live-cover-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.5px;
+}
+
+.live-cover-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  margin-bottom: 0.8rem;
+}
+
+.live-cover-preface {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: #cbd5e1;
+  max-width: 320px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.live-cover-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: #94a3b8;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 0.8rem;
+  margin-top: 1rem;
+}
+
+/* Live Content Render */
+.live-content-render {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.live-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.live-section-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.live-toc-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.live-toc-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.35rem;
+}
+
+.live-toc-row .dots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.2);
+  margin: 0 0.5rem;
+}
+
+.live-preface-quote {
+  font-style: italic;
+  color: #cbd5e1;
+  border-left: 3px solid #00f0ff;
+  padding-left: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+}
+
+.live-stats-showcase {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.live-stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.6rem;
+  text-align: center;
+}
+
+.stat-num {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.live-media-box {
+  width: 100%;
+  max-height: 160px;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.75rem;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-media-box img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.live-body-text {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  margin-bottom: 0.65rem;
+  white-space: pre-line;
+}
+
+.live-ai-box {
+  background: rgba(0, 240, 255, 0.05);
+  border-left: 3px solid;
+  border-radius: 0 4px 4px 0;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.72rem;
+  color: #93c5fd;
+  margin-bottom: 0.5rem;
+}
+
+.live-tag-pill {
+  font-size: 0.65rem;
+  font-family: 'Space Mono', monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+/* Actions Toolbar */
+.ebook-actions-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.export-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.export-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.export-action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.export-action-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.export-action-btn.pdf-btn {
+  border-color: rgba(0, 240, 255, 0.4);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(59, 130, 246, 0.1));
+}
+
+.export-action-btn.pdf-btn:hover {
+  border-color: #00f0ff;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+.export-action-btn.pdf-btn .btn-icon-wrapper {
+  background: rgba(0, 240, 255, 0.2);
+  color: #00f0ff;
+}
+
+.export-action-btn.epub-btn {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.1));
+}
+
+.export-action-btn.epub-btn:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.export-action-btn.epub-btn .btn-icon-wrapper {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.export-action-btn.md-btn {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1));
+}
+
+.export-action-btn.md-btn:hover {
+  border-color: #a855f7;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.export-action-btn.md-btn .btn-icon-wrapper {
+  background: rgba(168, 85, 247, 0.2);
+  color: #a855f7;
+}
+
+.export-action-btn.json-btn {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(20, 184, 166, 0.1));
+}
+
+.export-action-btn.json-btn:hover {
+  border-color: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.export-action-btn.json-btn .btn-icon-wrapper {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.btn-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-text-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.btn-main-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.btn-sub-label {
+  font-size: 0.65rem;
+  color: #94a3b8;
+}
+
+.btn-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+}

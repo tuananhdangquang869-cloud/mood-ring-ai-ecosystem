@@ -1,0 +1,289 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CYBERPUNK 4-WAY DIRECTIONAL NAVIGATOR (LÊN, XUỐNG, TRÁI, PHẢI)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.directional-navigator-root {
+  position: fixed;
+  bottom: 90px;
+  left: 2rem;
+  z-index: 950;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  user-select: none;
+  font-family: 'Space Mono', monospace;
+  contain: layout;
+}
+
+/* Floating Minimized Capsule Trigger */
+.dpad-minimized-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(3, 8, 22, 0.88);
+  border: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.35);
+  border-radius: 9999px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #f1f5f9;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 16px rgba(var(--accent-rgb, 0, 240, 255), 0.18);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dpad-minimized-pill:hover {
+  border-color: var(--accent, #00f0ff);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 25px rgba(var(--accent-rgb, 0, 240, 255), 0.4);
+  transform: translateY(-2px);
+}
+
+.dpad-minimized-pill .compass-icon {
+  color: var(--accent, #00f0ff);
+  animation: spinSlow 8s linear infinite;
+}
+
+.dpad-minimized-pill .active-tab-tag {
+  color: var(--accent, #00f0ff);
+  background: rgba(var(--accent-rgb, 0, 240, 255), 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+}
+
+/* Main D-Pad Widget Container */
+.dpad-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  background: rgba(4, 10, 26, 0.92);
+  border: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.35);
+  border-radius: 24px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85), 0 0 28px rgba(var(--accent-rgb, 0, 240, 255), 0.22);
+}
+
+/* D-Pad Header Toolbar */
+.dpad-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 2px 6px 6px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.65rem;
+  color: #94a3b8;
+}
+
+.dpad-title-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent, #00f0ff);
+  font-weight: 700;
+  font-size: 0.68rem;
+}
+
+.dpad-toggle-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.dpad-toggle-close-btn:hover {
+  color: #f43f5e;
+}
+
+/* Cross D-Pad Layout */
+.dpad-cross-grid {
+  display: grid;
+  grid-template-columns: 44px 44px 44px;
+  grid-template-rows: 44px 44px 44px;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  margin: 4px 0;
+}
+
+/* Individual Direction Buttons */
+.dpad-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.25);
+  border-radius: 12px;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.dpad-btn:hover {
+  background: rgba(var(--accent-rgb, 0, 240, 255), 0.18);
+  border-color: var(--accent, #00f0ff);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(var(--accent-rgb, 0, 240, 255), 0.45);
+  transform: scale(1.05);
+}
+
+.dpad-btn:active {
+  transform: scale(0.94);
+  background: rgba(var(--accent-rgb, 0, 240, 255), 0.35);
+}
+
+.dpad-btn.dpad-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.dpad-btn.dpad-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dpad-btn.dpad-center {
+  grid-column: 2;
+  grid-row: 2;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb, 0, 240, 255), 0.25), rgba(16, 185, 129, 0.2));
+  border-color: var(--accent, #00f0ff);
+  border-radius: 50%;
+  color: var(--accent, #00f0ff);
+}
+
+.dpad-btn.dpad-center:hover {
+  box-shadow: 0 0 18px rgba(var(--accent-rgb, 0, 240, 255), 0.6);
+}
+
+.dpad-btn.dpad-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.dpad-btn.dpad-down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.dpad-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.dpad-subtext {
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  margin-top: 1px;
+}
+
+/* Quick Strip Tabs Bar Popover */
+.dpad-quick-tabs-strip {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: rgba(2, 6, 18, 0.95);
+  border: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.25);
+  border-radius: 12px;
+  overflow-x: auto;
+  max-width: 280px;
+  scrollbar-width: thin;
+}
+
+.quick-tab-chip {
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quick-tab-chip:hover {
+  background: rgba(var(--accent-rgb, 0, 240, 255), 0.15);
+  border-color: var(--accent, #00f0ff);
+  color: #ffffff;
+}
+
+.quick-tab-chip.active {
+  background: rgba(var(--accent-rgb, 0, 240, 255), 0.3);
+  border-color: var(--accent, #00f0ff);
+  color: var(--accent, #00f0ff);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb, 0, 240, 255), 0.35);
+}
+
+/* Footer Hint Label */
+.dpad-hint-footer {
+  font-size: 0.58rem;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .directional-navigator-root:not(.is-expanded) {
+    display: none !important;
+  }
+
+  .directional-navigator-root.is-expanded {
+    position: fixed;
+    bottom: 5.5rem;
+    left: 1rem;
+    right: auto;
+    transform: none;
+    z-index: 10000;
+  }
+
+  .dpad-container {
+    padding: 8px;
+    border-radius: 20px;
+  }
+
+  .dpad-cross-grid {
+    grid-template-columns: 38px 38px 38px;
+    grid-template-rows: 38px 38px 38px;
+    gap: 4px;
+  }
+
+  .dpad-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .dpad-icon {
+    font-size: 0.95rem;
+  }
+
+  .dpad-subtext {
+    font-size: 0.48rem;
+  }
+
+  .dpad-quick-tabs-strip {
+    max-width: 220px;
+  }
+}

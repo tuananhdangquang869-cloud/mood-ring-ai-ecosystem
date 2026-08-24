@@ -1,0 +1,360 @@
+/* ==========================================================================
+   FEATURE 19: CHẾ ĐỘ PHÁ HỦY (BURN MODE & CATHARTIC RELEASE) STYLES
+   ========================================================================== */
+
+.burn-mode-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #fff;
+}
+
+.burn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 77, 0, 0.35);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 77, 0, 0.15);
+}
+
+.burn-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+}
+
+.burn-chamber-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+}
+
+.burn-slate-wrapper {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  min-height: 480px;
+  padding: 1.5rem;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.burn-particle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.burn-compose-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.catharsis-prompts-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.prompt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.prompt-chip {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.35rem 0.65rem;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prompt-chip:hover {
+  background: rgba(255, 77, 0, 0.15);
+  border-color: rgba(255, 77, 0, 0.4);
+  color: #fff;
+}
+
+.burn-textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.25rem;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.65;
+  outline: none;
+  resize: vertical;
+  transition: all 0.25s ease;
+}
+
+.burn-textarea:focus {
+  border-color: #ff4d00;
+  box-shadow: 0 0 20px rgba(255, 77, 0, 0.25);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.burn-trigger-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #030712;
+  font-weight: 800;
+  font-size: 0.82rem;
+  font-family: 'Space Mono', monospace;
+  padding: 0.75rem 1.35rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.burn-trigger-btn:hover:not(:disabled) {
+  filter: brightness(1.2);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.burn-trigger-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+/* Active Burning Sheet Animation */
+.burn-active-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.burning-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.burning-sheet {
+  background: #1e1b18;
+  border-radius: 12px;
+  min-height: 300px;
+  padding: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+}
+
+.burning-sheet-inner {
+  position: relative;
+}
+
+.burning-text-content {
+  color: #e2e8f0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+  white-space: pre-wrap;
+  transition: all 0.3s ease;
+}
+
+.burning-sheet.stage-igniting .burning-text-content {
+  filter: drop-shadow(0 0 5px var(--flame-color));
+}
+
+.burning-sheet.stage-burning .burning-text-content {
+  color: #71717a;
+  text-shadow: 0 0 8px var(--flame-color), 0 0 15px var(--flame-color);
+  animation: textCharJitter 0.15s infinite;
+}
+
+.burning-sheet.stage-ashing .burning-text-content {
+  color: #27272a;
+  filter: blur(1px);
+  transform: translateY(-8px) scale(0.97);
+  opacity: 0.4;
+}
+
+@keyframes textCharJitter {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(1px, -1px); }
+  100% { transform: translate(-1px, 1px); }
+}
+
+.fire-wavefront {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--char-height, 0%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(20, 20, 20, 0.85) 60%,
+    var(--flame-color) 90%,
+    transparent 100%
+  );
+  box-shadow: 0 0 30px var(--flame-glow);
+  pointer-events: none;
+  transition: height 0.1s linear;
+}
+
+/* Post-Catharsis Zen Card */
+.burn-cleansed-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.cleansed-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.15);
+  border: 2px solid rgba(16, 185, 129, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+}
+
+.breathing-circle-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.breathing-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.breathing-circle.step-inhale {
+  transform: scale(1.25);
+  background: rgba(16, 185, 129, 0.2);
+  border: 2px solid #10b981;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.5);
+}
+
+.breathing-circle.step-hold {
+  transform: scale(1.25);
+  background: rgba(0, 240, 255, 0.25);
+  border: 2px solid #00f0ff;
+  box-shadow: 0 0 45px rgba(0, 240, 255, 0.6);
+}
+
+.breathing-circle.step-exhale {
+  transform: scale(0.85);
+  background: rgba(168, 85, 247, 0.15);
+  border: 2px solid #a855f7;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.breathing-step-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  color: #fff;
+  display: block;
+}
+
+.breathing-step-seconds {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  color: #f8fafc;
+  display: block;
+}
+
+/* Right Controls Panel */
+.burn-controls-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.control-box {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.15rem;
+  backdrop-filter: blur(14px);
+}
+
+.flame-option-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.flame-option-btn:hover {
+  transform: translateX(2px);
+}
+
+.rage-slider-container {
+  padding: 0.5rem 0;
+}
+
+.rage-range-input {
+  width: 100%;
+  accent-color: #f97316;
+  cursor: pointer;
+}
+
+.zero-trace-card {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+@media (max-width: 900px) {
+  .burn-chamber-grid {
+    grid-template-columns: 1fr;
+  }
+}

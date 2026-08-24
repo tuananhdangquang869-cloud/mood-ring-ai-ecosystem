@@ -1,0 +1,1157 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   FEATURE 26: EMOTIONAL QUESTS & BADGES MODAL
+   ══════════════════════════════════════════════════════════════════════════════ */
+.quests-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 15, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1.5rem;
+}
+
+.quests-modal-card {
+  width: 100%;
+  max-width: 1100px;
+  height: 88vh;
+  max-height: 840px;
+  background: rgba(10, 17, 34, 0.94);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 50px rgba(245, 158, 11, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.quests-modal-card.embedded-view {
+  height: 720px;
+  max-height: 720px;
+  max-width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+}
+
+.quests-confetti-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.celebration-toast-banner {
+  position: absolute;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.5);
+  border-radius: 12px;
+  padding: 0.9rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 100;
+  min-width: 380px;
+}
+
+.celebration-badge-icon {
+  font-size: 2.2rem;
+}
+
+.celebration-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #f59e0b;
+  margin: 0;
+}
+
+.celebration-sub {
+  font-size: 0.78rem;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.celebration-badge-name {
+  font-size: 0.72rem;
+  color: #38bdf8;
+  margin-top: 0.2rem;
+}
+
+.quests-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.75rem;
+  background: rgba(5, 10, 24, 0.9);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.quests-header-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quests-header-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: #f59e0b;
+  letter-spacing: 0.15em;
+}
+
+.quests-header-title {
+  font-family: 'Orbitron', 'Inter', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.quests-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quests-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Top Progression HUD */
+.quests-top-progression-hud {
+  display: grid;
+  grid-template-columns: 240px 1fr 140px;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.75rem;
+  background: rgba(10, 16, 32, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.progression-level-block {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.level-badge-chip {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: #020617;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.level-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.level-exp-meta {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-family: 'Space Mono', monospace;
+}
+
+.progression-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.progression-bar-track {
+  width: 100%;
+  height: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.progression-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #00f0ff);
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+}
+
+.progression-percent-label {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  font-family: 'Space Mono', monospace;
+}
+
+.progression-streak-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+}
+
+.streak-icon {
+  font-size: 1.4rem;
+}
+
+.streak-count {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #ef4444;
+}
+
+.streak-label {
+  font-size: 0.6rem;
+  font-family: 'Space Mono', monospace;
+  color: #94a3b8;
+}
+
+/* Nav Tabs */
+.quests-nav-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(5, 10, 20, 0.7);
+  padding: 0 1.5rem;
+}
+
+.quests-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.9rem 1.2rem;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.quests-tab-btn:hover {
+  color: #e2e8f0;
+}
+
+.quests-tab-btn.active {
+  color: #f59e0b;
+}
+
+.quests-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+  border-radius: 3px 3px 0 0;
+}
+
+.quests-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* Quests Grid */
+.quests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.2rem;
+}
+
+.quest-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all 0.25s ease;
+}
+
+.quest-card.completed {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.quest-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quest-card-icon {
+  font-size: 1.4rem;
+}
+
+.quest-category-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.quest-exp-reward {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #f59e0b;
+}
+
+.quest-status-pill {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quest-status-pill.completed {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.quest-status-pill.in-progress {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.quest-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.quest-subtitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.quest-interaction-box {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.quest-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.quest-textarea {
+  width: 100%;
+  background: rgba(5, 10, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.65rem;
+  font-size: 0.78rem;
+  color: #ffffff;
+  resize: vertical;
+}
+
+.quest-text-input {
+  width: 100%;
+  background: rgba(5, 10, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.75rem;
+  color: #ffffff;
+}
+
+.quest-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.55rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: none;
+  color: #020617;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quest-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.quest-direct-action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #00f0ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quest-direct-action-btn:hover {
+  background: #00f0ff;
+  color: #020617;
+}
+
+.quest-completed-summary {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+.quest-response-preview {
+  font-size: 0.72rem;
+  font-style: italic;
+  color: #cbd5e1;
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+
+/* Badges Showcase */
+.badges-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.badge-holo-card {
+  border-radius: 14px;
+  padding: 1.2rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.badge-holo-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.badge-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+}
+
+.badge-card-icon-wrapper {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.4rem;
+}
+
+.badge-card-icon {
+  font-size: 2rem;
+}
+
+.badge-rarity-chip {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.badge-rarity-chip.rare {
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+}
+
+.badge-rarity-chip.epic {
+  background: rgba(236, 72, 153, 0.2);
+  color: #ec4899;
+}
+
+.badge-rarity-chip.legendary {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.badge-rarity-chip.mythic {
+  background: rgba(168, 85, 247, 0.2);
+  color: #a855f7;
+}
+
+.badge-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.badge-card-en-title {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  font-family: 'Space Mono', monospace;
+}
+
+.badge-card-desc {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+  margin: 0.4rem 0;
+}
+
+.badge-card-footer {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.badge-unlocked-status {
+  font-size: 0.7rem;
+  color: #10b981;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.badge-locked-status {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* Mastery Section */
+.mastery-overview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mastery-current-rank-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(168, 85, 247, 0.12));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 14px;
+}
+
+.rank-crown-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rank-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: #f59e0b;
+}
+
+.rank-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0.2rem 0;
+}
+
+.rank-perk {
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.mastery-roadmap-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.mastery-levels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.level-roadmap-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1rem 1.2rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.level-roadmap-item.current {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.roadmap-lvl-col {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 90px;
+}
+
+.roadmap-lvl-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #f59e0b;
+}
+
+.roadmap-info-col {
+  flex: 1;
+}
+
+.roadmap-item-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.roadmap-item-exp {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.roadmap-item-desc {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0.2rem 0 0 0;
+}
+
+/* ─── Story Card Prompter & Tree & Quest Trigger Row ─── */
+.story-interactive-tree-btn {
+  grid-column: span 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.story-interactive-tree-btn:hover {
+  background: #00f0ff;
+  color: #020617;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.story-emotional-quest-btn {
+  grid-column: span 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.story-emotional-quest-btn:hover {
+  background: #f59e0b;
+  color: #020617;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   MASTER GLOBAL MOBILE RESPONSIVENESS (<= 768px & <= 480px)
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* 1. Header & Navigation */
+  .mainframe-container {
+    padding-top: 58px;
+  }
+
+  .mainframe-header {
+    height: 58px;
+    padding: 0 0.85rem;
+  }
+
+  .brand-title {
+    margin-left: 0;
+    margin-right: 0.35rem;
+    gap: 0.5rem;
+  }
+
+  .brand-name {
+    font-size: 0.88rem;
+    letter-spacing: 0.04em;
+  }
+
+  .brand-sub {
+    font-size: 0.52rem;
+  }
+
+  .brand-logo-ring {
+    width: 26px;
+    height: 26px;
+  }
+
+  .brand-logo-ring .inner-orb {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* 2. Cognitive Core Tab & Story Card */
+  .core-grid {
+    padding: 0.65rem 0.5rem;
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .interactive-column {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .story-card {
+    padding: 1.1rem 0.85rem;
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 0.85rem;
+  }
+
+  .story-card h1 {
+    font-size: 1.2rem;
+    line-height: 1.35;
+    margin: 0.25rem 0 0.5rem 0;
+  }
+
+  .journey-breadcrumbs {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.65rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .highlighted-text {
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .story-ai-prompter-row {
+    flex-direction: column;
+    gap: 0.45rem;
+    width: 100%;
+    margin: 0.75rem 0;
+  }
+
+  .ai-story-muse-btn,
+  .story-interactive-tree-btn,
+  .story-emotional-quest-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.72rem;
+    box-sizing: border-box;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .tilt-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    text-align: left;
+    box-sizing: border-box;
+  }
+
+  /* 3. HUD Diagnostics Panel */
+  .hud-panel {
+    padding: 1rem 0.85rem;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 0.85rem;
+  }
+
+  .hud-gauges-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  /* 4. Mood Lab */
+  .moodlab-container {
+    padding: 0.65rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .moodlab-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .moodlab-card {
+    padding: 1rem 0.85rem;
+    border-radius: 12px;
+  }
+
+  /* 5. Multimedia Journal */
+  .journal-container {
+    padding: 0.65rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .journal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .journal-title {
+    font-size: 1.15rem;
+  }
+
+  .journal-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .journal-header-right-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .journal-transition-selector {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.25rem;
+    box-sizing: border-box;
+  }
+
+  .journal-view-tabs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.25rem;
+  }
+
+  .journal-view-btn {
+    padding: 0.4rem 0.2rem;
+    font-size: 0.65rem;
+    justify-content: center;
+  }
+
+  .drawing-studio-layout {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .canvas-controls-column {
+    width: 100%;
+  }
+
+  .drawing-canvas-wrapper {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .canvas-element {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    touch-action: none;
+  }
+
+  .preset-tags-cloud {
+    max-height: 100px;
+    overflow-y: auto;
+  }
+
+  .journal-vault-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  /* 6. Settings Modal */
+  .settings-modal-backdrop {
+    padding: 6px 4px;
+  }
+
+  .settings-modal-card {
+    max-height: 94vh;
+    max-height: 94dvh;
+    border-radius: 14px;
+    width: calc(100vw - 8px);
+  }
+
+  .settings-header {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .settings-title {
+    font-size: 0.95rem;
+  }
+
+  .settings-body-grid {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+    overflow: hidden;
+  }
+
+  .settings-sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.4rem 0.6rem;
+    gap: 0.35rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  .settings-nav-btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .settings-content-panel {
+    padding: 0.85rem 0.75rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .feature-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  /* 7. Emotional Quests Modal */
+  .quests-modal-backdrop {
+    padding: 6px 4px;
+  }
+
+  .quests-modal-card {
+    height: 94vh;
+    height: 94dvh;
+    max-height: 94dvh;
+    border-radius: 14px;
+    width: calc(100vw - 8px);
+  }
+
+  .quests-header {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .quests-header-title {
+    font-size: 0.9rem;
+  }
+
+  .celebration-toast-banner {
+    min-width: calc(100vw - 32px);
+    width: calc(100vw - 32px);
+    padding: 0.65rem 0.85rem;
+    gap: 0.65rem;
+  }
+
+  .celebration-badge-icon {
+    font-size: 1.6rem;
+  }
+
+  .quests-top-progression-hud {
+    grid-template-columns: 1fr;
+    padding: 0.65rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .quests-tabs-nav {
+    padding: 0.35rem 0.5rem;
+    gap: 0.35rem;
+    overflow-x: auto;
+  }
+
+  .quests-tab-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .daily-quests-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .badges-showcase-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+
+  .badge-hologram-card {
+    padding: 0.85rem 0.65rem;
+  }
+
+  .badge-holo-name {
+    font-size: 0.8rem;
+  }
+
+  .mastery-overview-section {
+    padding: 0.5rem;
+  }
+
+  .mastery-current-rank-card {
+    padding: 0.85rem;
+  }
+
+  .rank-name {
+    font-size: 0.95rem;
+  }
+
+  /* 8. Time Capsule & Burn Mode & Dream Journal */
+  .capsule-container,
+  .burn-container,
+  .dream-container {
+    padding: 0.65rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .capsule-grid,
+  .dream-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .burn-parchment-stage {
+    padding: 0.5rem;
+  }
+
+  .burn-parchment-canvas {
+    width: 100% !important;
+    height: auto !important;
+    touch-action: none;
+  }
+
+  /* 9. Floating Buttons */
+  .floating-back-to-top-btn {
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .story-card h1 {
+    font-size: 1.1rem;
+  }
+
+  .badges-showcase-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-nav-drawer {
+    width: calc(100vw - 16px);
+    right: 8px;
+    top: 64px;
+    padding: 14px;
+  }
+}

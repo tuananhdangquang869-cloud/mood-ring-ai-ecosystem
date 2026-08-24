@@ -1,0 +1,376 @@
+/* ==========================================================================
+   16. 3D MEMORY VAULT GALLERY & ENHANCED VAULT PREVIEW STYLES
+   ========================================================================== */
+
+.vault-mode-switch-group {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.25rem;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.vault-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.vault-mode-pill:hover {
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.vault-mode-pill.active {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(168, 85, 247, 0.3));
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+  border: 1px solid rgba(0, 240, 255, 0.5);
+}
+
+.vault-3d-embed-area {
+  width: 100%;
+  margin-top: 1rem;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  background: radial-gradient(circle at center, #070e20 0%, #02040a 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+}
+
+.vault-3d-gallery-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  min-height: 500px;
+  background: #020409;
+  border-radius: 16px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.vault-3d-gallery-wrapper.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  border-radius: 0;
+}
+
+.vault-3d-canvas-container {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.vault-3d-canvas-container:active {
+  cursor: grabbing;
+}
+
+.vault-3d-hud-header {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hud-badge-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(3, 7, 18, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  backdrop-filter: blur(12px);
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: #00f0ff;
+  letter-spacing: 0.05em;
+  pointer-events: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 8px #00f0ff;
+  animation: pulse-glow 1.5s infinite;
+}
+
+.hud-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  pointer-events: auto;
+}
+
+.hud-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(3, 7, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: #e2e8f0;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hud-btn-pill:hover {
+  border-color: #00f0ff;
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.15);
+}
+
+.hud-btn-pill.active {
+  background: rgba(0, 240, 255, 0.25);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.vault-3d-help-overlay {
+  position: absolute;
+  top: 60px;
+  right: 14px;
+  background: rgba(4, 9, 22, 0.92);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  backdrop-filter: blur(16px);
+  border-radius: 12px;
+  padding: 0.8rem;
+  width: 280px;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.help-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #00f0ff;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.3rem;
+}
+
+.help-header button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+.help-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.help-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.key-tag {
+  background: rgba(0, 240, 255, 0.15);
+  color: #00f0ff;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.vault-3d-inspector-hud {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  background: rgba(3, 7, 18, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  backdrop-filter: blur(16px);
+  border-radius: 14px;
+  padding: 0.75rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 15;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+}
+
+.inspector-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.inspector-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.inspector-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.inspector-meta {
+  margin: 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.inspector-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.inspector-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inspector-nav-btn:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  color: #00f0ff;
+}
+
+.inspector-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.inspector-counter {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.inspector-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inspector-action-btn.unlocked {
+  background: linear-gradient(135deg, #00f0ff, #38bdf8);
+  color: #030712;
+  border: none;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.4);
+}
+
+.inspector-action-btn.unlocked:hover {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.7);
+  transform: translateY(-1px);
+}
+
+.inspector-action-btn.decrypt {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(245, 158, 11, 0.25));
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+}
+
+.inspector-action-btn.decrypt:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+}
+
+.vault-3d-touch-controls {
+  position: absolute;
+  bottom: 85px;
+  right: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 12;
+  opacity: 0.85;
+}
+
+.dpad-middle-row {
+  display: flex;
+  gap: 4px;
+}
+
+.dpad-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(3, 7, 18, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #00f0ff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+  transition: all 0.15s ease;
+}
+
+.dpad-btn:active {
+  background: rgba(0, 240, 255, 0.4);
+  transform: scale(0.92);
+}
+
+.vault-preview-container {
+  display: inline-block;
+  perspective: 600px;
+  transform-style: preserve-3d;
+}

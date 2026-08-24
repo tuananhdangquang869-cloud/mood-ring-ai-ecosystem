@@ -1,0 +1,195 @@
+
+/* ───── Boot Loading Splash Screen ───── */
+.loading-splash-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #030812;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-family: 'Space Mono', monospace;
+  cursor: none;
+}
+
+.loading-splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 480px;
+  width: 90%;
+  position: relative;
+}
+
+.loading-logo-ring {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.4);
+  animation: spinRing 4s linear infinite;
+}
+
+@keyframes spinRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-inner-orb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 15px var(--accent);
+}
+
+.loading-title {
+  font-family: 'Philosopher', Georgia, serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.loading-subtitle {
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  margin-bottom: 2rem;
+}
+
+.loading-bar-wrapper {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.loading-step-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.loading-percentage {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.loading-hud-corner {
+  position: absolute;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.1em;
+}
+.loading-hud-corner.top-left { top: -60px; left: -20px; }
+.loading-hud-corner.top-right { top: -60px; right: -20px; }
+.loading-hud-corner.bottom-left { bottom: -60px; left: -20px; }
+.loading-hud-corner.bottom-right { bottom: -60px; right: -20px; }
+
+/* ───── React Error Boundary UI ───── */
+.error-boundary-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(11, 2, 2, 0.95);
+  z-index: 200000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: 'Space Mono', monospace;
+  cursor: none;
+}
+
+.error-boundary-card {
+  max-width: 650px;
+  width: 100%;
+  background: rgba(25, 4, 4, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.error-boundary-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.error-boundary-header h2 {
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
+
+.error-message {
+  font-size: 0.85rem;
+  color: rgba(254, 202, 202, 0.8);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.error-details-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.error-details-title {
+  font-size: 0.7rem;
+  color: #ef4444;
+  margin-bottom: 0.5rem;
+}
+
+.error-stack {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.error-reboot-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.error-reboot-btn:hover {
+  background: #ef4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+}

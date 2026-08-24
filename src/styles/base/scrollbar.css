@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   GLOBAL CYBERPUNK SCROLLBARS (VERTICAL & HORIZONTAL FOR ALL PANELS & CONTAINERS)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Global HTML & Body Scroll */
+html {
+  overflow-y: scroll; /* Force vertical scrollbar */
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb, 0, 240, 255), 0.75) rgba(3, 8, 18, 0.92);
+}
+
+/* Universal scrollbar styling for all elements with vertical or horizontal scroll */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb, 0, 240, 255), 0.7) rgba(3, 8, 18, 0.85);
+}
+
+/* WebKit (Chrome, Edge, Safari) Vertical Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(3, 8, 18, 0.92);
+  border-left: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.2);
+  border-top: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.2);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(var(--accent-rgb, 0, 240, 255), 0.85), rgba(var(--accent-rgb, 0, 240, 255), 0.45));
+  border-radius: 6px;
+  border: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.85);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb, 0, 240, 255), 0.6), inset 0 0 4px rgba(var(--accent-rgb, 0, 240, 255), 0.35);
+  transition: all 0.25s ease;
+}
+
+/* WebKit Horizontal Scrollbar Thumb Gradient */
+::-webkit-scrollbar-thumb:horizontal {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb, 0, 240, 255), 0.85), rgba(var(--accent-rgb, 0, 240, 255), 0.45));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(var(--accent-rgb, 0, 240, 255), 1), rgba(var(--accent-rgb, 0, 240, 255), 0.75));
+  border-color: var(--accent, #00f0ff);
+  box-shadow: 0 0 16px rgba(var(--accent-rgb, 0, 240, 255), 0.95);
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb, 0, 240, 255), 1), rgba(var(--accent-rgb, 0, 240, 255), 0.75));
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(3, 8, 18, 0.95);
+  border: 1px solid rgba(var(--accent-rgb, 0, 240, 255), 0.3);
+}
+
+/* Scrollable Container Utility Classes */
+.scroll-x-auto {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-y-auto {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-both-auto {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+}

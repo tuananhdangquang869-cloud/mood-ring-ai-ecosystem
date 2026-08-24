@@ -1,0 +1,55 @@
+{
+  "name": "Mood Ring Story // Cyberpunk AI Interactive Consciousness",
+  "short_name": "MoodRing",
+  "description": "Trải nghiệm cốt truyện tương tác Cyberpunk 3D sống động cùng tâm thức AI MR-CORE-01, Neural Grid và Nhật ký đa phương tiện ngoại tuyến.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#030812",
+  "theme_color": "#00f0ff",
+  "orientation": "any",
+  "categories": ["lifestyle", "health", "entertainment", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Viết Nhật Ký Đa Phương Tiện",
+      "short_name": "Nhật Ký",
+      "description": "Mở xưởng vẽ và viết nhật ký cảm xúc",
+      "url": "/#journal",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Chế Độ Tập Trung (Zen Mode)",
+      "short_name": "Zen Mode",
+      "description": "Không gian tĩnh tâm không xao nhãng",
+      "url": "/#zen",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Bảng Chỉ Số Tâm Lý (Dashboard)",
+      "short_name": "Dashboard",
+      "description": "Phân tích nhịp điệu cảm xúc 7 ngày & 30 ngày",
+      "url": "/#dashboard",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Sổ Tay Ước Mơ (Dream Journal)",
+      "short_name": "Ước Mơ",
+      "description": "Ghi lại giấc mơ và sóng não Theta",
+      "url": "/#dream",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+
+/* ───── Native Cursor Mode Override ───── */
+body.native-cursor,
+body.native-cursor * {
+  cursor: auto !important;
+}
+
+body.native-cursor button,
+body.native-cursor a,
+body.native-cursor .interactive {
+  cursor: pointer !important;
+}
+
+/* Accessibility Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  box-shadow: 0 0 8px var(--accent);
+}

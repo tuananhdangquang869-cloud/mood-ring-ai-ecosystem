@@ -1,0 +1,242 @@
+
+/* ─── AUDIO VISUALIZER & GENERATIVE BGM CONTROLS ───────────────────────────── */
+.audio-visualizer-container {
+  width: 100%;
+}
+
+.visualizer-canvas {
+  width: 100%;
+  display: block;
+}
+
+.visualizer-quick-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+}
+
+.visualizer-config-popover {
+  animation: fadeInPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInPop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.generative-bgm-card {
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.generative-bgm-card:hover {
+  border-color: rgba(0, 240, 255, 0.45);
+}
+
+/* ─── PHYSICAL SCREEN SHAKE & HAPTIC SIMULATION ENGINE ─────────────────────── */
+.screen-shake-subtle {
+  animation: screenShakeSubtle 0.22s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.screen-shake-medium {
+  animation: screenShakeMedium 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.screen-shake-heavy {
+  animation: screenShakeHeavy 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.screen-shake-critical {
+  animation: screenShakeCritical 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes screenShakeSubtle {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-1.5px, 1px) rotate(-0.2deg); }
+  40% { transform: translate(1.5px, -1px) rotate(0.2deg); }
+  60% { transform: translate(-1px, 0.5px) rotate(-0.1deg); }
+  80% { transform: translate(0.5px, -0.5px) rotate(0.1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes screenShakeMedium {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-3.5px, 2.5px) rotate(-0.6deg); }
+  30% { transform: translate(3px, -2.5px) rotate(0.5deg); }
+  45% { transform: translate(-2.5px, 2px) rotate(-0.4deg); }
+  60% { transform: translate(2px, -1.5px) rotate(0.3deg); }
+  75% { transform: translate(-1px, 1px) rotate(-0.15deg); }
+  90% { transform: translate(0.5px, -0.5px) rotate(0.08deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes screenShakeHeavy {
+  0% { transform: translate(0, 0) rotate(0deg); filter: contrast(100%); }
+  12% { transform: translate(-6px, 4px) rotate(-1.2deg); filter: contrast(120%) brightness(1.1); }
+  24% { transform: translate(5.5px, -4.5px) rotate(1deg); }
+  36% { transform: translate(-4.5px, 3.5px) rotate(-0.8deg); filter: contrast(110%); }
+  50% { transform: translate(3.5px, -3px) rotate(0.6deg); }
+  65% { transform: translate(-2px, 2px) rotate(-0.4deg); }
+  80% { transform: translate(1.5px, -1px) rotate(0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); filter: contrast(100%); }
+}
+
+@keyframes screenShakeCritical {
+  0% { transform: translate(0, 0) rotate(0deg); filter: invert(0); }
+  10% { transform: translate(-9px, 6px) rotate(-1.8deg); }
+  20% { transform: translate(8px, -7px) rotate(1.6deg); filter: invert(0.15) hue-rotate(45deg); }
+  35% { transform: translate(-6px, 5px) rotate(-1.2deg); }
+  50% { transform: translate(5px, -4px) rotate(0.9deg); filter: invert(0); }
+  68% { transform: translate(-3.5px, 3px) rotate(-0.5deg); }
+  84% { transform: translate(2px, -1.5px) rotate(0.3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); filter: none; }
+}
+
+/* ─── ADVANCED PHYSICS TILT BUTTON ENHANCEMENTS ────────────────────────────── */
+.physics-btn-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  perspective: 1000px;
+}
+
+.physics-tilt-btn {
+  position: relative;
+  width: 100%;
+  padding: 0.95rem 1.4rem;
+  background: var(--btn-bg, rgba(10, 15, 29, 0.85));
+  border: 1px solid var(--border-color, rgba(0, 240, 255, 0.25));
+  border-left: 3.5px solid var(--accent, #00f0ff);
+  border-radius: 9px;
+  color: var(--text-primary, #f1f5f9);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: clamp(0.85rem, 2.7vw, 0.94rem);
+  cursor: pointer;
+  text-align: left;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--spring-scale, 1));
+  transform-style: preserve-3d;
+  transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  overflow: hidden;
+  user-select: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.physics-tilt-btn:hover {
+  border-color: var(--accent, #00f0ff);
+  border-left-color: var(--accent, #00f0ff);
+  box-shadow: 0 12px 30px rgba(var(--accent-rgb, 0, 240, 255), 0.28), 0 0 20px rgba(var(--accent-rgb, 0, 240, 255), 0.22);
+}
+
+.physics-tilt-btn:active {
+  --spring-scale: 0.95;
+  transition: transform 0.05s ease-out;
+}
+
+.physics-tilt-btn.is-rebounding {
+  animation: springRebound 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes springRebound {
+  0% { transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(0.95); }
+  50% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.035); }
+  100% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1); }
+}
+
+/* 3D Depth Layer for Content */
+.physics-btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  transform: translateZ(16px);
+  pointer-events: none;
+  position: relative;
+  z-index: 3;
+}
+
+/* Click Shockwave Ring */
+.click-shockwave-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  border: 2px solid var(--accent, #00f0ff);
+  background: radial-gradient(circle, rgba(var(--accent-rgb, 0, 240, 255), 0.35) 0%, transparent 70%);
+  animation: shockwaveExpand 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  z-index: 2;
+}
+
+@keyframes shockwaveExpand {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 1;
+  }
+  100% {
+    width: 320px;
+    height: 320px;
+    opacity: 0;
+  }
+}
+
+/* Micro spark particle burst inside button */
+.physics-btn-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent, #00f0ff);
+  box-shadow: 0 0 6px var(--accent, #00f0ff);
+  pointer-events: none;
+  z-index: 4;
+  animation: sparkBurst 0.45s ease-out forwards;
+}
+
+@keyframes sparkBurst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--spark-tx, 20px), var(--spark-ty, -20px)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Color & style variants for physics button */
+.physics-tilt-btn.btn-cyber-primary {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.12) 0%, rgba(13, 20, 36, 0.9) 100%);
+  border-color: rgba(0, 240, 255, 0.4);
+}
+
+.physics-tilt-btn.btn-cyber-amber {
+  border-left-color: #f59e0b;
+  --accent: #f59e0b;
+  --accent-rgb: 245, 158, 11;
+}
+
+.physics-tilt-btn.btn-cyber-danger {
+  border-left-color: #ef4444;
+  --accent: #ef4444;
+  --accent-rgb: 239, 68, 68;
+}
+
+.physics-tilt-btn.btn-cyber-emerald {
+  border-left-color: #10b981;
+  --accent: #10b981;
+  --accent-rgb: 16, 185, 129;
+}
+
+.physics-tilt-btn.btn-cyber-violet {
+  border-left-color: #a855f7;
+  --accent: #a855f7;
+  --accent-rgb: 168, 85, 247;
+}

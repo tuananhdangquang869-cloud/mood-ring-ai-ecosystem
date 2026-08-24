@@ -1,0 +1,543 @@
+/* ═══════════════════════════════════════════════════════════════════════ */
+/* FEATURE 44: CUSTOMIZABLE DRAG & DROP DASHBOARD CSS SYSTEM              */
+/* ═══════════════════════════════════════════════════════════════════════ */
+
+.custom-dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-bottom: 2.5rem;
+}
+
+/* Dashboard Control Topbar */
+.dashboard-control-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(10, 16, 32, 0.85);
+  border: 1px solid var(--border-color, rgba(0, 240, 255, 0.35));
+  border-radius: var(--theme-border-radius, 16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--border-glow, rgba(0, 240, 255, 0.15));
+  backdrop-filter: blur(12px);
+}
+
+.dashboard-title-area {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dashboard-icon-gem {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(168, 85, 247, 0.2));
+  border: 1px solid var(--accent, #00f0ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent, #00f0ff);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.dashboard-heading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  margin: 0;
+}
+
+.dashboard-subheading {
+  font-size: 0.75rem;
+  color: var(--text-secondary, rgba(248, 250, 252, 0.7));
+  margin: 0;
+}
+
+.dashboard-actions-area {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-preset-select {
+  padding: 0.45rem 0.8rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary, #f8fafc);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboard-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-btn.edit-mode-active {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(239, 68, 68, 0.2));
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+
+/* Edit Mode Drawer / Manage Widgets Bar */
+.dashboard-manage-drawer {
+  padding: 1rem 1.5rem;
+  background: rgba(14, 20, 38, 0.9);
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  border-radius: var(--theme-border-radius, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.manage-drawer-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f59e0b;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.manage-widgets-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.widget-toggle-pill {
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary, rgba(248, 250, 252, 0.6));
+}
+
+.widget-toggle-pill.is-active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--accent, #00f0ff);
+  color: var(--accent, #00f0ff);
+}
+
+/* ─── DYNAMIC GRID LAYOUT ────────────────────────────────────────────── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Widget Sizing */
+.widget-col-normal {
+  grid-column: span 6;
+}
+
+.widget-col-wide {
+  grid-column: span 8;
+}
+
+.widget-col-compact {
+  grid-column: span 4;
+}
+
+.widget-col-expanded {
+  grid-column: span 12;
+}
+
+@media (max-width: 1024px) {
+  .widget-col-normal,
+  .widget-col-wide,
+  .widget-col-compact {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 768px) {
+  .widget-col-normal,
+  .widget-col-wide,
+  .widget-col-compact,
+  .widget-col-expanded {
+    grid-column: span 12;
+  }
+}
+
+/* Dashboard Widget Card Container */
+.dashboard-widget-card {
+  position: relative;
+  background: var(--card-bg, rgba(10, 16, 32, 0.85));
+  border: 1px solid var(--border-color, rgba(0, 240, 255, 0.3));
+  border-radius: var(--theme-border-radius, 16px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-widget-card:hover {
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--border-glow, rgba(0, 240, 255, 0.2));
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.dashboard-widget-card.is-dragging {
+  opacity: 0.45;
+  transform: scale(0.98);
+  border-style: dashed;
+  border-color: #f59e0b;
+}
+
+.dashboard-widget-card.is-drag-over {
+  border-color: var(--accent, #00f0ff);
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+  transform: translateY(-4px);
+}
+
+/* Widget Header */
+.widget-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.widget-header-title-box {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.widget-drag-handle {
+  color: #f59e0b;
+  cursor: grab;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-drag-handle:active {
+  cursor: grabbing;
+}
+
+.widget-icon-mini {
+  color: var(--accent, #00f0ff);
+}
+
+.widget-title-text {
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-primary, #f8fafc);
+}
+
+.widget-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.widget-control-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, rgba(248, 250, 252, 0.6));
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.widget-control-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Widget Body */
+.widget-card-body {
+  padding: 1.15rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── INDIVIDUAL WIDGET CONTENTS ─────────────────────────────────────── */
+
+/* 1. Cyber Clock & Weather */
+.widget-cyber-clock-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.clock-digital-time {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--accent, #00f0ff);
+  font-family: monospace;
+  text-shadow: 0 0 15px var(--accent, #00f0ff);
+}
+
+.clock-date-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary, rgba(248, 250, 252, 0.75));
+}
+
+.weather-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--accent, #00f0ff);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* 2. Biometrics & Stress */
+.biometrics-gauge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.bio-gauge-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.bio-gauge-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent, #00f0ff);
+}
+
+.bio-gauge-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary, rgba(248, 250, 252, 0.7));
+}
+
+/* 3. Audio & Voice */
+.audio-widget-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.audio-soundwave-canvas {
+  height: 48px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 10px;
+}
+
+.soundwave-bar {
+  width: 4px;
+  background: var(--accent, #00f0ff);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--accent, #00f0ff);
+  animation: soundwavePulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes soundwavePulse {
+  0% { height: 6px; opacity: 0.3; }
+  100% { height: 36px; opacity: 1; }
+}
+
+.audio-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+/* 4. Quick Journal & Quote */
+.quick-journal-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.daily-quote-card {
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(0, 240, 255, 0.05));
+  border-left: 3px solid var(--accent, #00f0ff);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--text-primary, #f8fafc);
+}
+
+.quick-journal-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.quick-journal-input-row input {
+  flex: 1;
+  padding: 0.5rem 0.85rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.quick-journal-input-row input:focus {
+  border-color: var(--accent, #00f0ff);
+}
+
+/* 5. Mood Calendar Mini */
+.mini-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.mini-cal-day-cell {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--text-secondary, rgba(248, 250, 252, 0.75));
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mini-cal-day-cell:hover {
+  border-color: var(--accent, #00f0ff);
+  background: rgba(0, 240, 255, 0.1);
+}
+
+.mini-cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+/* 6. Mood Chart Mini */
+.mini-mood-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100px;
+  gap: 8px;
+  padding: 0.5rem 0;
+}
+
+.chart-bar-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.chart-bar-fill {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.chart-bar-day-label {
+  font-size: 0.68rem;
+  color: var(--text-secondary, rgba(248, 250, 252, 0.65));
+}
+
+/* 7. Mini Oracle */
+.mini-oracle-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.oracle-response-bubble {
+  padding: 0.75rem;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #f5f3ff;
+}
+
+/* 8. Story Radar */
+.story-radar-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.story-progress-bar-container {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.story-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent, #00f0ff), #8b00ff);
+  border-radius: 4px;
+}

@@ -1,0 +1,3341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Mood Ring Story // Giới Thiệu Hệ Sinh Thái Kể Chuyện & Đo Cảm Xúc 3D Vị Lai</title>
+  <meta name="description" content="Khám phá Mood Ring Story: Hệ điều hành tâm thức kết hợp 3D WebGL, Giọng đọc AI ElevenLabs, Mã hóa đầu cuối E2E, PWA Offline Sync, Spatial Audio 3D, Burn Mode, Dashboard tâm lý và Spotify Wrapped.">
+  <meta name="keywords" content="Mood Ring Story, Giọng đọc AI ElevenLabs, E2E Encryption, PWA Offline, Spatial Audio 3D, Burn Mode, Spotify Wrapped, Sổ Ước Mơ, Hộp Thời Gian">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.webmanifest">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Space Mono (100% Hỗ trợ tiếng Việt) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    :root {
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      --bg-dark: #030712;
+      --bg-surface: #0b1120;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-hover: rgba(30, 41, 59, 0.88);
+      
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(0, 243, 255, 0.4);
+
+      --primary: #00f3ff;
+      --primary-rgb: 0, 243, 255;
+      --secondary: #ff0077;
+      --purple: #a855f7;
+      --yellow: #f59e0b;
+      --green: #10b981;
+      --crimson: #ef4444;
+
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
+
+      --shadow-glow: 0 0 25px rgba(var(--primary-rgb), 0.25);
+    }
+
+    [data-theme="green-hack"] {
+      --primary: #00ff66;
+      --primary-rgb: 0, 255, 102;
+      --card-border-hover: rgba(0, 255, 102, 0.4);
+    }
+    [data-theme="neon-violet"] {
+      --primary: #c084fc;
+      --primary-rgb: 192, 132, 252;
+      --card-border-hover: rgba(192, 132, 252, 0.4);
+    }
+    [data-theme="amber-gold"] {
+      --primary: #fbbf24;
+      --primary-rgb: 251, 191, 36;
+      --card-border-hover: rgba(251, 191, 36, 0.4);
+    }
+    [data-theme="noir-dark"] {
+      --primary: #e2e8f0;
+      --primary-rgb: 226, 232, 240;
+      --bg-dark: #000000;
+      --bg-card: rgba(10, 10, 10, 0.9);
+      --card-border-hover: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(var(--primary-rgb), 0.4);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* Custom Cursor */
+    @media (hover: hover) and (pointer: fine) {
+      body, a, button, input, textarea, select, [role="button"] {
+        cursor: none !important;
+      }
+    }
+
+    #custom-cursor-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 999999;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    #custom-cursor-container.active { opacity: 1; }
+
+    #cursor-ring {
+      position: absolute;
+      top: -14px; left: -14px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.4);
+      pointer-events: none;
+      transform: translate3d(-100px, -100px, 0);
+      will-change: transform;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #cursor-dot {
+      position: absolute;
+      top: -3px; left: -3px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+      pointer-events: none;
+      transform: translate3d(-100px, -100px, 0);
+      will-change: transform;
+    }
+
+    /* Background Ambient Canvas & Grid */
+    #bg-particles-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .ambient-grid {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Announcement Bar */
+    .top-announcement {
+      background: linear-gradient(90deg, rgba(0, 243, 255, 0.12), rgba(168, 85, 247, 0.14), rgba(255, 0, 119, 0.12));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 16px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-sub);
+    }
+    .top-announcement .badge-hot {
+      background: var(--secondary);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* Sticky Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(2, 6, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+      z-index: 100;
+      padding: 14px 32px;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-inner {
+      max-width: 1360px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+      flex-shrink: 0;
+    }
+
+    .brand-ring {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+      animation: pulse 2.5s infinite alternate ease-in-out;
+    }
+
+    .brand-text {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.12rem;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, var(--primary), #ffffff 60%, var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: var(--text-sub);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      letter-spacing: 0.2px;
+      transition: all 0.2s ease;
+      position: relative;
+      padding: 4px 0;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.6);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.25s ease;
+      box-shadow: 0 0 8px var(--primary);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn-sound {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      color: var(--primary);
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+    }
+    .btn-sound:hover {
+      background: rgba(var(--primary-rgb), 0.15);
+      border-color: var(--primary);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-enter-nav {
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+      color: #020617;
+      font-family: var(--font-display);
+      font-weight: 800;
+      padding: 9px 20px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      font-size: 0.86rem;
+      box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.4);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .btn-enter-nav:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(var(--primary-rgb), 0.65);
+    }
+
+    /* Container Utility */
+    .section-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 70px 20px;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .section-heading h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3.2vw, 2.4rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      letter-spacing: 0.5px;
+    }
+
+    .section-sub {
+      color: var(--text-sub);
+      font-size: 1rem;
+      max-width: 720px;
+      margin: 12px auto 0;
+      line-height: 1.6;
+    }
+
+    /* Hero Section */
+    .hero-container {
+      display: grid;
+      grid-template-columns: 1.22fr 0.88fr;
+      gap: 36px;
+      align-items: center;
+      min-height: 82vh;
+      padding: 40px 20px;
+      max-width: 1260px;
+      margin: 0 auto;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(var(--primary-rgb), 0.08);
+      border: 1px solid rgba(var(--primary-rgb), 0.25);
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--primary);
+      margin-bottom: 18px;
+    }
+
+    .pill-badge span.dot {
+      width: 7px; height: 7px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--primary);
+      animation: blink 1.2s infinite;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.85rem, 2.85vw, 2.75rem);
+      font-weight: 900;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      margin-bottom: 18px;
+      color: #ffffff;
+      text-wrap: balance;
+    }
+
+    .hero-title span.gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, #c084fc 50%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline;
+    }
+
+    @media (min-width: 1025px) {
+      .hero-title span.gradient {
+        display: inline-block;
+        white-space: nowrap;
+      }
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-sub);
+      margin-bottom: 28px;
+      line-height: 1.65;
+    }
+    .hero-desc strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .btn-main-cta {
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+      color: #020617;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 14px 28px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-main-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 26px rgba(var(--primary-rgb), 0.6);
+    }
+
+    .btn-secondary-cta {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 14px 22px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-secondary-cta:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .telemetry-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .telemetry-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .telemetry-item span.val {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* 3D Sphere Card */
+    .hero-3d-card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      backdrop-filter: blur(16px);
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    }
+
+    .canvas-3d-box {
+      width: 100%;
+      height: 320px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.08) 0%, rgba(3, 7, 18, 0.85) 75%);
+      margin-bottom: 14px;
+    }
+
+    #three-sphere-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-hint {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.74rem;
+      font-family: var(--font-mono);
+      color: var(--primary);
+      background: rgba(3, 7, 18, 0.75);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(var(--primary-rgb), 0.25);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hero-mood-switches {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-mood-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-sub);
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .hero-mood-btn:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .hero-mood-btn.active {
+      background: rgba(var(--primary-rgb), 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* 6 Pillars Grid */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      transition: all 0.25s ease;
+    }
+    .pillar-card:hover {
+      border-color: var(--card-border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .pillar-icon {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .pillar-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .pillar-card p {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      line-height: 1.55;
+    }
+
+    /* Segmented Filter */
+    .feature-cat-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .feature-cat-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-sub);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .feature-cat-btn:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .feature-cat-btn.active {
+      background: rgba(var(--primary-rgb), 0.12);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Deep Cards Grid */
+    .features-deep-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 22px;
+    }
+
+    .feature-deep-card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .feature-deep-card:hover {
+      border-color: var(--card-border-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .feature-badge-status {
+      position: absolute;
+      top: 18px; right: 18px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .feature-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-right: 90px;
+    }
+
+    .feature-icon-badge {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      background: rgba(var(--primary-rgb), 0.1);
+      border: 1px solid rgba(var(--primary-rgb), 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .feature-top h3 {
+      font-family: var(--font-display);
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .feature-desc {
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .feature-bullets {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+
+    .feature-bullets li {
+      position: relative;
+      padding-left: 16px;
+      color: #cbd5e1;
+      font-size: 0.84rem;
+      margin-bottom: 6px;
+    }
+    .feature-bullets li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .feature-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      list-style: none;
+      margin-top: auto;
+    }
+    .feature-tags li {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--primary);
+    }
+
+    /* Interactive Showcase Card Box */
+    .interactive-showcase-box {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      margin-bottom: 30px;
+    }
+
+    /* Spatial Audio Radar */
+    .audio-radar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .audio-radar-visual {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.06) 0%, rgba(2, 6, 23, 0.95) 75%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+    }
+
+    .radar-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px dashed rgba(var(--primary-rgb), 0.2);
+    }
+    .radar-c1 { width: 70px; height: 70px; }
+    .radar-c2 { width: 140px; height: 140px; }
+    .radar-c3 { width: 210px; height: 210px; }
+
+    .radar-listener {
+      width: 22px; height: 22px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ffffff;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .radar-emitter {
+      position: absolute;
+      width: 26px; height: 26px;
+      background: var(--secondary);
+      border-radius: 50%;
+      box-shadow: 0 0 14px var(--secondary);
+      z-index: 3;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #fff;
+      user-select: none;
+    }
+
+    .audio-scene-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .scene-pill-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-sub);
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scene-pill-btn:hover, .scene-pill-btn.active {
+      background: rgba(var(--primary-rgb), 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Burn Chamber Simulator */
+    .burn-chamber-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .burn-preview-box {
+      height: 250px;
+      background: #020617;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      text-align: center;
+    }
+
+    #burn-flame-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    .burn-flame-selectors {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .flame-pick-btn {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .flame-pick-btn.active {
+      border-color: var(--crimson);
+      background: rgba(239, 68, 68, 0.15);
+      color: #fff;
+    }
+
+    .lab-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .lab-input:focus {
+      border-color: var(--primary);
+    }
+
+    /* TTS Studio Showcase */
+    .tts-demo-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .voice-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .voice-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .voice-chip:hover {
+      border-color: var(--primary);
+      background: rgba(var(--primary-rgb), 0.08);
+    }
+    .voice-chip.active {
+      border-color: var(--primary);
+      background: rgba(var(--primary-rgb), 0.18);
+    }
+    .voice-chip-name {
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #fff;
+    }
+    .voice-chip-desc {
+      font-size: 0.7rem;
+      color: var(--text-sub);
+    }
+
+    /* E2E Crypto Simulator */
+    .crypto-demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .crypto-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      min-height: 140px;
+      word-break: break-all;
+    }
+
+    /* 30-Day Mood Calendar & Badges Grid */
+    .calendar-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .cal-dot-day {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cal-dot-day:hover {
+      border-color: #fff;
+      transform: scale(1.08);
+    }
+
+    .cal-orbital-glow {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      margin-top: 2px;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    .badges-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .badge-show-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-sm);
+      padding: 12px 6px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .badge-show-card:hover {
+      border-color: var(--yellow);
+      transform: translateY(-2px);
+    }
+
+    .badge-item-icon {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .badge-item-name {
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: #fff;
+    }
+    .badge-item-level {
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      color: var(--yellow);
+    }
+
+    /* Shortcuts Grid */
+    .shortcuts-hud-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .shortcut-card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .shortcut-card:hover {
+      border-color: var(--card-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .shortcut-key {
+      background: rgba(var(--primary-rgb), 0.12);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.84rem;
+      white-space: nowrap;
+    }
+
+    .shortcut-info h5 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .shortcut-info p {
+      font-size: 0.76rem;
+      color: var(--text-sub);
+    }
+
+    /* Theme Picker Buttons */
+    .theme-pick-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .theme-pick-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* FAQ Grid */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px;
+    }
+
+    .faq-card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+    }
+    .faq-card h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .faq-card p {
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Final CTA */
+    .cta-card {
+      background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.12) 0%, rgba(168, 85, 247, 0.12) 50%, rgba(255, 0, 119, 0.12) 100%);
+      border: 1.5px solid var(--primary);
+      border-radius: var(--radius-xl);
+      padding: 50px 24px;
+      text-align: center;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    }
+    .cta-card h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.8vw, 2.6rem);
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .cta-card p {
+      font-size: 1.05rem;
+      color: var(--text-sub);
+      max-width: 650px;
+      margin: 0 auto 28px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: #02050e;
+      padding: 40px 20px 30px;
+      text-align: center;
+    }
+    .footer-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-links a {
+      color: var(--text-sub);
+      text-decoration: none;
+      font-size: 0.86rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    .copyright {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Keyframes */
+    @keyframes pulse {
+      0% { transform: scale(0.96); box-shadow: 0 0 8px var(--primary); }
+      100% { transform: scale(1.08); box-shadow: 0 0 18px var(--primary); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* Soundwave visualizer canvas */
+    #tts-soundwave-canvas {
+      width: 100%;
+      height: 100px;
+      background: #020617;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(var(--primary-rgb), 0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .navbar { padding: 12px 20px; }
+      .hero-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        min-height: auto;
+        padding: 30px 16px;
+      }
+      .hero-left { text-align: center; }
+      .hero-actions, .telemetry-row { justify-content: center; }
+      .audio-radar-grid, .burn-chamber-grid, .tts-demo-grid, .crypto-demo-grid { grid-template-columns: 1fr; gap: 20px; }
+      .faq-grid { grid-template-columns: 1fr; }
+      .section-wrap { padding: 50px 16px; }
+    }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 10px 14px; }
+      .nav-links { display: none; }
+      .top-announcement { font-size: 0.72rem; padding: 6px 10px; }
+      .hero-title { font-size: clamp(1.65rem, 6vw, 2.2rem); }
+      .hero-desc { font-size: 0.95rem; margin-bottom: 20px; }
+      .hero-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+      .btn-main-cta, .btn-secondary-cta { justify-content: center; width: 100%; padding: 12px 18px; }
+      .canvas-3d-box { height: 240px; }
+      .features-deep-grid { grid-template-columns: 1fr; }
+      .shortcuts-hud-grid { grid-template-columns: 1fr 1fr; }
+      .cta-card { padding: 36px 16px; }
+      .cta-card h2 { font-size: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .shortcuts-hud-grid { grid-template-columns: 1fr; }
+      .brand-text { font-size: 1rem; }
+      .brand-ring { width: 22px; height: 22px; }
+      .btn-enter-nav { padding: 6px 12px; font-size: 0.76rem; }
+      .btn-sound span.sound-txt { display: none; }
+      .telemetry-item { font-size: 0.72rem; padding: 4px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor for Desktop -->
+  <div id="custom-cursor-container">
+    <div id="cursor-ring"></div>
+    <div id="cursor-dot"></div>
+  </div>
+
+  <!-- Ambient Canvas Background -->
+  <canvas id="bg-particles-canvas"></canvas>
+  <div class="ambient-grid"></div>
+
+  <!-- Announcement Bar -->
+  <div class="top-announcement">
+    <span class="badge-hot">MỚI NHẤT</span>
+    <span>Bổ sung AI Voice ElevenLabs, Mã Hóa E2E Zero-Knowledge, PWA Offline Sync, Phục Hồi 10 Phút Trước & Spotify Wrapped</span>
+  </div>
+
+  <!-- Sticky Navbar -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="intro.html" class="brand" title="Mood Ring Story // Hệ Điều Hành Cảm Xúc 3D">
+        <div class="brand-ring"></div>
+        <span class="brand-text">MOOD RING <span style="font-weight:300;">STORY</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#about">6 Trụ Cột</a></li>
+          <li><a href="#features-hub">Hệ Sinh Thái 35+</a></li>
+          <li><a href="#tts-studio-demo">Phòng Thu & Demo</a></li>
+          <li><a href="#shortcuts-hud">Phím Tắt [Alt]</a></li>
+          <li><a href="#faq">Hỏi Đáp</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="sound-toggle" class="btn-sound" title="Bật/Tắt âm thanh không gian Solfeggio">
+          <span>🔊</span> <span id="sound-status">BẬT</span>
+        </button>
+        <a href="index.html" class="btn-enter-nav" title="Mở trực tiếp ứng dụng tương tác 3D">
+          <span>Vào Website</span>
+          <span>➔</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Hero Section -->
+    <section class="hero-container" id="hero">
+      <div class="hero-left">
+        <div class="pill-badge">
+          <span class="dot"></span>
+          <span>HỆ ĐIỀU HÀNH TÂM THỨC 3D // MR-CORE-01</span>
+        </div>
+
+        <h1 class="hero-title">
+          Kể Chuyện Đa Chiều & <br>
+          <span class="gradient">Hệ Sinh Thái Cảm Xúc Vị Lai</span>
+        </h1>
+
+        <p class="hero-desc">
+          Lấy cảm hứng từ <strong>chiếc nhẫn đổi màu tâm trạng</strong>, hệ thống kết hợp <strong>đồ họa WebGL 3D, phòng thu AI Voice ElevenLabs, mật mã học Zero-Knowledge E2E, PWA Offline Sync, Spatial Audio 3D và buồng giải phóng áp lực điện ảnh</strong> để đồng hành trọn vẹn cùng tâm trí bạn.
+        </p>
+
+        <div class="hero-actions">
+          <a href="index.html" class="btn-main-cta">
+            <span>🚀 MỞ WEBSITE TRANG CHỦ</span>
+            <span>➔</span>
+          </a>
+          <a href="#features-hub" class="btn-secondary-cta">
+            <span>✨ Khám Phá 35+ Tính Năng</span>
+          </a>
+        </div>
+
+        <div class="telemetry-row">
+          <div class="telemetry-item">
+            <span>Tần số:</span>
+            <span class="val" id="telemetry-hz">432 Hz</span>
+          </div>
+          <div class="telemetry-item">
+            <span>Tính năng:</span>
+            <span class="val">35/50+ Sẵn Sàng (100%)</span>
+          </div>
+          <div class="telemetry-item">
+            <span>Bảo mật:</span>
+            <span class="val">AES-256-GCM</span>
+          </div>
+          <div class="telemetry-item">
+            <span>Ngoại tuyến:</span>
+            <span class="val">PWA Ready ⚡</span>
+          </div>
+          <div class="telemetry-item">
+            <span>FPS:</span>
+            <span class="val">60-120</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Right: 3D Sphere -->
+      <div class="hero-3d-card">
+        <div class="canvas-3d-box">
+          <canvas id="three-sphere-canvas"></canvas>
+          <div class="canvas-hint">🖱️ Rê chuột hoặc chạm để xoay 3D</div>
+        </div>
+
+        <div class="hero-mood-switches">
+          <button class="hero-mood-btn active" data-mood="calm" data-color="#00f3ff" data-hz="432" data-temp="37.2">
+            🌊 Bình Yên
+          </button>
+          <button class="hero-mood-btn" data-mood="electric" data-color="#fbbf24" data-hz="852" data-temp="48.5">
+            ⚡ Hứng Khởi
+          </button>
+          <button class="hero-mood-btn" data-mood="melancholy" data-color="#c084fc" data-hz="285" data-temp="32.1">
+            🔮 Trầm Lắng
+          </button>
+          <button class="hero-mood-btn" data-mood="rage" data-color="#ef4444" data-hz="963" data-temp="82.4">
+            🔥 Bùng Cháy
+          </button>
+          <button class="hero-mood-btn" data-mood="euphoria" data-color="#10b981" data-hz="639" data-temp="36.8">
+            ✨ Thăng Hoa
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 Core Pillars -->
+    <section class="section-wrap" id="about">
+      <div class="section-heading">
+        <span class="section-tag">// TRẢI NGHIỆM ĐỘT PHÁ //</span>
+        <h2>6 Trụ Cột Tạo Nên Mood Ring Story</h2>
+        <p class="section-sub">Sự giao thoa đỉnh cao giữa đồ họa 3D tương tác, trí tuệ nhân tạo thế hệ mới, bảo mật lượng tử và tâm lý học chữa lành.</p>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <span class="pillar-icon">🔮</span>
+          <h3>Quả Cầu 3D & Cốt Truyện</h3>
+          <p>Quả cầu WebGL hàng nghìn hạt ánh sáng phản ứng theo cảm xúc, kèm cây cốt truyện phân nhánh lượng tử và khả năng Time Jump tức thì.</p>
+        </div>
+
+        <div class="pillar-card">
+          <span class="pillar-icon">🎙️</span>
+          <h3>AI Voice & Spatial Audio 3D</h3>
+          <p>Phòng thu AI Voice với 2 giọng đọc miền Nam truyền cảm (Mai Phương & Quang Dũng), sóng âm tần số và trường âm thanh 3D Binaural HRTF 360°.</p>
+        </div>
+
+        <div class="pillar-card">
+          <span class="pillar-icon">🔒</span>
+          <h3>Mã Hóa E2E & PWA Offline</h3>
+          <p>Bảo mật Zero-Knowledge chuẩn quân sự AES-256 bit không lưu khóa, PWA cài đặt độc lập và tự động đồng bộ đám mây ngoại tuyến.</p>
+        </div>
+
+        <div class="pillar-card">
+          <span class="pillar-icon">📊</span>
+          <h3>Dashboard & Spotify Wrapped</h3>
+          <p>Bảng điều khiển tâm lý Spline SVG Neon đa chiều, chẩn đoán AI Mental Health và trình phát Story Wrapped tổng kết tuần/năm.</p>
+        </div>
+
+        <div class="pillar-card">
+          <span class="pillar-icon">🔥</span>
+          <h3>Cathartic Burn & Zen Mode</h3>
+          <p>Buồng xả stress thiêu rụi muộn phiền 60 FPS cam kết Zero-Trace, chuông Solfeggio 528Hz và không gian viết lách Zen Mode tĩnh tâm.</p>
+        </div>
+
+        <div class="pillar-card">
+          <span class="pillar-icon">🤝</span>
+          <h3>Góc Thì Thầm & Viết Cộng Tác</h3>
+          <p>Không gian tâm sự ẩn danh chống toxic 100% bằng 5 biểu tượng thấu cảm, cùng phòng viết truyện đồng tác giả theo lượt với bạn bè & AI.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comprehensive Feature Explorer Hub -->
+    <section class="section-wrap" id="features-hub">
+      <div class="section-heading">
+        <span class="section-tag">// HỆ SINH THÁI TÍNH NĂNG //</span>
+        <h2>Bản Đồ Phân Hệ Chuyên Sâu (35+ Tính Năng)</h2>
+        <p class="section-sub">Chọn danh mục bên dưới để lọc nhanh các tính năng đã được hiện thực hóa 100% trên website.</p>
+      </div>
+
+      <div class="feature-cat-nav">
+        <button class="feature-cat-btn active" data-filter="all">Tất Cả (35+)</button>
+        <button class="feature-cat-btn" data-filter="ai-voice">🎙️ AI & Giọng Đọc</button>
+        <button class="feature-cat-btn" data-filter="security">🔒 Bảo Mật & PWA</button>
+        <button class="feature-cat-btn" data-filter="analytics">📊 Báo Cáo & Chỉ Số</button>
+        <button class="feature-cat-btn" data-filter="healing">🌿 Chữa Lành & Zen</button>
+        <button class="feature-cat-btn" data-filter="multimedia">✍️ Nhật Ký & Ký Ức</button>
+        <button class="feature-cat-btn" data-filter="gamification">🏆 Game Hóa & Xã Hội</button>
+        <button class="feature-cat-btn" data-filter="core-3d">🔮 3D & Vật Lý</button>
+      </div>
+
+      <div class="features-deep-grid" id="features-container">
+        
+        <!-- Feature 1: AI Voice ElevenLabs -->
+        <div class="feature-deep-card" data-cat="ai-voice">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🎙️</div>
+              <h3>Đọc Văn Bản AI Voice (2 Giọng Tuyển Chọn)</h3>
+            </div>
+            <p class="feature-desc">Tích hợp 2 chất giọng miền Nam truyền cảm tự nhiên (Mai Phương & Quang Dũng). Hỗ trợ thanh Audio Dock vuốt mượt mà trên di động và Live Soundwave Visualizer.</p>
+            <ul class="feature-bullets">
+              <li>🌸 <strong>Mai Phương (Nữ Miền Nam)</strong>: Ngọt ngào, dịu dàng, tự sự êm đềm như người bạn tâm tình.</li>
+              <li>👨 <strong>Quang Dũng (Nam Miền Nam)</strong>: Trầm ấm, nam tính, hào sảng chân thành và sâu lắng.</li>
+              <li>Bộ đệm âm thanh Audio Blob Cache & Dự phòng ngoại tuyến Web Speech API.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#MaiPhuongVoice</li>
+            <li>#QuangDungVoice</li>
+            <li>#AltV</li>
+          </ul>
+        </div>
+
+        <!-- Feature 2: E2E Zero-Knowledge Encryption -->
+        <div class="feature-deep-card" data-cat="security">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🔒</div>
+              <h3>Mã Hóa Đầu-Cuối E2E Quân Sự</h3>
+            </div>
+            <p class="feature-desc">Mật mã học Zero-Knowledge với chuẩn AES-GCM 256-bit & PBKDF2 150,000 vòng. Khóa bí mật chỉ lưu trong RAM, Admin Database chỉ thấy chuỗi mã hóa vô nghĩa.</p>
+            <ul class="feature-bullets">
+              <li>Cụm từ khôi phục lượng tử 12 từ (12-Word Seed Phrase).</li>
+              <li>Trình giả lập Database Admin Leak-Proof Simulator.</li>
+              <li>Tự động khóa két bảo mật và mã hóa di chuyển hàng loạt.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#AES256GCM</li>
+            <li>#ZeroKnowledge</li>
+            <li>#AltE</li>
+          </ul>
+        </div>
+
+        <!-- Feature 3: PWA Offline & Background Cloud Sync -->
+        <div class="feature-deep-card" data-cat="security">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">⚡</div>
+              <h3>Chế Độ Offline PWA & Đồng Bộ Cloud</h3>
+            </div>
+            <p class="feature-desc">Progressive Web App độc lập cài đặt trực tiếp website vào Desktop & Mobile. Tự động lưu cache ngoại tuyến 100% tài nguyên và tự động đẩy dữ liệu lên mây khi có mạng.</p>
+            <ul class="feature-bullets">
+              <li>Cài đặt website (PWA) không viền kèm 4 Shortcuts tác vụ nhanh.</li>
+              <li>Hàng đợi đồng bộ Offline Sync Queue thông minh.</li>
+              <li>Chỉ báo trạng thái mạng HUD thời gian thực (Online/Offline).</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#PWAStandalone</li>
+            <li>#OfflineSync</li>
+            <li>#ServiceWorker</li>
+          </ul>
+        </div>
+
+        <!-- Feature 4: Auto-save 5s & 10-Min Rollback History -->
+        <div class="feature-deep-card" data-cat="security">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">⏱️</div>
+              <h3>Sao Lưu 5s & Phục Hồi 10 Phút Trước</h3>
+            </div>
+            <p class="feature-desc">Tự động sao lưu bản nháp mỗi 5 giây, bảo vệ tối đa 50 mốc lịch sử. Tích hợp Visual Diff Viewer so sánh trực quan và nút phục hồi 1-chạm mốc 10 phút trước khi xóa nhầm.</p>
+            <ul class="feature-bullets">
+              <li>Trình so sánh trực quan dạ quang xanh/đỏ (Visual Diff).</li>
+              <li>Khôi phục 1-chạm nội dung, tranh vẽ và thẻ cảm xúc.</li>
+              <li>Khôi phục bản nháp dang dở từ phiên làm việc trước.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#AutoSave5s</li>
+            <li>#VersionHistory</li>
+            <li>#10MinRollback</li>
+          </ul>
+        </div>
+
+        <!-- Feature 5: Emotional Analytics Dashboard -->
+        <div class="feature-deep-card" data-cat="analytics">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">📊</div>
+              <h3>Bảng Điều Khiển Chỉ Số Tâm Lý</h3>
+            </div>
+            <p class="feature-desc">Trung tâm phân tích dữ liệu cảm xúc 7 ngày, 30 ngày và 1 năm. Biểu đồ Spline SVG Neon tương tác, biểu đồ cột 5 Moods, Radar 5 Trục và Lõi Chẩn đoán AI Phác đồ tự chữa lành.</p>
+            <ul class="feature-bullets">
+              <li>Chỉ số Hài hòa (Valence) và Cường độ cảm xúc thời gian thực.</li>
+              <li>Radar 5 Trục Cân Bằng & Xác định Nhân vật Archetype.</li>
+              <li>Nạp dữ liệu mẫu Demo và xuất báo cáo Infographic.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#EmotionalDashboard</li>
+            <li>#SplineChart</li>
+            <li>#AltD</li>
+          </ul>
+        </div>
+
+        <!-- Feature 6: Spotify Wrapped Emotional Story -->
+        <div class="feature-deep-card" data-cat="analytics">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🎵</div>
+              <h3>Báo Cáo Cảm Xúc Spotify Wrapped</h3>
+            </div>
+            <p class="feature-desc">Trình chiếu Story toàn màn hình chuẩn phong cách Spotify Wrapped (Weekly & Yearly). 8 Slide hoạt họa điện ảnh, Thẻ bài Holographic Tarot 3D và Tấm thẻ danh dự tải ảnh PNG.</p>
+            <ul class="feature-bullets">
+              <li>8 Slide tương tác: Aura linh hồn, Ngày bùng nổ, Lời chúc AI.</li>
+              <li>Thẻ bài Holographic Tarot 3D lấp lánh phản quang.</li>
+              <li>Tải ảnh PNG thẻ danh dự để chia sẻ lên mạng xã hội.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#SpotifyWrapped</li>
+            <li>#HoloTarot</li>
+            <li>#AltR</li>
+          </ul>
+        </div>
+
+        <!-- Feature 7: Mental Health Alert & Hotlines -->
+        <div class="feature-deep-card" data-cat="healing">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🛡️</div>
+              <h3>Cảnh Báo Sức Khỏe & Hotline 24/7</h3>
+            </div>
+            <p class="feature-desc">Tự động phát hiện dấu hiệu bế tắc, khủng hoảng cảm xúc. Kích hoạt Modal Chữa Lành Glassmorphic kèm chuông xoay Tây Tạng 432Hz và danh bạ Hotline Quốc Gia 111 & Ngày Mai một chạm.</p>
+            <ul class="feature-bullets">
+              <li>Hotline Quốc gia 111, Ngày Mai 0963.061.414 & Bạch Mai.</li>
+              <li>Vòng tròn Hít Thở Nhịp Điệu 4-7-8 & Tiếp Đất 5-4-3-2-1.</li>
+              <li>Nút nhận "Cái Ôm Ảo" (Virtual Hug) hiệu ứng hạt bay ấm áp.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#MentalHealth</li>
+            <li>#Hotline111</li>
+            <li>#AltH</li>
+          </ul>
+        </div>
+
+        <!-- Feature 8: Cathartic Burn Mode -->
+        <div class="feature-deep-card" data-cat="healing">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🔥</div>
+              <h3>Chế Độ Xả Stress Hỏa Thiêu</h3>
+            </div>
+            <p class="feature-desc">Buồng thanh tẩy cảm xúc điện ảnh 60 FPS. Thiêu rụi muộn phiền bằng 4 loại ngọn lửa hạt, cam kết Zero-Trace xóa sạch 100% dữ liệu khỏi RAM và phục hồi bằng chuông Solfeggio 528Hz.</p>
+            <ul class="feature-bullets">
+              <li>4 loại lửa: Địa ngục Inferno, Plasma, Void, Solar.</li>
+              <li>Cam kết Zero-Trace an toàn tuyệt đối cho người dùng.</li>
+              <li>Hồi phục tâm trí với chuông 528Hz và nhịp thở sâu.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#BurnMode</li>
+            <li>#ZeroTrace</li>
+            <li>#528Hz</li>
+          </ul>
+        </div>
+
+        <!-- Feature 9: Spatial Audio 3D HRTF -->
+        <div class="feature-deep-card" data-cat="core-3d">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🎧</div>
+              <h3>Spatial Audio 3D Binaural HRTF</h3>
+            </div>
+            <p class="feature-desc">Mô phỏng trường âm thanh 3D bao quanh tai nghe theo tiêu chuẩn HRTF. Kéo thả nguồn âm trên Radar 3D thời gian thực hoặc bật chế độ tự động quay vòng 360° (Auto-Orbit).</p>
+            <ul class="feature-bullets">
+              <li>5 cảnh âm thanh: Mưa Cyberpunk, Lửa trại, Sóng biển, Gió, Chuông.</li>
+              <li>Tự động quay vòng 360° mô phỏng âm thanh vòm thực tế.</li>
+              <li>Kiểm tra phân tách tai nghe (Binaural Sweep Test).</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#Binaural3D</li>
+            <li>#SoundRadar</li>
+            <li>#WebAudio</li>
+          </ul>
+        </div>
+
+        <!-- Feature 10: Zen Mode Focus -->
+        <div class="feature-deep-card" data-cat="healing">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🧘</div>
+              <h3>Chế Độ Tập Trung Zen Mode</h3>
+            </div>
+            <p class="feature-desc">Không gian viết lách tĩnh tâm không xao nhãng (`Alt+Z`). Ẩn 100% thanh điều hướng, hỗ trợ 4 theme OLED Noir/Paper Zen và âm thanh gõ máy chữ cơ học vintage chân thực.</p>
+            <ul class="feature-bullets">
+              <li>4 theme: OLED Noir, Paper Zen, Warm Sepia, Cyber Slate.</li>
+              <li>Âm thanh máy chữ cơ học và sóng não Alpha 432Hz.</li>
+              <li>Đồng hồ Pomodoro Focus kèm chuông Zen Gong Solfeggio.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#ZenMode</li>
+            <li>#TypewriterSFX</li>
+            <li>#AltZ</li>
+          </ul>
+        </div>
+
+        <!-- Feature 11: Multimedia Journal -->
+        <div class="feature-deep-card" data-cat="multimedia">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🎨</div>
+              <h3>Nhật Ký Đa Phương Tiện</h3>
+            </div>
+            <p class="feature-desc">Canvas vẽ tay cọ neon, mực, stardust và sơn xịt 60 FPS. Hỗ trợ tải video, ảnh, chụp webcam trực tiếp, trích xuất bảng màu thông minh và kho lưu trữ ký ức an toàn.</p>
+            <ul class="feature-bullets">
+              <li>Canvas vẽ tay đa cọ Neon, mực, sơn xịt, hạt sao.</li>
+              <li>Trích xuất 6 sắc màu chủ đạo từ hình ảnh tải lên.</li>
+              <li>Kho lưu trữ ký ức phân loại theo Mood và Thẻ tag.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#DrawingCanvas</li>
+            <li>#ColorExtractor</li>
+            <li>#Webcam</li>
+          </ul>
+        </div>
+
+        <!-- Feature 12: Dream Journal -->
+        <div class="feature-deep-card" data-cat="multimedia">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🌙</div>
+              <h3>Sổ Tay Ước Mơ & Giấc Mơ</h3>
+            </div>
+            <p class="feature-desc">Không gian Nocturne Dark Mode cực quang huyền ảo, font Dream Haze phát sáng mờ ảo, sóng não Theta 6Hz thư giãn và AI giải mã giấc mơ theo tâm lý học Carl Jung.</p>
+            <ul class="feature-bullets">
+              <li>Phân loại thể loại giấc mơ: Lucid, Bay lượn, Tiên tri, Siêu thực.</li>
+              <li>Sóng não Theta 6Hz và đồng hồ đếm ngược chống quên ký ức.</li>
+              <li>AI giải mã biểu tượng giấc mơ chuyên sâu.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#DreamJournal</li>
+            <li>#Theta6Hz</li>
+            <li>#JungianAI</li>
+          </ul>
+        </div>
+
+        <!-- Feature 13: Time Capsule -->
+        <div class="feature-deep-card" data-cat="multimedia">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">⏳</div>
+              <h3>Hộp Thời Gian Chrono Stasis</h3>
+            </div>
+            <p class="feature-desc">Niêm phong lá thư, tâm sự và ảnh kỷ niệm gửi tới tương lai. Đồng hồ Live Countdown đếm ngược từng giây bảo vệ sau trường lực Stasis Field và mở hộp dạng cuộn giấy ánh sáng.</p>
+            <ul class="feature-bullets">
+              <li>Thời hạn mở khóa linh hoạt (1 tuần, 1 tháng, 6 tháng, 1 năm).</li>
+              <li>Live Countdown đếm ngược thời gian thực đến từng giây.</li>
+              <li>Trải nghiệm mở hộp cuộn giấy ánh sáng so sánh cảm xúc.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#TimeCapsule</li>
+            <li>#LiveCountdown</li>
+            <li>#StasisField</li>
+          </ul>
+        </div>
+
+        <!-- Feature 14: Semantic Search AI -->
+        <div class="feature-deep-card" data-cat="ai-voice">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🔍</div>
+              <h3>Tìm Kiếm Ngữ Nghĩa AI</h3>
+            </div>
+            <p class="feature-desc">Công cụ tìm kiếm AI bằng câu hỏi tự nhiên tiếng Việt & tiếng Anh (`Alt+S`). Giải mã ý định cảm xúc, tính điểm % tương đồng và sinh câu trả lời tổng hợp nhân văn.</p>
+            <ul class="feature-bullets">
+              <li>Giải mã ý định cảm xúc, thời gian và chủ đề tự nhiên.</li>
+              <li>Quét xuyên suốt đa kho lưu trữ (Nhật ký, Sổ mơ, Hộp thời gian).</li>
+              <li>Sinh câu trả lời tổng hợp AI Answer Synthesis kèm trích dẫn.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#SemanticSearch</li>
+            <li>#NaturalLanguage</li>
+            <li>#AltS</li>
+          </ul>
+        </div>
+
+        <!-- Feature 15: 30-Day Mood Calendar -->
+        <div class="feature-deep-card" data-cat="analytics">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">📅</div>
+              <h3>Lịch Cảm Xúc 30 Ngày</h3>
+            </div>
+            <p class="feature-desc">Trình theo dõi cảm xúc tháng trực quan (`Alt+C`) với ma trận chấm quang học orbital dạ quang đại diện cho Mood từng ngày, bộ đếm chuỗi Streak 🔥 và Day Inspector.</p>
+            <ul class="feature-bullets">
+              <li>Chấm màu quang học đại diện cho Mood chủ đạo từng ngày.</li>
+              <li>Chuỗi ngày Streak 🔥 và bảng phân bổ tỷ lệ cảm xúc tháng.</li>
+              <li>Ghi nhanh tâm trạng trực tiếp từ ô lịch.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#MoodCalendar</li>
+            <li>#StreakTracker</li>
+            <li>#AltC</li>
+          </ul>
+        </div>
+
+        <!-- Feature 16: E-Book PDF/EPUB Exporter -->
+        <div class="feature-deep-card" data-cat="multimedia">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">📖</div>
+              <h3>Xuất Bản Sách Điện Tử PDF/EPUB</h3>
+            </div>
+            <p class="feature-desc">Tự động gom nhặt toàn bộ ký ức thành sách điện tử hoàn chỉnh với 5 phong cách bìa nghệ thuật, radar cảm xúc, mục lục tự động và xem trước lật trang 3D sống động.</p>
+            <ul class="feature-bullets">
+              <li>5 phong cách bìa: Cyberpunk, Nocturne, Royal Leather...</li>
+              <li>Xuất file PDF in ấn, gói EPUB/HTML offline, Markdown.</li>
+              <li>Trình xem trước lật trang sống động trước khi tải.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#EBookExport</li>
+            <li>#PDFPrint</li>
+            <li>#EPUB</li>
+          </ul>
+        </div>
+
+        <!-- Feature 17: Story Node Tree & Time Jump -->
+        <div class="feature-deep-card" data-cat="core-3d">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🌳</div>
+              <h3>Cây Cốt Truyện & Time Jump</h3>
+            </div>
+            <p class="feature-desc">Sơ đồ mạng lưới lượng tử trực quan hóa toàn bộ phân nhánh truyện (`Alt+T`). Cho phép thực hiện Dịch Chuyển Thời Gian (Time Jump) tức thì giữa các phân đoạn.</p>
+            <ul class="feature-bullets">
+              <li>Chuyển đổi Interactive Matrix Graph & Hierarchy Tree.</li>
+              <li>Định vị hành trình và làm mờ các nhánh ẩn (Fog of war).</li>
+              <li>Dịch chuyển thời gian tức thì kèm âm thanh SFX lượng tử.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#StoryNodeTree</li>
+            <li>#TimeJump</li>
+            <li>#AltT</li>
+          </ul>
+        </div>
+
+        <!-- Feature 18: Emotional Quests & 8 3D Badges -->
+        <div class="feature-deep-card" data-cat="gamification">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🎖️</div>
+              <h3>Nhiệm Vụ & 8 Huy Hiệu 3D</h3>
+            </div>
+            <p class="feature-desc">Hệ thống thử thách rèn luyện tâm trí hàng ngày (`Alt+Q`). Tích lũy EXP Cấp độ Tâm thức (Level 1-6), duy trì Streak và mở khóa 8 Huy hiệu Hologram 3D phát sáng rực rỡ.</p>
+            <ul class="feature-bullets">
+              <li>Nhiệm vụ: 3 điều biết ơn, thiền định, ngắm bầu trời...</li>
+              <li>8 Huy hiệu Hologram 3D phát sáng rực rỡ.</li>
+              <li>Ăn mừng hoàn thành với Canvas Confetti 60 FPS.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#EmotionalQuests</li>
+            <li>#MindLevel</li>
+            <li>#AltQ</li>
+          </ul>
+        </div>
+
+        <!-- Feature 19: Achievements & Equip Titles -->
+        <div class="feature-deep-card" data-cat="gamification">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">👑</div>
+              <h3>Thành Tựu & Đeo Danh Hiệu</h3>
+            </div>
+            <p class="feature-desc">12 danh hiệu tâm thức phân cấp độ hiếm (Common, Rare, Epic, Legendary) (`Alt+A`). Cho phép Đeo Danh Hiệu trực tiếp lên thanh Header HUD phát sáng uy nghi.</p>
+            <ul class="feature-bullets">
+              <li>12 danh hiệu: Cú Đêm, Tâm Hồn Lãng Mạn, Người Kiên Trì...</li>
+              <li>Đeo danh hiệu phát sáng trên Mainframe Header.</li>
+              <li>Theo dõi thanh tiến độ mở khóa chi tiết.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#Achievements</li>
+            <li>#EquipTitle</li>
+            <li>#AltA</li>
+          </ul>
+        </div>
+
+        <!-- Feature 20: Whisper Corner -->
+        <div class="feature-deep-card" data-cat="gamification">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🤫</div>
+              <h3>Góc Chia Sẻ Thì Thầm Ẩn Danh</h3>
+            </div>
+            <p class="feature-desc">Không gian tâm sự ngắn ẩn danh an toàn (`Alt+W`). Chống Toxic tuyệt đối: 100% không có bình luận chữ, chỉ gửi 5 biểu tượng thấu cảm 🤗 💖 ✨ 🫂 🕯️ kèm hiệu ứng hạt bay.</p>
+            <ul class="feature-bullets">
+              <li>Viết lời thì thầm ngắn dưới 180 ký tự kèm 6 sắc thái Aura.</li>
+              <li>Hiệu ứng hạt biểu tượng thấu cảm bay lơ lửng.</li>
+              <li>Âm thanh chuông ngân thư thái khi nhận tương tác.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#WhisperCorner</li>
+            <li>#AntiToxic</li>
+            <li>#AltW</li>
+          </ul>
+        </div>
+
+        <!-- Feature 21: Collaborative Writing -->
+        <div class="feature-deep-card" data-cat="gamification">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🤝</div>
+              <h3>Viết Truyện Đồng Tác Giả</h3>
+            </div>
+            <p class="feature-desc">Phòng viết truyện theo lượt cùng bạn bè qua Room Code / Link URL, hoặc đồng hành cùng AI Co-Author thông minh tự động tiếp lời văn sáng tạo.</p>
+            <ul class="feature-bullets">
+              <li>Tạo phòng tức thì và mời bạn bè qua link.</li>
+              <li>Chế độ AI Co-Author sáng tạo nối tiếp câu chuyện.</li>
+              <li>Lấy lời thì thầm ẩn danh làm hạt mầm cốt truyện.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#Collaborative</li>
+            <li>#AICoAuthor</li>
+            <li>#TurnBased</li>
+          </ul>
+        </div>
+
+        <!-- Feature 22: Corner Physics Minigames -->
+        <div class="feature-deep-card" data-cat="core-3d">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🫧</div>
+              <h3>Minigame Vật Lý Góc Màn Hình</h3>
+            </div>
+            <p class="feature-desc">Widget tương tác vật lý 60 FPS góc Desktop với 4 minigame: Nổ bóng xà phòng 7 màu, Gom hạt xoáy ngân hà nam châm, Bóp nilon bóng khí, Cát thiền gợn sóng.</p>
+            <ul class="feature-bullets">
+              <li>Mô phỏng lực nổi, gió, quán tính và âm thanh Pop sảng khoái.</li>
+              <li>Chuột nam châm tạo hợp âm chuông pha lê.</li>
+              <li>Thu nhỏ thành viên ngọc phát sáng lơ lửng gọn gàng.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#PhysicsMinigames</li>
+            <li>#StressRelief</li>
+            <li>#60FPS</li>
+          </ul>
+        </div>
+
+        <!-- Feature 23: 3D Memory Vault Gallery -->
+        <div class="feature-deep-card" data-cat="core-3d">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🏛️</div>
+              <h3>Phòng Tranh Ký Ức 3D Three.js</h3>
+            </div>
+            <p class="feature-desc">Không gian triển lãm 3D Three.js thực thụ (`VaultGallery3D`). Đi dạo xem lại hồ sơ cũ bằng phím WASD, joystick cảm ứng hoặc chế độ Auto-Tour tự động.</p>
+            <ul class="feature-bullets">
+              <li>Xoay 360° trong phòng tranh nghệ thuật số.</li>
+              <li>Bẻ khóa tài liệu mật trực tiếp trong không gian 3D.</li>
+              <li>Chuyển đổi linh hoạt giữa 3D và lưới thẻ.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#Vault3D</li>
+            <li>#WASDWalk</li>
+            <li>#AutoTour</li>
+          </ul>
+        </div>
+
+        <!-- Feature 24: Cyberpunk Face Scanner -->
+        <div class="feature-deep-card" data-cat="ai-voice">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">👁️</div>
+              <h3>Nhận Diện Khuôn Mặt Face Scanner</h3>
+            </div>
+            <p class="feature-desc">Cyberpunk Face Scanner đọc vi biểu cảm khuôn mặt thời gian thực (30-60 FPS) kết hợp Deep Scan AI Vision. Tự động tinh chỉnh màu sắc website, 3D AICore và âm thanh theo biểu cảm thực tế.</p>
+            <ul class="feature-bullets">
+              <li>Phát hiện vi biểu cảm vui, buồn, tập trung, bất ngờ.</li>
+              <li>Tự động chuyển đổi Theme và tần số âm thanh theo mặt.</li>
+              <li>Giao diện radar quét khuôn mặt Cyberpunk HUD.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#FaceScanner</li>
+            <li>#GeminiVision</li>
+            <li>#WebcamAI</li>
+          </ul>
+        </div>
+
+        <!-- Feature 25: AI Story Prompter -->
+        <div class="feature-deep-card" data-cat="ai-voice">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">💡</div>
+              <h3>Gợi Ý Kể Chuyện AI 3 Hướng Đi</h3>
+            </div>
+            <p class="feature-desc">Khi bí ý tưởng, AI phân tích toàn bộ mạch truyện trước đó và gợi ý 3 hướng đi tiếp theo: Cao Trào Bùng Nổ, Bí Ẩn Ký Ức Đánh Mất, hoặc Thức Tỉnh Siêu Việt.</p>
+            <ul class="feature-bullets">
+              <li>Phân tích hành trình `journeyPath` và nhân vật hiện tại.</li>
+              <li>3 nhánh kịch bản phong phú tạo cảm hứng sáng tác.</li>
+              <li>Chèn trực tiếp vào cốt truyện hoặc gửi sang Nhật ký.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#AIPrompting</li>
+            <li>#StoryBranch</li>
+            <li>#CreativeAI</li>
+          </ul>
+        </div>
+
+        <!-- Feature 26: Cinema Page Transitions -->
+        <div class="feature-deep-card" data-cat="core-3d">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🎬</div>
+              <h3>5 Hiệu Ứng Chuyển Cảnh Điện Ảnh</h3>
+            </div>
+            <p class="feature-desc">Thư viện chuyển cảnh mượt mà: Lật trang sách 3D, Mặt nước gợn sóng Liquid Ripple, Kính vỡ lượng tử 3D Glass Fracture, Cổng không gian Warp Vortex và Màn trập Glitch Shutter.</p>
+            <ul class="feature-bullets">
+              <li>Mô phỏng vật lý lật trang 3D chân thực và kính nứt.</li>
+              <li>Âm thanh SFX Web Audio tổng hợp tương ứng từng hiệu ứng.</li>
+              <li>Áp dụng đồng bộ khi đổi tab, chuyển chương và mở két.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#PageTransitions</li>
+            <li>#BookFlip3D</li>
+            <li>#QuantumWarp</li>
+          </ul>
+        </div>
+
+        <!-- Feature 27: Custom Cursor Store & Particle Typing -->
+        <div class="feature-deep-card" data-cat="core-3d">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🖱️</div>
+              <h3>Con Trỏ 5 Phong Cách & Gõ Phím Động</h3>
+            </div>
+            <p class="feature-desc">Bộ 5 con trỏ (Cyberpunk Ring, Sao chổi, Giọt nước, Neon Laser, Bong bóng) kèm Particle Engine 60 FPS khi gõ phím sinh hạt lửa/sét/bụi sao/khói mờ theo từng Mood.</p>
+            <ul class="feature-bullets">
+              <li>5 phong cách con trỏ siêu mượt 60-120 FPS.</li>
+              <li>Hiệu ứng hạt bàn phím phản ứng theo 5 trạng thái cảm xúc.</li>
+              <li>Tùy biến mật độ hạt và chuyển đổi trực quan trong Cài Đặt.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#CustomCursor</li>
+            <li>#TypingParticles</li>
+            <li>#ParticleEngine</li>
+          </ul>
+        </div>
+
+        <!-- Feature 28: Visual Storytelling Theme Quantumizer -->
+        <div class="feature-deep-card" data-cat="multimedia">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🖼️</div>
+              <h3>Kể Chuyện Trực Quan & Trích Xuất Màu</h3>
+            </div>
+            <p class="feature-desc">Tải ảnh bất kỳ hoặc chọn preset nghệ thuật cyberpunk, tự động lượng tử hóa trích xuất 6 màu chủ đạo, nhận diện Mood của ảnh và áp dụng trực tiếp thành Theme toàn hệ thống.</p>
+            <ul class="feature-bullets">
+              <li>Trích xuất 6 sắc màu và nhận diện Mood từ bức ảnh.</li>
+              <li>Áp dụng tức thì thành biến CSS Theme toàn website.</li>
+              <li>Sinh AI Story Hook khơi nguồn cảm hứng sáng tác.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#VisualStoryteller</li>
+            <li>#ColorQuantization</li>
+            <li>#DynamicTheme</li>
+          </ul>
+        </div>
+
+        <!-- Feature 29: TiltButton Physics System -->
+        <div class="feature-deep-card" data-cat="core-3d">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🎛️</div>
+              <h3>Nút Bấm Tương Tác Vật Lý 3D Tilt</h3>
+            </div>
+            <p class="feature-desc">Cơ chế mô phỏng vật lý 3D Parallax Tilt cho các nút bấm: nén & nảy lò xo (spring squish), sóng xung kích tỏa tròn (shockwaves), tia lửa hạt và phản hồi rung mô phỏng.</p>
+            <ul class="feature-bullets">
+              <li>Mô phỏng nghiêng 3D Parallax theo tọa độ con trỏ chuột.</li>
+              <li>Sóng xung kích Shockwave và tia lửa hạt micro-sparks.</li>
+              <li>Rung nhẹ màn hình screen-shake và âm thanh vật lý haptics.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#TiltButton</li>
+            <li>#PhysicsButton</li>
+            <li>#Haptics</li>
+          </ul>
+        </div>
+
+        <!-- Feature 30: Smart AI Tagging -->
+        <div class="feature-deep-card" data-cat="ai-voice">
+          <span class="feature-badge-status">✓ HOÀN THÀNH</span>
+          <div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">🏷️</div>
+              <h3>Tự Động Gắn Thẻ Thông Minh AI</h3>
+            </div>
+            <p class="feature-desc">AI quét sâu nội dung văn bản theo ngữ cảnh và tự động phân loại 11 danh mục đời sống (#Gia_đình, #Công_việc, #Tình_yêu, #Áp_lực, #Chữa_lành,...) kèm tỷ lệ % tin cậy.</p>
+            <ul class="feature-bullets">
+              <li>11 danh mục phân loại cảm xúc & đời sống chính xác.</li>
+              <li>Hiển thị chip thẻ thông minh phát sáng dạ quang.</li>
+              <li>Bộ lọc thẻ chuyên sâu trong kho lưu trữ ký ức.</li>
+            </ul>
+          </div>
+          <ul class="feature-tags">
+            <li>#SmartTagging</li>
+            <li>#AIClassifier</li>
+            <li>#ContextScan</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- NEW INTERACTIVE SHOWCASE 1: AI Voice Studio & Soundwave Frequency -->
+    <section class="section-wrap" id="tts-studio-demo">
+      <div class="section-heading">
+        <span class="section-tag">// TRẢI NGHIỆM TRỰC TIẾP //</span>
+        <h2>Phòng Thu Giọng Đọc AI Voice Tuyển Chọn</h2>
+        <p class="section-sub">Chọn 1 trong 2 giọng đọc miền Nam truyền cảm bên dưới (Mai Phương hoặc Quang Dũng) và nhấn nghe thử để cảm nhận ngữ điệu tự nhiên cùng sóng âm nhảy múa.</p>
+      </div>
+
+      <div class="interactive-showcase-box">
+        <div class="tts-demo-grid">
+          <div>
+            <h3 style="font-family:var(--font-display);font-size:1.25rem;color:#fff;margin-bottom:8px;">🎙️ Chọn Giọng Đọc Tự Sự</h3>
+            <p style="color:var(--text-sub);font-size:0.9rem;margin-bottom:12px;">
+              2 chất giọng chuẩn miền Nam được tinh chỉnh cao độ và tốc độ tự nhiên, truyền tải trọn vẹn cảm xúc câu chuyện.
+            </p>
+
+            <div class="voice-chips-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="voice-chip active" onclick="selectVoice('Mai Phương', 'Giọng nữ miền Nam ngọt ngào, dịu dàng', this)">
+                <div class="voice-chip-name">🌸 Mai Phương</div>
+                <div class="voice-chip-desc">Nữ Miền Nam // Ngọt ngào, dịu dàng & truyền cảm</div>
+              </div>
+              <div class="voice-chip" onclick="selectVoice('Quang Dũng', 'Giọng nam miền Nam trầm ấm, hào sảng', this)">
+                <div class="voice-chip-name">👨 Quang Dũng</div>
+                <div class="voice-chip-desc">Nam Miền Nam // Trầm ấm, nam tính & sâu lắng</div>
+              </div>
+            </div>
+
+            <div style="margin-bottom:14px;">
+              <label style="font-size:0.84rem;color:var(--text-sub);display:block;margin-bottom:6px;">📝 Đoạn văn mẫu tiếng Việt:</label>
+              <input type="text" id="tts-demo-text" class="lab-input" value="Hé lô bạn nha! Rất vui được đồng hành đọc câu chuyện và cảm xúc cùng bạn trên từng trang ký ức." />
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <button id="btn-play-tts" class="btn-main-cta" onclick="playTTSDemo()">
+                <span>▶️ NGHE GIỌNG ĐỌC AI</span>
+              </button>
+              <span id="tts-voice-status" style="font-size:0.8rem;color:var(--primary);font-family:var(--font-mono);">
+                ĐANG CHỌN: MAI PHƯƠNG (NỮ MIỀN NAM)
+              </span>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:0.8rem;color:var(--text-sub);font-family:var(--font-mono);">SÓNG ÂM TẦN SỐ THỜI GIAN THỰC</span>
+              <span id="tts-indicator-badge" style="font-size:0.7rem;font-family:var(--font-mono);padding:2px 8px;border-radius:10px;background:rgba(0,243,255,0.1);color:var(--primary);border:1px solid var(--primary);">
+                SẴN SÀNG
+              </span>
+            </div>
+            <canvas id="tts-soundwave-canvas"></canvas>
+            <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;">
+              💡 Tự động phân tích biên độ âm thanh Web Audio API. Trên website, giọng đọc được tích hợp trên Story Card, di động và hỗ trợ phím tắt <code style="color:var(--primary);">Alt+V</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW INTERACTIVE SHOWCASE 2: E2E Zero-Knowledge Crypto Simulator -->
+    <section class="section-wrap" id="crypto-vault-demo">
+      <div class="section-heading">
+        <span class="section-tag">// BẢO MẬT TUYỆT ĐỐI //</span>
+        <h2>Trình Giả Lập Mật Mã Học E2E Zero-Knowledge</h2>
+        <p class="section-sub">Thử nghiệm trực tiếp công nghệ mã hóa AES-GCM 256-bit. Xem sự khác biệt giữa góc nhìn của bạn và góc nhìn của Admin Database.</p>
+      </div>
+
+      <div class="interactive-showcase-box">
+        <div style="margin-bottom:16px;">
+          <label style="font-size:0.84rem;color:var(--text-sub);display:block;margin-bottom:6px;">🔐 Nhập điều ước hoặc tâm sự bí mật để mã hóa:</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <input type="text" id="crypto-input-text" class="lab-input" style="flex:1;min-width:240px;" value="Tôi mong muốn vượt qua kỳ thi và tìm thấy sự bình yên nội tâm..." oninput="updateCryptoSimulator()" />
+            <button class="hero-mood-btn active" onclick="regenerateSalt()">
+              <span>🔄 Đổi Salt & IV</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="crypto-demo-grid">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:0.82rem;font-weight:700;color:var(--green);">👁️ GÓC NHÌN NGƯỜI DÙNG (ĐÃ GIẢI MÃ)</span>
+              <span style="font-size:0.7rem;color:var(--green);font-family:var(--font-mono);">KHÓA TRONG RAM: ACTIVE</span>
+            </div>
+            <div class="crypto-box" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.03);">
+              <p id="crypto-user-view" style="color:#f8fafc;font-size:0.92rem;line-height:1.6;">
+                "Tôi mong muốn vượt qua kỳ thi và tìm thấy sự bình yên nội tâm..."
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:0.82rem;font-weight:700;color:var(--crimson);">🕵️ GÓC NHÌN ADMIN DATABASE / HACKER</span>
+              <span style="font-size:0.7rem;color:var(--crimson);font-family:var(--font-mono);">ZERO-KNOWLEDGE PROOF</span>
+            </div>
+            <div class="crypto-box" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.03);color:#fca5a5;">
+              <p id="crypto-admin-view">
+                enc:v1:aes-256-gcm:iv_9b8f2c:salt_e8a1:c59d81f08e41a9d0234b67fa9012cd3489eabf...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:0.78rem;color:var(--text-muted);font-family:var(--font-mono);">
+          <span>🛡️ THUẬT TOÁN: AES-GCM 256-BIT // PBKDF2 150,000 ROUNDS</span>
+          <span>🔑 CỤM TỪ KHÔI PHỤC: 12 TỪ LƯỢNG TỬ</span>
+          <span>⚡ PHÍM TẮT: Alt+E</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Spatial Audio Radar Demo -->
+    <section class="section-wrap" id="spatial-audio-demo">
+      <div class="section-heading">
+        <span class="section-tag">// KHÔNG GIAN 3D //</span>
+        <h2>Mô Phỏng Âm Thanh Không Gian 3D Binaural</h2>
+        <p class="section-sub">Đeo tai nghe, kéo thả điểm phát âm thanh màu hồng trên Radar 3D để cảm nhận vị trí âm thanh xoay quanh bạn!</p>
+      </div>
+
+      <div class="interactive-showcase-box">
+        <div class="audio-radar-grid">
+          <div>
+            <h3 style="font-family:var(--font-display);font-size:1.25rem;color:#fff;margin-bottom:8px;">🎧 Radar Định Vị Nguồn Âm 360°</h3>
+            <p style="color:var(--text-sub);font-size:0.9rem;margin-bottom:14px;">
+              Sử dụng thuật toán Web Audio Panner HRTF, hệ thống tính toán độ lệch pha và âm lượng giữa hai tai để tạo cảm giác vị trí âm thanh 3D sống động.
+            </p>
+
+            <div style="margin-bottom:12px;">
+              <span style="font-size:0.78rem;color:var(--primary);font-family:var(--font-mono);">CHỌN CẢNH MÔI TRƯỜNG:</span>
+              <div class="audio-scene-pills">
+                <button class="scene-pill-btn active" onclick="switchAudioScene(this, 'rain')">🌧️ Mưa Cyberpunk</button>
+                <button class="scene-pill-btn" onclick="switchAudioScene(this, 'fire')">🔥 Lửa Trại</button>
+                <button class="scene-pill-btn" onclick="switchAudioScene(this, 'ocean')">🌊 Sóng Biển</button>
+                <button class="scene-pill-btn" onclick="switchAudioScene(this, 'space')">🌌 Gió Vũ Trụ</button>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+              <button id="btn-auto-orbit" class="hero-mood-btn" onclick="toggleAutoOrbit()">
+                <span>🔄 Tự Động Xoay: </span><span id="orbit-status" style="color:var(--primary);margin-left:4px;">TẮT</span>
+              </button>
+              <button class="hero-mood-btn" onclick="playTestPing()">
+                <span>🔔 Thử Chuông Ping</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="audio-radar-visual" id="radar-container">
+            <div class="radar-circle radar-c1"></div>
+            <div class="radar-circle radar-c2"></div>
+            <div class="radar-circle radar-c3"></div>
+            <div class="radar-listener" title="Vị trí bạn">👤</div>
+            <div class="radar-emitter" id="radar-emitter" title="Kéo để đổi vị trí âm thanh">🎵</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Burn Chamber Demo -->
+    <section class="section-wrap" id="burn-chamber-demo">
+      <div class="section-heading">
+        <span class="section-tag">// GIẢI TỎA ÁP LỰC //</span>
+        <h2>Trải Nghiệm Thiêu Rụi Muộn Phiền (Burn Mode)</h2>
+        <p class="section-sub">Nhập một điều khiến bạn phiền lòng, chọn loại ngọn lửa và kích hoạt hỏa thiêu để xem hiệu ứng buông bỏ tâm trí.</p>
+      </div>
+
+      <div class="interactive-showcase-box">
+        <div class="burn-chamber-grid">
+          <div>
+            <h3 style="font-family:var(--font-display);font-size:1.2rem;color:#fff;margin-bottom:8px;">🔥 Chọn Loại Ngọn Lửa Thanh Tẩy</h3>
+            
+            <div class="burn-flame-selectors">
+              <button class="flame-pick-btn active" onclick="selectFlame('inferno', '#ef4444', this)">🌋 Địa Ngục</button>
+              <button class="flame-pick-btn" onclick="selectFlame('plasma', '#00f3ff', this)">⚡ Plasma</button>
+              <button class="flame-pick-btn" onclick="selectFlame('void', '#c084fc', this)">🔮 Hư Vô</button>
+              <button class="flame-pick-btn" onclick="selectFlame('solar', '#fbbf24', this)">☀️ Bụi Sao</button>
+            </div>
+
+            <div style="margin-bottom:14px;">
+              <label style="font-size:0.84rem;color:var(--text-sub);display:block;margin-bottom:6px;">✍️ Viết điều bạn muốn buông bỏ hôm nay:</label>
+              <input type="text" id="burn-input-text" class="lab-input" value="Áp lực công việc và những suy nghĩ tiêu cực..." />
+            </div>
+
+            <button id="btn-trigger-burn" class="btn-main-cta" style="background:linear-gradient(135deg, #ef4444 0%, #ff0077 100%);box-shadow:0 6px 20px rgba(239,68,68,0.4);" onclick="triggerDemoBurn()">
+              <span>🔥 HỎA THIÊU VÀ BUÔNG BỎ</span>
+            </button>
+          </div>
+
+          <div class="burn-preview-box" id="burn-preview-box">
+            <canvas id="burn-flame-canvas"></canvas>
+            <div id="burn-paper-content" style="z-index:2;transition:all 0.8s ease;">
+              <span style="font-size:2rem;">📜</span>
+              <p id="burn-paper-text" style="color:#f8fafc;font-weight:600;font-size:0.95rem;margin-top:6px;">
+                "Áp lực công việc và những suy nghĩ tiêu cực..."
+              </p>
+              <span id="burn-status-badge" style="display:inline-block;margin-top:8px;font-size:0.7rem;font-family:var(--font-mono);padding:2px 8px;border-radius:10px;background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid #ef4444;">
+                CHỜ HỎA THIÊU
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 30-Day Mood Calendar & Badges -->
+    <section class="section-wrap">
+      <div class="section-heading">
+        <span class="section-tag">// THEO DÕI & GAME HÓA //</span>
+        <h2>Lịch Cảm Xúc 30 Ngày & 8 Huy Hiệu 3D</h2>
+        <p class="section-sub">Duy trì thói quen viết lách, giải tỏa muộn phiền và mở khóa danh hiệu tâm thức.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:20px;">
+        
+        <div class="interactive-showcase-box" style="margin-bottom:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <h3 style="font-family:var(--font-display);font-size:1.05rem;color:#fff;">📅 Ma Trận Cảm Xúc Tháng</h3>
+            <span style="font-size:0.75rem;color:#fbbf24;font-family:var(--font-mono);">STREAK: 🔥 7 NGÀY</span>
+          </div>
+          <p style="font-size:0.84rem;color:var(--text-sub);margin-bottom:10px;">Chấm màu dạ quang phản ánh trạng thái cảm xúc từng ngày.</p>
+
+          <div class="calendar-preview-grid" id="calendar-dots-matrix"></div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono);">
+            <span>🔵 #00f3ff Bình Yên</span>
+            <span>🟢 #10b981 Hân Hoan</span>
+            <span>🟡 #fbbf24 Hứng Khởi</span>
+            <span>🔴 #ef4444 Bùng Nổ</span>
+          </div>
+        </div>
+
+        <div class="interactive-showcase-box" style="margin-bottom:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <h3 style="font-family:var(--font-display);font-size:1.05rem;color:#fff;">🎖️ Huy Hiệu Hologram 3D</h3>
+            <span style="font-size:0.75rem;color:var(--green);font-family:var(--font-mono);">CẤP ĐỘ: LV.4</span>
+          </div>
+          <p style="font-size:0.84rem;color:var(--text-sub);margin-bottom:10px;">Mở khóa bằng cách hoàn thành nhiệm vụ cảm xúc hàng ngày.</p>
+
+          <div class="badges-showcase-grid">
+            <div class="badge-show-card">
+              <span class="badge-item-icon">🌌</span>
+              <div class="badge-item-name">Sky Observer</div>
+              <div class="badge-item-level">Cấp 1</div>
+            </div>
+            <div class="badge-show-card">
+              <span class="badge-item-icon">💖</span>
+              <div class="badge-item-name">Gratitude</div>
+              <div class="badge-item-level">Cấp 2</div>
+            </div>
+            <div class="badge-show-card">
+              <span class="badge-item-icon">🧘</span>
+              <div class="badge-item-name">Zen Adept</div>
+              <div class="badge-item-level">Cấp 3</div>
+            </div>
+            <div class="badge-show-card">
+              <span class="badge-item-icon">⏳</span>
+              <div class="badge-item-name">Chrono Pilot</div>
+              <div class="badge-item-level">Cấp 4</div>
+            </div>
+            <div class="badge-show-card">
+              <span class="badge-item-icon">🔥</span>
+              <div class="badge-item-name">Phoenix</div>
+              <div class="badge-item-level">Cấp 5</div>
+            </div>
+            <div class="badge-show-card">
+              <span class="badge-item-icon">🎨</span>
+              <div class="badge-item-name">Artist</div>
+              <div class="badge-item-level">Khóa</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Global Keyboard Shortcuts HUD -->
+    <section class="section-wrap" id="shortcuts-hud">
+      <div class="section-heading">
+        <span class="section-tag">// ĐIỀU KHIỂN NHANH //</span>
+        <h2>Bảng Phím Tắt Toàn Cục [Alt + Phím]</h2>
+        <p class="section-sub">Truy cập tức thì vào mọi phân hệ chỉ với một tổ hợp phím Alt tiện lợi trên máy tính.</p>
+      </div>
+
+      <div class="shortcuts-hud-grid">
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+Z</div>
+          <div class="shortcut-info">
+            <h5>Zen Mode</h5>
+            <p>Viết lách tĩnh tâm</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+S</div>
+          <div class="shortcut-info">
+            <h5>Semantic Search</h5>
+            <p>Tìm kiếm tự nhiên & PWA</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+C</div>
+          <div class="shortcut-info">
+            <h5>Mood Calendar</h5>
+            <p>Lịch cảm xúc 30 ngày</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+T</div>
+          <div class="shortcut-info">
+            <h5>Story Node Tree</h5>
+            <p>Cây truyện & Time Jump</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+Q</div>
+          <div class="shortcut-info">
+            <h5>Emotional Quests</h5>
+            <p>Nhiệm vụ & Huy hiệu</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+A</div>
+          <div class="shortcut-info">
+            <h5>Achievements</h5>
+            <p>Thành tựu & Danh hiệu</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+W</div>
+          <div class="shortcut-info">
+            <h5>Whisper Corner</h5>
+            <p>Tâm sự ẩn danh</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+D</div>
+          <div class="shortcut-info">
+            <h5>Emotional Dashboard</h5>
+            <p>Bảng chỉ số tâm lý</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+R</div>
+          <div class="shortcut-info">
+            <h5>Spotify Wrapped</h5>
+            <p>Báo cáo Story tuần/năm</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+H</div>
+          <div class="shortcut-info">
+            <h5>Mental Health</h5>
+            <p>Hotline & Chữa lành</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+E</div>
+          <div class="shortcut-info">
+            <h5>E2E Encryption</h5>
+            <p>Két bảo mật lượng tử</p>
+          </div>
+        </div>
+
+        <div class="shortcut-card">
+          <div class="shortcut-key">Alt+V</div>
+          <div class="shortcut-info">
+            <h5>Voice & Versions</h5>
+            <p>Giọng đọc AI & Bản lưu</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Themes Studio -->
+    <section class="section-wrap">
+      <div class="section-heading">
+        <span class="section-tag">// TÙY BIẾN //</span>
+        <h2>Thay Đổi Bảng Màu Giao Diện</h2>
+        <p class="section-sub">Nhấp vào từng phong cách bên dưới để đổi màu toàn bộ trang web ngay lập tức.</p>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="theme-pick-btn" onclick="applyTheme('default')">
+          <div style="width:14px;height:14px;border-radius:50%;background:#00f3ff;"></div>
+          <span>Cyber Cyan</span>
+        </button>
+
+        <button class="theme-pick-btn" onclick="applyTheme('green-hack')">
+          <div style="width:14px;height:14px;border-radius:50%;background:#00ff66;"></div>
+          <span>Matrix Green</span>
+        </button>
+
+        <button class="theme-pick-btn" onclick="applyTheme('neon-violet')">
+          <div style="width:14px;height:14px;border-radius:50%;background:#c084fc;"></div>
+          <span>Neon Violet</span>
+        </button>
+
+        <button class="theme-pick-btn" onclick="applyTheme('amber-gold')">
+          <div style="width:14px;height:14px;border-radius:50%;background:#fbbf24;"></div>
+          <span>Amber Gold</span>
+        </button>
+
+        <button class="theme-pick-btn" onclick="applyTheme('noir-dark')">
+          <div style="width:14px;height:14px;border-radius:50%;background:#ffffff;border:1px solid #666;"></div>
+          <span>OLED Noir</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section-wrap" id="faq">
+      <div class="section-heading">
+        <span class="section-tag">// HỎI ĐÁP //</span>
+        <h2>Giải Đáp Thắc Mắc Toàn Diện</h2>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-card">
+          <h4>💰 Website này có mất phí không?</h4>
+          <p>Hoàn toàn MIỄN PHÍ 100%. Tất cả tính năng từ AI Voice, Mã hóa E2E, PWA Offline, Spatial Audio 3D, Burn Mode đến Quả cầu Three.js WebGL đều sẵn sàng trải nghiệm không giới hạn.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>🔒 Dữ liệu của tôi được bảo mật ra sao?</h4>
+          <p>Áp dụng mật mã học Zero-Knowledge với chuẩn AES-GCM 256-bit. Khóa mã hóa chỉ tồn tại trong RAM của bạn, Admin máy chủ hoàn toàn không thể đọc lén dữ liệu.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>📱 Website có chạy khi mất mạng không?</h4>
+          <p>Hỗ trợ chuẩn Progressive Web App (PWA). Bạn có thể cài đặt trực tiếp vào màn hình chính, đọc/viết nhật ký offline 100% và hệ thống sẽ tự động đồng bộ khi có mạng trở lại.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>🎙️ Làm thế nào để dùng giọng đọc AI?</h4>
+          <p>Hệ thống đã tích hợp sẵn 2 giọng đọc miền Nam truyền cảm tuyển chọn: <strong>🌸 Mai Phương</strong> (Nữ ngọt ngào, dịu dàng) và <strong>👨 Quang Dũng</strong> (Nam trầm ấm, hào sảng). Bạn có thể nghe đọc trực tiếp trên Story Card, thanh dock di động hoặc tùy chỉnh tốc độ, cao độ trong mục Cài Đặt Hệ Thống.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>🕊️ Chế độ Burn Mode có an toàn không?</h4>
+          <p>Chế độ Burn Mode cam kết Zero-Trace: xóa sạch 100% nội dung khỏi RAM và bộ nhớ, không lưu bất kỳ dấu vết nào, kèm theo chuông Solfeggio 528Hz giúp xoa dịu tâm trí.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>⏳ Nếu vô tình xóa nhầm bài viết thì sao?</h4>
+          <p>Hệ thống tự động lưu mỗi 5 giây và duy trì chuỗi lịch sử phiên bản. Bạn chỉ cần mở Lịch Sử Bản Lưu (Alt+V) và bấm phục hồi mốc "⭐ 10 phút trước" chỉ với 1 click.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section-wrap">
+      <div class="cta-card">
+        <h2>SẴN SÀNG KHỞI HÀNH CÙNG MR-CORE-01?</h2>
+        <p>Thế giới tâm thức 3D, phòng thu AI Voice tự nhiên, mật mã học lượng tử và hàng chục công cụ chữa lành đang chờ đón bạn.</p>
+        <a href="index.html" class="btn-main-cta" style="font-size: 1.1rem; padding: 16px 36px;">
+          <span>🚀 MỞ WEBSITE TRANG CHỦ NGAY</span>
+          <span>➔</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="brand">
+        <div class="brand-ring" style="width:20px;height:20px;"></div>
+        <span class="brand-text" style="font-size:1.05rem;">MOOD RING STORY</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">Vào Trang Chủ</a></li>
+        <li><a href="#about">6 Trụ Cột</a></li>
+        <li><a href="#features-hub">Hệ Sinh Thái 35+</a></li>
+        <li><a href="#tts-studio-demo">AI Voice 🎙️</a></li>
+        <li><a href="#crypto-vault-demo">Mã Hóa E2E 🔒</a></li>
+        <li><a href="#spatial-audio-demo">Spatial Audio 3D</a></li>
+        <li><a href="#burn-chamber-demo">Burn Mode 🔥</a></li>
+        <li><a href="#faq">Hỏi Đáp</a></li>
+      </ul>
+      <p class="copyright">
+        © 2026 MOOD RING STORY // HỆ THỐNG KỂ CHUYỆN & ĐO CẢM XÚC 3D VỊ LAI.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // --- 1. Custom Spring Cursor (Desktop Only) ---
+    (function initCustomCursor() {
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (isTouch) return;
+
+      const container = document.getElementById('custom-cursor-container');
+      const cursorRing = document.getElementById('cursor-ring');
+      const cursorDot = document.getElementById('cursor-dot');
+      if (!container || !cursorRing || !cursorDot) return;
+
+      let mouseX = -100, mouseY = -100;
+      let ringX = -100, ringY = -100;
+      let ringVx = 0, ringVy = 0;
+      let isHovered = false, isClicked = false, isVisible = false;
+
+      const stiffness = 0.25;
+      const damping = 0.7;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!isVisible) {
+          isVisible = true;
+          ringX = mouseX; ringY = mouseY;
+          container.classList.add('active');
+        }
+      });
+
+      document.addEventListener('mouseleave', () => {
+        isVisible = false;
+        container.classList.remove('active');
+      });
+
+      document.addEventListener('mouseenter', () => {
+        isVisible = true;
+        container.classList.add('active');
+      });
+
+      window.addEventListener('mousedown', () => { isClicked = true; });
+      window.addEventListener('mouseup', () => { isClicked = false; });
+
+      document.addEventListener('mouseover', (e) => {
+        const target = e.target;
+        if (!target) return;
+        if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a') || target.closest('.feature-deep-card') || target.closest('.shortcut-card') || target.closest('.cal-dot-day') || target.closest('.voice-chip')) {
+          isHovered = true;
+        }
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        const rel = e.relatedTarget;
+        if (!rel || !(rel.tagName === 'BUTTON' || rel.tagName === 'A' || rel.closest('button') || rel.closest('a'))) {
+          isHovered = false;
+        }
+      });
+
+      function renderCursor() {
+        if (isVisible) {
+          const dx = mouseX - ringX;
+          const dy = mouseY - ringY;
+          ringVx = (ringVx + dx * stiffness) * damping;
+          ringVy = (ringVy + dy * stiffness) * damping;
+          ringX += ringVx; ringY += ringVy;
+
+          const ringScale = isClicked ? 0.75 : (isHovered ? 1.5 : 1);
+          const dotScale = isClicked ? 1.6 : (isHovered ? 0.6 : 1);
+
+          cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) scale(${dotScale})`;
+          cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) scale(${ringScale})`;
+        }
+        requestAnimationFrame(renderCursor);
+      }
+      requestAnimationFrame(renderCursor);
+
+      window.updateCursorColor = function(color) {
+        cursorDot.style.backgroundColor = color;
+        cursorRing.style.borderColor = color;
+      };
+    })();
+
+    // --- 2. Three.js 3D Sphere ---
+    let sphereScene, sphereCamera, sphereRenderer, mainSphere, wireSphere, particleGroup, ringMesh;
+    let targetSphereColor = new THREE.Color(0x00f3ff);
+
+    function init3DSphere() {
+      const container = document.querySelector('.canvas-3d-box');
+      const canvas = document.getElementById('three-sphere-canvas');
+      if (!container || !canvas || typeof THREE === 'undefined') return;
+
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      sphereScene = new THREE.Scene();
+      sphereCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      sphereCamera.position.z = 4.8;
+
+      sphereRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      sphereRenderer.setSize(width, height);
+      sphereRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // 1. Core Sphere
+      const sphereGeo = new THREE.IcosahedronGeometry(1.2, 4);
+      const sphereMat = new THREE.MeshBasicMaterial({
+        color: targetSphereColor,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.85
+      });
+      mainSphere = new THREE.Mesh(sphereGeo, sphereMat);
+      sphereScene.add(mainSphere);
+
+      // 2. Wireframe Cage
+      const outerGeo = new THREE.IcosahedronGeometry(1.5, 2);
+      const outerMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.2
+      });
+      wireSphere = new THREE.Mesh(outerGeo, outerMat);
+      sphereScene.add(wireSphere);
+
+      // 3. Ring
+      const ringGeo = new THREE.TorusGeometry(1.9, 0.015, 16, 80);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: targetSphereColor,
+        transparent: true,
+        opacity: 0.5
+      });
+      ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 3;
+      sphereScene.add(ringMesh);
+
+      // 4. Particles
+      const particleGeo = new THREE.BufferGeometry();
+      const pCount = 200;
+      const posArray = new Float32Array(pCount * 3);
+      for (let i = 0; i < pCount * 3; i += 3) {
+        const radius = 1.7 + Math.random() * 0.7;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(Math.random() * 2 - 1);
+        posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+        posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
+        posArray[i + 2] = radius * Math.cos(phi);
+      }
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      const particleMat = new THREE.PointsMaterial({
+        size: 0.035,
+        color: targetSphereColor,
+        transparent: true,
+        opacity: 0.6
+      });
+      particleGroup = new THREE.Points(particleGeo, particleMat);
+      sphereScene.add(particleGroup);
+
+      // Drag Controls
+      let isDragging = false;
+      let prevPos = { x: 0, y: 0 };
+
+      const onStart = (x, y) => { isDragging = true; prevPos = { x, y }; };
+      const onMove = (x, y) => {
+        if (!isDragging) return;
+        const deltaX = x - prevPos.x;
+        const deltaY = y - prevPos.y;
+        mainSphere.rotation.y += deltaX * 0.01;
+        mainSphere.rotation.x += deltaY * 0.01;
+        wireSphere.rotation.y += deltaX * 0.008;
+        ringMesh.rotation.z += deltaX * 0.005;
+        prevPos = { x, y };
+      };
+      const onEnd = () => { isDragging = false; };
+
+      container.addEventListener('mousedown', (e) => onStart(e.clientX, e.clientY));
+      window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+      window.addEventListener('mouseup', onEnd);
+
+      container.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) onStart(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      window.addEventListener('touchend', onEnd);
+
+      window.addEventListener('resize', () => {
+        const newW = container.clientWidth;
+        const newH = container.clientHeight;
+        sphereCamera.aspect = newW / newH;
+        sphereCamera.updateProjectionMatrix();
+        sphereRenderer.setSize(newW, newH);
+      });
+
+      function animateSphere() {
+        requestAnimationFrame(animateSphere);
+        mainSphere.rotation.y += 0.005;
+        mainSphere.rotation.x += 0.002;
+        wireSphere.rotation.y -= 0.003;
+        ringMesh.rotation.z += 0.004;
+        particleGroup.rotation.y += 0.0015;
+
+        mainSphere.material.color.lerp(targetSphereColor, 0.08);
+        ringMesh.material.color.lerp(targetSphereColor, 0.08);
+        particleGroup.material.color.lerp(targetSphereColor, 0.08);
+
+        sphereRenderer.render(sphereScene, sphereCamera);
+      }
+      animateSphere();
+    }
+    window.addEventListener('DOMContentLoaded', init3DSphere);
+
+    // --- 3. Web Audio Tone Generator ---
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function playTone(freq, duration = 0.35) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    const soundToggle = document.getElementById('sound-toggle');
+    const soundStatus = document.getElementById('sound-status');
+    if (soundToggle) {
+      soundToggle.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        soundStatus.textContent = soundEnabled ? 'BẬT' : 'TẮT';
+        soundToggle.style.opacity = soundEnabled ? '1' : '0.6';
+        if (soundEnabled) playTone(520);
+      });
+    }
+
+    // --- 4. Hero Mood Switchers ---
+    const heroMoodBtns = document.querySelectorAll('.hero-mood-btn');
+    const telemetryHz = document.getElementById('telemetry-hz');
+
+    heroMoodBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        heroMoodBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const hexColor = btn.getAttribute('data-color');
+        const hz = parseFloat(btn.getAttribute('data-hz')) || 432;
+
+        targetSphereColor = new THREE.Color(hexColor);
+        if (telemetryHz) telemetryHz.textContent = `${hz} Hz`;
+
+        if (window.updateCursorColor) window.updateCursorColor(hexColor);
+        playTone(hz);
+      });
+    });
+
+    // --- 5. Feature Category Filter ---
+    const catButtons = document.querySelectorAll('.feature-cat-btn');
+    const featureCards = document.querySelectorAll('.feature-deep-card');
+
+    catButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+        featureCards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-cat') === filter) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        playTone(600, 0.15);
+      });
+    });
+
+    // --- 6. AI Voice Studio & Soundwave Canvas ---
+    let currentSelectedVoice = 'Mai Phương';
+    let isTTSPlaying = false;
+    let soundwaveAnimId = null;
+
+    function selectVoice(name, desc, el) {
+      document.querySelectorAll('.voice-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      currentSelectedVoice = name;
+      const status = document.getElementById('tts-voice-status');
+      if (status) status.textContent = `ĐANG CHỌN: ${name.toUpperCase()} (${desc.split('//')[0].trim()})`;
+      playTone(540, 0.15);
+    }
+
+    function playTTSDemo() {
+      if (isTTSPlaying) return;
+      isTTSPlaying = true;
+
+      const btn = document.getElementById('btn-play-tts');
+      const badge = document.getElementById('tts-indicator-badge');
+      const text = document.getElementById('tts-demo-text').value || "Hé lô bạn nha! Rất vui được đồng hành đọc câu chuyện và cảm xúc cùng bạn trên từng trang ký ức.";
+
+      if (btn) btn.innerHTML = '<span>⏸️ ĐANG PHÁT GIỌNG ĐỌC...</span>';
+      if (badge) {
+        badge.textContent = `PHÁT: ${currentSelectedVoice.toUpperCase()}`;
+        badge.style.borderColor = '#10b981';
+        badge.style.color = '#10b981';
+      }
+
+      // Start soundwave canvas animation
+      startSoundwaveAnimation();
+
+      // Use Web Speech API if supported, or rich synthesized voice chords
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'vi-VN';
+        
+        // Pitch / Rate adjustments based on selected voice
+        if (currentSelectedVoice === 'Mai Phương') { 
+          utterance.pitch = 1.15; 
+          utterance.rate = 0.98; 
+        } else { 
+          // Quang Dũng
+          utterance.pitch = 0.85; 
+          utterance.rate = 0.95; 
+        }
+
+        utterance.onend = () => stopTTSDemo();
+        utterance.onerror = () => stopTTSDemo();
+
+        window.speechSynthesis.speak(utterance);
+        playTone(432, 0.5);
+      } else {
+        playTone(432, 2.5);
+        setTimeout(stopTTSDemo, 3000);
+      }
+    }
+
+    function stopTTSDemo() {
+      isTTSPlaying = false;
+      const btn = document.getElementById('btn-play-tts');
+      const badge = document.getElementById('tts-indicator-badge');
+      if (btn) btn.innerHTML = '<span>▶️ NGHE GIỌNG ĐỌC AI</span>';
+      if (badge) {
+        badge.textContent = 'SẴN SÀNG';
+        badge.style.borderColor = 'var(--primary)';
+        badge.style.color = 'var(--primary)';
+      }
+      stopSoundwaveAnimation();
+    }
+
+    function startSoundwaveAnimation() {
+      const canvas = document.getElementById('tts-soundwave-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+
+      let wavePhase = 0;
+      function renderWave() {
+        if (!isTTSPlaying) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // Draw flat resting line
+          ctx.beginPath();
+          ctx.moveTo(0, canvas.height / 2);
+          ctx.lineTo(canvas.width, canvas.height / 2);
+          ctx.strokeStyle = 'rgba(0, 243, 255, 0.25)';
+          ctx.stroke();
+          return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        wavePhase += 0.12;
+
+        const numBars = 36;
+        const barWidth = canvas.width / numBars;
+
+        for (let i = 0; i < numBars; i++) {
+          const x = i * barWidth;
+          const amp = Math.sin(wavePhase + i * 0.3) * 28 + Math.cos(wavePhase * 1.5 + i * 0.2) * 16;
+          const height = Math.max(6, Math.abs(amp) + 8);
+          const y = (canvas.height - height) / 2;
+
+          const grad = ctx.createLinearGradient(0, y, 0, y + height);
+          grad.addColorStop(0, '#00f3ff');
+          grad.addColorStop(0.5, '#c084fc');
+          grad.addColorStop(1, '#ff0077');
+
+          ctx.fillStyle = grad;
+          ctx.fillRect(x + 2, y, barWidth - 4, height);
+        }
+
+        soundwaveAnimId = requestAnimationFrame(renderWave);
+      }
+      renderWave();
+    }
+
+    function stopSoundwaveAnimation() {
+      if (soundwaveAnimId) cancelAnimationFrame(soundwaveAnimId);
+      const canvas = document.getElementById('tts-soundwave-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2);
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.strokeStyle = 'rgba(0, 243, 255, 0.25)';
+        ctx.stroke();
+      }
+    }
+
+    // --- 7. E2E Crypto Simulator ---
+    let randomSaltHex = 'e8a1';
+    let randomIvHex = '9b8f2c';
+
+    function updateCryptoSimulator() {
+      const input = document.getElementById('crypto-input-text');
+      const userView = document.getElementById('crypto-user-view');
+      const adminView = document.getElementById('crypto-admin-view');
+      if (!input || !userView || !adminView) return;
+
+      const rawVal = input.value || "Tâm sự trống...";
+      userView.textContent = `"${rawVal}"`;
+
+      // Generate realistic deterministic cipher string
+      let hashNum = 0;
+      for (let i = 0; i < rawVal.length; i++) {
+        hashNum = ((hashNum << 5) - hashNum) + rawVal.charCodeAt(i);
+        hashNum |= 0;
+      }
+      const cipherHex = Math.abs(hashNum).toString(16).padStart(8, '0') + 'c794a8e02f1b74cd99a0e66b4d32f518e90a';
+      adminView.textContent = `enc:v1:aes-256-gcm:iv_${randomIvHex}:salt_${randomSaltHex}:${cipherHex}... [100% UNREADABLE WITHOUT PASSPHRASE]`;
+    }
+
+    function regenerateSalt() {
+      randomSaltHex = Math.floor(Math.random() * 0xffff).toString(16).padStart(4, '0');
+      randomIvHex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+      updateCryptoSimulator();
+      playTone(720, 0.15);
+    }
+    window.addEventListener('DOMContentLoaded', updateCryptoSimulator);
+
+    // --- 8. Spatial Audio Radar Simulation ---
+    const radarContainer = document.getElementById('radar-container');
+    const radarEmitter = document.getElementById('radar-emitter');
+    let isDraggingEmitter = false;
+    let isAutoOrbiting = false;
+    let orbitAngle = 0;
+    let orbitTimer = null;
+
+    if (radarContainer && radarEmitter) {
+      function updateEmitterPosition(x, y) {
+        const rect = radarContainer.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        let relX = x - rect.left - centerX;
+        let relY = y - rect.top - centerY;
+        
+        const dist = Math.hypot(relX, relY);
+        const maxDist = 95;
+        if (dist > maxDist) {
+          relX = (relX / dist) * maxDist;
+          relY = (relY / dist) * maxDist;
+        }
+        radarEmitter.style.transform = `translate(${relX}px, ${relY}px)`;
+      }
+
+      radarContainer.addEventListener('mousedown', (e) => {
+        isDraggingEmitter = true;
+        updateEmitterPosition(e.clientX, e.clientY);
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDraggingEmitter) return;
+        updateEmitterPosition(e.clientX, e.clientY);
+      });
+      window.addEventListener('mouseup', () => { isDraggingEmitter = false; });
+
+      radarContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          isDraggingEmitter = true;
+          updateEmitterPosition(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (!isDraggingEmitter || e.touches.length === 0) return;
+        updateEmitterPosition(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      window.addEventListener('touchend', () => { isDraggingEmitter = false; });
+    }
+
+    function toggleAutoOrbit() {
+      isAutoOrbiting = !isAutoOrbiting;
+      const statusSpan = document.getElementById('orbit-status');
+      if (statusSpan) statusSpan.textContent = isAutoOrbiting ? 'BẬT' : 'TẮT';
+      
+      if (isAutoOrbiting) {
+        orbitTimer = setInterval(() => {
+          orbitAngle += 0.04;
+          const radius = 80;
+          const relX = Math.cos(orbitAngle) * radius;
+          const relY = Math.sin(orbitAngle) * radius;
+          if (radarEmitter) {
+            radarEmitter.style.transform = `translate(${relX}px, ${relY}px)`;
+          }
+        }, 30);
+      } else {
+        clearInterval(orbitTimer);
+      }
+      playTone(580, 0.15);
+    }
+
+    function playTestPing() {
+      playTone(880, 0.3);
+    }
+
+    function switchAudioScene(btn, scene) {
+      document.querySelectorAll('.scene-pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      playTone(528, 0.25);
+    }
+
+    // --- 9. Burn Chamber Simulation ---
+    let currentFlameColor = '#ef4444';
+    let burnParticles = [];
+    let isBurning = false;
+
+    function selectFlame(type, colorHex, btn) {
+      document.querySelectorAll('.flame-pick-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFlameColor = colorHex;
+      playTone(440, 0.15);
+    }
+
+    function triggerDemoBurn() {
+      if (isBurning) return;
+      isBurning = true;
+
+      const paper = document.getElementById('burn-paper-content');
+      const statusBadge = document.getElementById('burn-status-badge');
+      const inputText = document.getElementById('burn-input-text');
+      const paperText = document.getElementById('burn-paper-text');
+
+      if (inputText && paperText) {
+        paperText.textContent = `"${inputText.value || 'Những mệt mỏi và áp lực...'}"`;
+      }
+
+      statusBadge.textContent = 'ĐANG THIÊU RỤI...';
+      statusBadge.style.color = currentFlameColor;
+      statusBadge.style.borderColor = currentFlameColor;
+
+      const canvas = document.getElementById('burn-flame-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      burnParticles = [];
+      for (let i = 0; i < 60; i++) {
+        burnParticles.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 140,
+          y: canvas.height - 15,
+          vx: (Math.random() - 0.5) * 2.5,
+          vy: -(Math.random() * 4 + 2.5),
+          size: Math.random() * 6 + 3,
+          alpha: 1,
+          color: currentFlameColor
+        });
+      }
+
+      playTone(220, 0.8);
+      paper.style.transform = 'scale(0.85) translateY(-15px)';
+      paper.style.filter = 'blur(4px) brightness(1.8)';
+      paper.style.opacity = '0.3';
+
+      let frames = 0;
+      function animateBurn() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        frames++;
+
+        for (let i = 0; i < burnParticles.length; i++) {
+          const p = burnParticles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= 0.018;
+          p.size *= 0.98;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, Math.max(1, p.size), 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fill();
+        }
+
+        if (frames < 90) {
+          requestAnimationFrame(animateBurn);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          paper.style.transform = 'scale(1)';
+          paper.style.filter = 'none';
+          paper.style.opacity = '1';
+          statusBadge.textContent = '✓ ĐÃ BUÔNG BỎ (ZERO-TRACE)';
+          statusBadge.style.color = '#10b981';
+          statusBadge.style.borderColor = '#10b981';
+          isBurning = false;
+          playTone(528, 0.6);
+        }
+      }
+      animateBurn();
+    }
+
+    // --- 10. Render Mood Calendar Grid ---
+    (function renderMoodCalendar() {
+      const matrix = document.getElementById('calendar-dots-matrix');
+      if (!matrix) return;
+      const colors = ['#00f3ff', '#10b981', '#fbbf24', '#c084fc', '#00f3ff', '#10b981', '#ef4444'];
+      matrix.innerHTML = '';
+      for (let i = 1; i <= 28; i++) {
+        const col = colors[(i + 2) % colors.length];
+        const day = document.createElement('div');
+        day.className = 'cal-dot-day';
+        day.innerHTML = `<span>${i}</span><div class="cal-orbital-glow" style="background:${col};color:${col};"></div>`;
+        day.addEventListener('click', () => playTone(500 + i * 8, 0.15));
+        matrix.appendChild(day);
+      }
+    })();
+
+    // --- 11. Theme Switcher ---
+    function applyTheme(themeName) {
+      if (themeName === 'default') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', themeName);
+      }
+      playTone(600, 0.15);
+    }
+
+    // --- 12. Ambient Background Canvas ---
+    (function initBg() {
+      const canvas = document.getElementById('bg-particles-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+
+      const pts = [];
+      const count = window.innerWidth < 768 ? 25 : 45;
+      for (let i = 0; i < count; i++) {
+        pts.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          r: Math.random() * 1.5 + 1,
+          a: Math.random() * 0.4 + 0.1
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < pts.length; i++) {
+          const p = pts[i];
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+          if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = '#00f3ff';
+          ctx.globalAlpha = p.a;
+          ctx.fill();
+
+          for (let j = i + 1; j < pts.length; j++) {
+            const p2 = pts[j];
+            const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+            if (dist < 90) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = '#00f3ff';
+              ctx.globalAlpha = (1 - dist / 90) * 0.1;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   FEATURE 14: PAGE TRANSITIONS LIBRARY (HARDWARE ACCELERATED 60-120FPS)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+.page-transition-overlay-root {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  contain: strict;
+}
+
+/* 1. 3D Book Page Flip Stage */
+.transition-book-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1400px;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.4) 0%, rgba(3, 7, 18, 0.8) 100%);
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.book-spine-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  transform: translateX(-50%) translateZ(0);
+  background: linear-gradient(to bottom, transparent, rgba(245, 158, 11, 0.85), rgba(0, 240, 255, 0.85), transparent);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+  z-index: 10;
+}
+
+.book-page-leaf {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  width: 44vw;
+  max-width: 600px;
+  transform-style: preserve-3d;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  border-radius: 6px;
+  overflow: hidden;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.book-page-left {
+  right: 50%;
+  transform-origin: right center;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.book-page-right {
+  left: 50%;
+  transform-origin: left center;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.page-paper-texture {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(13, 22, 38, 0.97) 0%, rgba(7, 12, 22, 0.99) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(0);
+}
+
+.page-hologram-seal {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  color: #f59e0b;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+  opacity: 0.75;
+}
+
+.page-glow-spine-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  pointer-events: none;
+}
+
+.page-glow-spine-shadow.right-shadow {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.6), transparent);
+}
+
+.page-glow-spine-shadow.left-shadow {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.6), transparent);
+}
+
+/* 2. Water Ripple Stage */
+.transition-water-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.12) 0%, rgba(3, 7, 18, 0.75) 100%);
+  transform: translateZ(0);
+}
+
+.water-ripple-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0);
+}
+
+.water-wave-wash {
+  position: absolute;
+  width: 50vw;
+  height: 50vw;
+  max-width: 600px;
+  max-height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(0, 240, 255, 0.1) 50%, transparent 75%);
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+/* 3. Quantum Glass Shatter Stage */
+.transition-glass-stage {
+  position: absolute;
+  inset: 0;
+  perspective: 1000px;
+  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.12) 0%, rgba(2, 6, 23, 0.75) 100%);
+  transform: translateZ(0);
+}
+
+.glass-fracture-shard {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(168, 85, 247, 0.18) 50%, rgba(0, 240, 255, 0.12) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.3);
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.glass-shockwave-pulse {
+  position: absolute;
+  top: calc(50% - 150px);
+  left: calc(50% - 150px);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 2px solid rgba(168, 85, 247, 0.8);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.6);
+  transform: translateZ(0);
+}
+
+/* 4. Quantum Warp Vortex Stage */
+.transition-warp-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(0, 240, 255, 0.2) 0%, rgba(2, 6, 23, 0.85) 100%);
+  transform: translateZ(0);
+}
+
+.warp-tunnel-vortex {
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  border: 3px dashed #00f0ff;
+  box-shadow: 0 0 35px #00f0ff, inset 0 0 35px #00f0ff;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.warp-starburst {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(0);
+}
+
+.warp-streak-line {
+  position: absolute;
+  width: 2px;
+  height: 100vh;
+  background: linear-gradient(to top, transparent, #00f0ff, #ffffff, #ff00ea, transparent);
+  transform-origin: center center;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* 5. Cyber Shutter Stage */
+.transition-cyber-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateZ(0);
+}
+
+.cyber-shutter-blade {
+  flex: 1;
+  background: #050b14;
+  border-top: 1px solid rgba(236, 72, 153, 0.4);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.4);
+  transform-origin: left center;
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.cyber-blade-laser {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ec4899, #00f0ff, #ffffff, transparent);
+  box-shadow: 0 0 10px #ec4899;
+}
+
+.cyber-chromatic-flash {
+  position: absolute;
+  inset: 0;
+  background: rgba(236, 72, 153, 0.1);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transform: translateZ(0);
+}

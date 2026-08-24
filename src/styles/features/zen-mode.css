@@ -1,0 +1,842 @@
+/* ══════════════════════════════════════════════════════════════════════
+   FEATURE 20 & 21: SMART AI TAGGING & ZEN MODE (CHẾ ĐỘ TẬP TRUNG)
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Zen Mode Fullscreen Viewport */
+.zen-mode-viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  user-select: text;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 1. Theme: OLED Noir (Pure Black) */
+.zen-mode-viewport.theme-oled-noir {
+  background-color: #000000;
+  color: #e2e8f0;
+}
+.zen-mode-viewport.theme-oled-noir .zen-top-bar,
+.zen-mode-viewport.theme-oled-noir .zen-bottom-bar {
+  background: rgba(0, 0, 0, 0.85);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+.zen-mode-viewport.theme-oled-noir .zen-textarea {
+  color: #e2e8f0;
+  caret-color: #38bdf8;
+}
+.zen-mode-viewport.theme-oled-noir .zen-textarea::placeholder {
+  color: #475569;
+}
+
+/* 2. Theme: Paper Zen (Pure Clean White) */
+.zen-mode-viewport.theme-paper-zen {
+  background-color: #fafafa;
+  color: #18181b;
+}
+.zen-mode-viewport.theme-paper-zen .zen-top-bar,
+.zen-mode-viewport.theme-paper-zen .zen-bottom-bar {
+  background: rgba(250, 250, 250, 0.92);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+.zen-mode-viewport.theme-paper-zen .zen-top-bar .zen-title {
+  color: #18181b;
+}
+.zen-mode-viewport.theme-paper-zen .zen-stats-pill {
+  background: rgba(0, 0, 0, 0.05);
+  color: #52525b;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+.zen-mode-viewport.theme-paper-zen .zen-tool-btn,
+.zen-mode-viewport.theme-paper-zen .zen-action-btn {
+  background: rgba(0, 0, 0, 0.05);
+  color: #27272a;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+.zen-mode-viewport.theme-paper-zen .zen-tool-btn:hover,
+.zen-mode-viewport.theme-paper-zen .zen-action-btn:hover {
+  background: rgba(0, 0, 0, 0.09);
+  color: #09090b;
+}
+.zen-mode-viewport.theme-paper-zen .zen-textarea {
+  color: #18181b;
+  caret-color: #0284c7;
+}
+.zen-mode-viewport.theme-paper-zen .zen-textarea::placeholder {
+  color: #a1a1aa;
+}
+
+/* 3. Theme: Warm Sepia (Parchment & Amber) */
+.zen-mode-viewport.theme-warm-sepia {
+  background-color: #1a1614;
+  color: #f6d395;
+}
+.zen-mode-viewport.theme-warm-sepia .zen-top-bar,
+.zen-mode-viewport.theme-warm-sepia .zen-bottom-bar {
+  background: rgba(26, 22, 20, 0.88);
+  border-color: rgba(246, 211, 149, 0.12);
+}
+.zen-mode-viewport.theme-warm-sepia .zen-textarea {
+  color: #f6d395;
+  caret-color: #f59e0b;
+}
+.zen-mode-viewport.theme-warm-sepia .zen-textarea::placeholder {
+  color: #785a3c;
+}
+
+/* 4. Theme: Cyber Slate (Charcoal & Teal) */
+.zen-mode-viewport.theme-cyber-charcoal {
+  background-color: #0d1117;
+  color: #e6edf3;
+}
+.zen-mode-viewport.theme-cyber-charcoal .zen-top-bar,
+.zen-mode-viewport.theme-cyber-charcoal .zen-bottom-bar {
+  background: rgba(13, 17, 23, 0.88);
+  border-color: rgba(45, 212, 191, 0.15);
+}
+.zen-mode-viewport.theme-cyber-charcoal .zen-textarea {
+  color: #e6edf3;
+  caret-color: #2dd4bf;
+}
+.zen-mode-viewport.theme-cyber-charcoal .zen-textarea::placeholder {
+  color: #4b5563;
+}
+
+/* Subtle Ambient Atmosphere */
+.zen-ambient-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 30%, transparent 40%, rgba(0,0,0,0.15) 100%);
+  opacity: 0.6;
+}
+
+/* Zen Top Status & Actions Bar */
+.zen-top-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.75rem;
+  border-bottom: 1px solid;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: opacity 0.3s ease;
+}
+
+.zen-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.zen-symbol {
+  font-size: 1.25rem;
+}
+
+.zen-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.zen-badge {
+  font-size: 0.65rem;
+  font-family: monospace;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.zen-stats-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.zen-stats-pill .stat-dot {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.zen-stats-pill .stat-timer {
+  color: #38bdf8;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.zen-stats-pill .stat-timer.timer-urgent {
+  color: #ef4444;
+  animation: pulse 1s infinite;
+}
+
+.zen-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.zen-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zen-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.zen-tool-btn.active {
+  background: rgba(45, 212, 191, 0.18);
+  border-color: #2dd4bf;
+  color: #2dd4bf;
+}
+
+.zen-tool-btn.exit-zen-btn {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.zen-tool-btn.exit-zen-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+/* Zen Main Editor Area */
+.zen-editor-wrapper {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.zen-textarea {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 1.25rem;
+  line-height: 1.85;
+  font-family: inherit;
+  letter-spacing: 0.015em;
+  padding: 0;
+}
+
+/* Mindful 4-7-8 Breathing Guide */
+.zen-breathing-pill {
+  position: fixed;
+  right: 2rem;
+  bottom: 5.5rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.75rem 1.15rem;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(45, 212, 191, 0.4);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(45, 212, 191, 0.2);
+}
+
+.breath-orb-ring {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(45, 212, 191, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 4s ease, border-color 1s ease;
+}
+
+.breath-orb-core {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2dd4bf;
+  box-shadow: 0 0 12px #2dd4bf;
+}
+
+.breath-orb-ring.phase-inhale {
+  transform: scale(1.35);
+  border-color: #2dd4bf;
+  transition: transform 4s ease-out;
+}
+
+.breath-orb-ring.phase-hold {
+  transform: scale(1.35);
+  border-color: #38bdf8;
+}
+
+.breath-orb-ring.phase-exhale {
+  transform: scale(0.85);
+  border-color: #a855f7;
+  transition: transform 8s ease-in;
+}
+
+.breath-text-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.breath-phase-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #2dd4bf;
+}
+
+.breath-sub-tip {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.breath-close-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.2rem;
+  margin-left: 0.3rem;
+  transition: color 0.2s ease;
+}
+
+.breath-close-btn:hover {
+  color: #ef4444;
+}
+
+/* Zen Bottom Bar */
+.zen-bottom-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.75rem;
+  border-top: 1px solid;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.zen-smart-tags-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.ai-tag-lead {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  letter-spacing: 0.03em;
+}
+
+.ai-tags-list {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.zen-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.55rem;
+  border-radius: 9999px;
+  border: 1px solid;
+  font-size: 0.74rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.zen-tag-badge .tag-confidence {
+  font-size: 0.65rem;
+  font-family: monospace;
+  opacity: 0.85;
+}
+
+.ai-tag-placeholder {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.zen-bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.zen-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zen-action-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.zen-action-btn.save-journal-btn {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(56, 189, 248, 0.2));
+  border-color: rgba(45, 212, 191, 0.4);
+  color: #2dd4bf;
+  font-weight: 700;
+}
+
+.zen-action-btn.save-journal-btn:hover {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.35), rgba(56, 189, 248, 0.35));
+  border-color: #2dd4bf;
+  box-shadow: 0 0 14px rgba(45, 212, 191, 0.3);
+}
+
+/* Zen Drawer (Settings) */
+.zen-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.zen-drawer-card {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 440px;
+  z-index: 100001;
+  background: #090d16;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  color: #f1f5f9;
+}
+
+.zen-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.15rem 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.zen-drawer-header h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+.drawer-close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drawer-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.zen-drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.drawer-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.drawer-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.drawer-subtext {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin: 0.15rem 0 0;
+}
+
+.zen-themes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.zen-theme-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.zen-theme-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.zen-theme-card.active {
+  background: rgba(45, 212, 191, 0.12);
+  border-color: #2dd4bf;
+}
+
+.theme-color-chip {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.theme-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.theme-desc {
+  font-size: 0.66rem;
+  color: #94a3b8;
+}
+
+.theme-check-icon {
+  position: absolute;
+  right: 8px;
+  color: #2dd4bf;
+}
+
+.timer-presets-row,
+.sound-options-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.45rem;
+}
+
+.timer-preset-btn,
+.sound-option-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timer-preset-btn:hover,
+.sound-option-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.timer-preset-btn.active,
+.sound-option-btn.active {
+  background: rgba(45, 212, 191, 0.15);
+  border-color: #2dd4bf;
+  color: #2dd4bf;
+  font-weight: 700;
+}
+
+.toggle-switch-pill {
+  width: 44px;
+  height: 24px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 2px;
+}
+
+.toggle-switch-pill.active {
+  background: #2dd4bf;
+  border-color: #2dd4bf;
+}
+
+.switch-thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+.toggle-switch-pill.active .switch-thumb {
+  transform: translateX(20px);
+}
+
+.zen-drawer-footer {
+  padding: 1rem 1.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawer-done-btn {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 8px;
+  background: #2dd4bf;
+  color: #050c18;
+  border: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drawer-done-btn:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 16px rgba(45, 212, 191, 0.4);
+}
+
+/* Inline Trigger Button in Multimedia Journal */
+.zen-mode-inline-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(45, 212, 191, 0.12);
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  color: #2dd4bf;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zen-mode-inline-trigger-btn:hover {
+  background: rgba(45, 212, 191, 0.25);
+  border-color: #2dd4bf;
+  box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Header & Mobile Dock Zen Button */
+.dock-btn.zen-dock-btn {
+  background: rgba(45, 212, 191, 0.08);
+  border-color: rgba(45, 212, 191, 0.35);
+  color: #2dd4bf;
+  font-weight: 700;
+}
+
+.dock-btn.zen-dock-btn:hover {
+  background: rgba(45, 212, 191, 0.2);
+  border-color: #2dd4bf;
+  box-shadow: 0 0 14px rgba(45, 212, 191, 0.3);
+}
+
+.mobile-dock-btn.zen-mobile-btn {
+  color: #2dd4bf;
+  border-color: rgba(45, 212, 191, 0.3);
+  background: rgba(45, 212, 191, 0.06);
+}
+
+/* Smart AI Tagging Scanner UI in Multimedia Journal */
+.smart-ai-tagging-group {
+  margin-top: 0.5rem;
+  padding: 0.75rem 0.85rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 10px;
+}
+
+.ai-smart-scan-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(16, 185, 129, 0.15));
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #00f0ff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ai-smart-scan-trigger-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(16, 185, 129, 0.3));
+  border-color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.ai-smart-scan-trigger-btn.scanning {
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.smart-detected-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0 0.65rem;
+  padding: 0.45rem 0.6rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 8px;
+  border: 1px dashed rgba(0, 240, 255, 0.25);
+}
+
+.smart-detected-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.smart-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 9999px;
+  border: 1px solid;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.smart-tag-chip:hover {
+  transform: translateY(-1px) scale(1.03);
+  filter: brightness(1.15);
+}
+
+.smart-tag-chip.active {
+  box-shadow: 0 0 10px currentColor;
+}
+
+.smart-tag-chip .chip-conf {
+  font-size: 0.62rem;
+  font-family: monospace;
+  opacity: 0.85;
+}
+
+.smart-tag-chip .chip-check {
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+@media (max-width: 640px) {
+  .zen-top-bar {
+    padding: 0.65rem 1rem;
+  }
+  .zen-brand .zen-badge {
+    display: none;
+  }
+  .zen-stats-pill {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+  }
+  .zen-tool-btn .tool-text {
+    display: none;
+  }
+  .zen-editor-wrapper {
+    padding: 1.5rem 1rem;
+  }
+  .zen-textarea {
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .zen-bottom-bar {
+    padding: 0.65rem 1rem;
+  }
+  .zen-breathing-pill {
+    right: 1rem;
+    bottom: 4.8rem;
+    padding: 0.5rem 0.85rem;
+  }
+}

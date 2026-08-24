@@ -1,0 +1,243 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   🌌 DYNAMIC ENVIRONMENT (VIGNETTE, ATMOSPHERE & FX) STYLES
+   ════════════════════════════════════════════════════════════════════════════ */
+.ambient-screen-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  transition: box-shadow 0.8s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.8s ease, opacity 0.4s ease;
+}
+
+.ambient-screen-vignette.mood-joy {
+  animation: joyBreathing 4s infinite ease-in-out;
+}
+
+.ambient-screen-vignette.mood-melancholy {
+  animation: melancholyVignette 6s infinite ease-in-out;
+}
+
+.ambient-screen-vignette.mood-anger {
+  animation: angerHeartbeat 1.2s infinite ease-in-out;
+}
+
+.ambient-screen-vignette.mood-relaxed {
+  animation: zenAura 5s infinite ease-in-out;
+}
+
+@keyframes joyBreathing {
+  0%, 100% { filter: brightness(1) drop-shadow(0 0 10px rgba(0, 240, 255, 0.2)); }
+  50% { filter: brightness(1.15) drop-shadow(0 0 25px rgba(251, 191, 36, 0.25)); }
+}
+
+@keyframes melancholyVignette {
+  0%, 100% { filter: contrast(1); }
+  50% { filter: contrast(0.92) saturate(0.85); }
+}
+
+@keyframes angerHeartbeat {
+  0%, 100% { transform: scale(1); filter: brightness(1) drop-shadow(0 0 15px rgba(239, 68, 68, 0.4)); }
+  25% { transform: scale(1.003); filter: brightness(1.25) drop-shadow(0 0 35px rgba(239, 68, 68, 0.7)); }
+  45% { transform: scale(1); filter: brightness(1.05); }
+  60% { transform: scale(1.002); filter: brightness(1.2) drop-shadow(0 0 25px rgba(249, 115, 22, 0.6)); }
+}
+
+@keyframes zenAura {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.08) drop-shadow(0 0 20px rgba(16, 185, 129, 0.2)); }
+}
+
+.atmospheric-fx-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.atmospheric-noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  background-size: 100% 4px;
+}
+
+.atmospheric-noise-overlay.glitch-flicker {
+  animation: glitchLines 0.25s infinite alternate;
+}
+
+@keyframes glitchLines {
+  0% { transform: translateY(0); opacity: 0.25; }
+  100% { transform: translateY(2px); opacity: 0.45; }
+}
+
+/* Floating Dynamic Environment Quick Settings Widget */
+.env-floating-control-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 960;
+}
+
+.env-hud-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(4, 12, 30, 0.85);
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  color: var(--text-primary);
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(var(--accent-rgb), 0.2);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.env-hud-toggle-btn:hover {
+  background: rgba(var(--accent-rgb), 0.2);
+  border-color: var(--accent);
+  box-shadow: 0 4px 25px rgba(var(--accent-rgb), 0.4);
+  transform: translateY(-2px);
+}
+
+.env-hud-toggle-btn.active {
+  background: rgba(var(--accent-rgb), 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.5);
+}
+
+.env-btn-label {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.env-settings-popup {
+  position: absolute;
+  bottom: 50px;
+  right: 0;
+  width: 330px;
+  background: rgba(3, 8, 18, 0.94);
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  border-radius: 12px;
+  padding: 1.15rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(var(--accent-rgb), 0.2);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.env-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.15);
+  padding-bottom: 0.6rem;
+}
+
+.close-popup-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-popup-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mood-preview-pill {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  padding: 0.35rem 0.2rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.mood-preview-pill:hover,
+.mood-preview-pill.active {
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+}
+
+.env-toggles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.env-toggle-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.toggle-title {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.toggle-desc {
+  display: block;
+  font-size: 0.64rem;
+  color: #94a3b8;
+}
+
+.env-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.env-intensity-slider-box {
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.65rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.env-range-slider {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Hide floating control widget completely (accessible via Settings) */
+.env-floating-control-container {
+  display: none !important;
+  pointer-events: none !important;
+}

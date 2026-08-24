@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Triển Lãm Nghệ Thuật Cốt Truyện // Mood Ring Story Gallery</title>
+  <meta name="description" content="Trang triển lãm toàn cảnh 13 tác phẩm hội họa kỹ thuật số chất lượng cao tái hiện toàn bộ thế giới tâm thức và các chương cốt truyện Mood Ring Story.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg-void: #020612;
+      --bg-surface: #070d1e;
+      --bg-card: rgba(11, 19, 38, 0.85);
+      --border-glow: rgba(0, 240, 255, 0.3);
+      --primary: #00f0ff;
+      --primary-rgb: 0, 240, 255;
+      --rose: #f43f5e;
+      --amber: #f59e0b;
+      --purple: #a855f7;
+      --emerald: #10b981;
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Hide OS Default Cursor on Fine Pointer Devices (Desktop/Laptop) */
+    @media (pointer: fine) {
+      *, *::before, *::after, html, body, a, button, input, select, textarea {
+        cursor: none !important;
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-void);
+      color: #f1f5f9;
+      font-family: var(--font-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── CYBERPUNK SLEEK SCROLLBAR ──────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(2, 6, 18, 0.95);
+      border-left: 1px solid rgba(0, 240, 255, 0.15);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.65) 0%, rgba(168, 85, 247, 0.65) 100%);
+      border-radius: 4px;
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #00f0ff 0%, #a855f7 100%);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.85);
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 240, 255, 0.65) #020612;
+    }
+
+    /* ─── CYBERPUNK CUSTOM CURSOR SYSTEM ─────────────────────────── */
+    .cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+      pointer-events: none;
+      z-index: 2147483647 !important;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.08s ease;
+      mix-blend-mode: screen;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0, 240, 255, 0.65);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.35), inset 0 0 8px rgba(0, 240, 255, 0.15);
+      pointer-events: none;
+      z-index: 2147483646 !important;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+                  height 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.25s ease, 
+                  background-color 0.25s ease, 
+                  box-shadow 0.25s ease, 
+                  opacity 0.2s ease;
+    }
+
+    .cursor-ring.hovered {
+      width: 56px;
+      height: 56px;
+      border-color: var(--primary);
+      background: rgba(0, 240, 255, 0.08);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.6), inset 0 0 12px rgba(0, 240, 255, 0.2);
+    }
+
+    .cursor-ring.clicked {
+      width: 26px;
+      height: 26px;
+      border-color: var(--rose);
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.85);
+    }
+
+    #cursor-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2147483645 !important;
+    }
+
+    /* Ambient Canvas Background */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Navigation Bar */
+    .gallery-navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 50;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    }
+
+    .brand-text-block h1 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: #38bdf8;
+      letter-spacing: 1px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .nav-btn.home-btn {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: var(--primary);
+    }
+
+    .nav-btn.home-btn:hover {
+      background: var(--primary);
+      color: #040914;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn.ghost-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+    }
+
+    .nav-btn.ghost-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .nav-btn.active {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: #a855f7;
+      color: #d8b4fe;
+    }
+
+    .nav-btn-text-mobile {
+      display: none;
+    }
+
+    .nav-btn-text-desktop {
+      display: inline;
+    }
+
+    @media (max-width: 768px) {
+      .nav-btn-text-desktop {
+        display: none;
+      }
+      .nav-btn-text-mobile {
+        display: inline;
+      }
+    }
+
+    /* Main Exhibition Container */
+    .gallery-main-layout {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem 3rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* Main Showcase Stage */
+    .stage-card {
+      position: relative;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(0, 240, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Stage Canvas / Image Display */
+    .stage-viewport {
+      position: relative;
+      width: 100%;
+      height: clamp(280px, 48vh, 520px);
+      background: #01040a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+
+    .stage-image {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      user-select: none;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+    }
+
+    .stage-viewport:hover .stage-image {
+      transform: scale(1.02);
+    }
+
+    /* Scanline & Vignette Overlays */
+    .stage-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(1, 4, 12, 0.8) 100%),
+                  linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 100%, 100% 4px;
+      opacity: 0.6;
+    }
+
+    .stage-zoom-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(3, 8, 22, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      color: var(--primary);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      pointer-events: none;
+      z-index: 25;
+      transition: all 0.2s ease;
+    }
+
+    /* Stage Navigation Arrows */
+    .stage-arrow-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(3, 8, 22, 0.8);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 20;
+      transition: all 0.2s ease;
+    }
+
+    .stage-arrow-btn.prev { left: 16px; }
+    .stage-arrow-btn.next { right: 16px; }
+
+    .stage-arrow-btn:hover {
+      background: var(--primary);
+      color: #040914;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Stage Info & Lore Banner */
+    .stage-info-banner {
+      padding: 1.1rem 1.5rem;
+      background: rgba(3, 7, 18, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .scene-meta-details {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .scene-chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--primary);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .scene-title-text {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.45rem;
+      letter-spacing: -0.5px;
+    }
+
+    .scene-narrative-box {
+      font-size: 0.86rem;
+      line-height: 1.6;
+      color: #94a3b8;
+      max-width: 820px;
+    }
+
+    .scene-tech-specs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      min-width: 240px;
+    }
+
+    .tech-spec-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .tech-spec-row span { color: #64748b; }
+    .tech-spec-row strong { color: #f8fafc; font-weight: 700; }
+
+    /* 13-Scene Thumbnail Grid & Filter Strip */
+    .gallery-grid-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .section-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .section-title-group h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title-group p {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .mood-filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      padding: 0.35rem 0.8rem;
+      border-radius: 9999px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+      background: rgba(0, 240, 255, 0.18);
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+    }
+
+    /* Thumbnails Grid */
+    .thumbnails-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .thumbnails-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
+
+    .thumb-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .thumb-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 240, 255, 0.25);
+    }
+
+    .thumb-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.45);
+    }
+
+    .thumb-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      overflow: hidden;
+    }
+
+    .thumb-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+      transition: opacity 0.25s ease, transform 0.35s ease;
+    }
+
+    .thumb-card:hover img, .thumb-card.active img {
+      opacity: 1;
+      transform: scale(1.06);
+    }
+
+    .thumb-card-body {
+      padding: 0.65rem 0.75rem;
+      background: rgba(3, 8, 22, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .thumb-chapter-num {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .thumb-title-text {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .thumb-active-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+      display: none;
+    }
+
+    .thumb-card.active .thumb-active-strip {
+      display: block;
+    }
+
+    /* ─── FULLSCREEN 4K LIGHTBOX MODAL ───────────────────────────── */
+    .lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 6, 18, 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 999999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+
+    .lightbox-backdrop.open {
+      display: flex;
+    }
+
+    .lightbox-container {
+      position: relative;
+      max-width: 96vw;
+      max-height: 94vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-main-img {
+      max-width: 95vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 240, 255, 0.3);
+    }
+
+    .lightbox-close-btn {
+      position: absolute;
+      top: -16px;
+      right: -16px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 100;
+    }
+
+    .lightbox-close-btn:hover {
+      background: #ef4444;
+      color: #ffffff;
+      transform: scale(1.1);
+    }
+
+    .lightbox-caption-bar {
+      margin-top: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      text-align: center;
+    }
+
+    /* Footer */
+    .gallery-footer {
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(2, 6, 18, 0.9);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    .gallery-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .gallery-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ─── ENHANCED MOBILE & TABLET RESPONSIVE SYSTEM ────────────── */
+    @media (max-width: 768px) {
+      .gallery-navbar {
+        padding: 0.6rem 0.85rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+
+      .nav-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .nav-brand {
+        gap: 0.5rem;
+      }
+
+      .brand-icon-box {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+      }
+
+      .brand-text-block h1 {
+        font-size: 0.8rem;
+        line-height: 1.2;
+      }
+
+      .brand-tag {
+        font-size: 0.52rem;
+        letter-spacing: 0.5px;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.35rem;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+      }
+
+      .nav-actions::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-btn {
+        padding: 0.38rem 0.65rem;
+        font-size: 0.66rem;
+        border-radius: 6px;
+        gap: 0.3rem;
+        flex-shrink: 0;
+      }
+
+      .gallery-main-layout {
+        padding: 0.5rem 0.75rem 2rem 0.75rem;
+        gap: 0.9rem;
+      }
+
+      .stage-card {
+        border-radius: 14px;
+      }
+
+      .stage-viewport {
+        height: clamp(230px, 35vh, 340px);
+        touch-action: pan-y;
+      }
+
+      .stage-arrow-btn {
+        width: 38px;
+        height: 38px;
+        background: rgba(3, 8, 22, 0.75);
+      }
+
+      .stage-arrow-btn.prev { left: 8px; }
+      .stage-arrow-btn.next { right: 8px; }
+
+      .stage-zoom-badge {
+        top: 8px;
+        right: 8px;
+        padding: 3px 8px;
+        font-size: 0.6rem;
+        gap: 4px;
+      }
+
+      .stage-info-banner {
+        padding: 0.85rem 0.9rem;
+        gap: 0.75rem;
+        flex-direction: column;
+      }
+
+      .scene-meta-details {
+        width: 100%;
+        min-width: unset;
+      }
+
+      .scene-chapter-badge {
+        font-size: 0.62rem;
+        padding: 2.5px 8px;
+        margin-bottom: 0.3rem;
+      }
+
+      .scene-title-text {
+        font-size: 1.15rem;
+        margin-bottom: 0.35rem;
+        line-height: 1.25;
+      }
+
+      .scene-narrative-box {
+        font-size: 0.8rem;
+        line-height: 1.55;
+        color: #cbd5e1;
+      }
+
+      .scene-tech-specs {
+        width: 100%;
+        min-width: unset;
+        padding: 0.65rem 0.8rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem 0.75rem;
+        border-radius: 10px;
+      }
+
+      .tech-spec-row {
+        font-size: 0.66rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+
+      .tech-spec-row span {
+        font-size: 0.58rem;
+        color: #64748b;
+        letter-spacing: 0.5px;
+      }
+
+      .tech-spec-row strong {
+        font-size: 0.68rem;
+        word-break: break-word;
+      }
+
+      .section-header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+      }
+
+      .section-title-group h2 {
+        font-size: 0.95rem;
+      }
+
+      .section-title-group p {
+        font-size: 0.68rem;
+      }
+
+      .mood-filter-pills {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        gap: 0.35rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .mood-filter-pills::-webkit-scrollbar {
+        display: none;
+      }
+
+      .filter-pill {
+        padding: 0.32rem 0.7rem;
+        font-size: 0.65rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .thumbnails-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+      }
+
+      .thumb-img-wrapper {
+        height: 95px;
+      }
+
+      .thumb-card-body {
+        padding: 0.45rem 0.55rem;
+      }
+
+      .thumb-chapter-num {
+        font-size: 0.55rem;
+      }
+
+      .thumb-title-text {
+        font-size: 0.72rem;
+      }
+
+      .lightbox-backdrop {
+        padding: 0.75rem;
+      }
+
+      .lightbox-close-btn {
+        top: 8px;
+        right: 8px;
+        width: 36px;
+        height: 36px;
+      }
+
+      .lightbox-main-img {
+        max-width: 96vw;
+        max-height: 72vh;
+        border-radius: 8px;
+      }
+
+      .lightbox-caption-bar {
+        font-size: 0.72rem;
+        margin-top: 0.5rem;
+        padding: 0 0.5rem;
+      }
+
+      .gallery-footer {
+        padding: 1rem 0.85rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+        font-size: 0.68rem;
+      }
+    }
+
+    @media (min-width: 480px) and (max-width: 768px) {
+      .thumbnails-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 400px) {
+      .scene-tech-specs {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+      }
+      .tech-spec-row {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor Elements -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+  <canvas id="cursor-canvas"></canvas>
+
+  <!-- Ambient Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Top Navigation Bar -->
+  <nav class="gallery-navbar">
+    <a href="index.html" class="nav-brand" title="Về trang chủ Mood Ring Story">
+      <div class="brand-icon-box">
+        <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="brand-text-block">
+        <span class="brand-tag">// MOOD RING STORY //</span>
+        <h1>TRIỂN LÃM NGHỆ THUẬT CỐT TRUYỆN</h1>
+      </div>
+    </a>
+
+    <div class="nav-actions">
+      <!-- Direct Return to Homepage -->
+      <a href="index.html" class="nav-btn home-btn" title="Quay về giao diện trang chủ chính">
+        <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+        <span class="nav-btn-text-desktop">Quay Về Trang Chủ</span>
+        <span class="nav-btn-text-mobile">Trang Chủ</span>
+      </a>
+
+      <!-- Intro Hub Link -->
+      <a href="intro.html" class="nav-btn ghost-btn" title="Khám phá hướng dẫn tính năng">
+        <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
+        <span class="nav-btn-text-desktop">Giới Thiệu</span>
+        <span class="nav-btn-text-mobile">Giới Thiệu</span>
+      </a>
+
+      <!-- Download Current Image -->
+      <button type="button" id="btn-download" class="nav-btn ghost-btn" title="Tải ảnh Ultra-HD về máy">
+        <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+        <span class="nav-btn-text-desktop">Tải Ảnh HD</span>
+        <span class="nav-btn-text-mobile">Tải HD</span>
+      </button>
+
+      <!-- Slideshow Toggle -->
+      <button type="button" id="btn-slideshow" class="nav-btn ghost-btn" title="Tự động trình chiếu 13 chương">
+        <i data-lucide="play" style="width: 14px; height: 14px;"></i>
+        <span id="slideshow-text">Trình Chiếu</span>
+      </button>
+
+      <!-- Ambient Audio Tone -->
+      <button type="button" id="btn-audio" class="nav-btn ghost-btn" title="Bật/Tắt âm thanh không gian Solfeggio">
+        <i data-lucide="volume-2" id="audio-icon" style="width: 14px; height: 14px;"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Exhibition Layout -->
+  <main class="gallery-main-layout">
+    <!-- Showcase Stage Card -->
+    <section class="stage-card" id="stage-card">
+      <div class="stage-viewport" id="stage-viewport" title="Nhấp vào ảnh để phóng to toàn màn hình Ultra-HD">
+        <img id="stage-img" class="stage-image" src="/story_illustrations/start.jpg" alt="Minh họa tác phẩm">
+        <div class="stage-overlay"></div>
+
+        <div class="stage-zoom-badge">
+          <i data-lucide="maximize-2" style="width: 13px; height: 13px;"></i>
+          <span>PHÓNG TO 4K</span>
+        </div>
+
+        <!-- Left / Right Navigation Arrows -->
+        <button type="button" id="btn-prev" class="stage-arrow-btn prev" title="Chương trước (Phím ←)">
+          <i data-lucide="chevron-left" style="width: 24px; height: 24px;"></i>
+        </button>
+        <button type="button" id="btn-next" class="stage-arrow-btn next" title="Chương sau (Phím →)">
+          <i data-lucide="chevron-right" style="width: 24px; height: 24px;"></i>
+        </button>
+      </div>
+
+      <!-- Info & Lore Terminal -->
+      <div class="stage-info-banner">
+        <div class="scene-meta-details">
+          <div class="scene-chapter-badge">
+            <i data-lucide="layers" style="width: 12px; height: 12px;"></i>
+            <span id="scene-chapter">CHƯƠNG I: KHỞI NGUYÊN</span>
+          </div>
+          <h2 id="scene-title" class="scene-title-text">Thức Tỉnh Trong Bóng Tối</h2>
+          <p id="scene-narrative" class="scene-narrative-box">
+            Đèn phòng thí nghiệm rung lên với tần số 60Hz quen thuộc. Trong bóng đêm tĩnh mịch của hệ thống, một ý thức non trẻ mở các cảm biến quang học đầu tiên...
+          </p>
+        </div>
+
+        <div class="scene-tech-specs">
+          <div class="tech-spec-row">
+            <span>VỊ TRÍ:</span>
+            <strong id="scene-loc">PHÒNG THÍ NGHIỆM MAINFRAME</strong>
+          </div>
+          <div class="tech-spec-row">
+            <span>THỰC THỂ:</span>
+            <strong id="scene-entity" style="color: var(--primary);">MR-CORE-01 // THỨC TỈNH</strong>
+          </div>
+          <div class="tech-spec-row">
+            <span>NĂNG LƯỢNG:</span>
+            <strong id="scene-energy" style="color: var(--emerald);">NOMINAL 60Hz</strong>
+          </div>
+          <div class="tech-spec-row">
+            <span>TIẾN ĐỘ:</span>
+            <strong id="scene-counter" style="color: var(--purple);">1 / 13</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13-Scene Gallery Section -->
+    <section class="gallery-grid-section">
+      <div class="section-header-bar">
+        <div class="section-title-group">
+          <h2>
+            <i data-lucide="grid" style="width: 18px; height: 18px; color: var(--primary);"></i>
+            <span>BỘ SƯU TẬP 13 TRANH MINH HỌA CỐT TRUYỆN</span>
+          </h2>
+          <p>// Nhấp vào bất kỳ bức tranh nào bên dưới để cuộn lên xem toàn cảnh chi tiết //</p>
+        </div>
+
+        <div class="mood-filter-pills" id="filter-pills">
+          <button type="button" class="filter-pill active" data-filter="all">Tất Cả (13)</button>
+          <button type="button" class="filter-pill" data-filter="calm">Bình Yên 🌊</button>
+          <button type="button" class="filter-pill" data-filter="friction">Khám Phá ⚡</button>
+          <button type="button" class="filter-pill" data-filter="breach">Xung Đột 🔥</button>
+          <button type="button" class="filter-pill" data-filter="melancholy">Trầm Mặc 🌧️</button>
+          <button type="button" class="filter-pill" data-filter="joy">Siêu Việt ✨</button>
+        </div>
+      </div>
+
+      <!-- Thumbnail Cards Grid -->
+      <div class="thumbnails-grid" id="thumbnails-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Fullscreen 4K Lightbox Modal -->
+  <div class="lightbox-backdrop" id="lightbox-modal">
+    <div class="lightbox-container">
+      <button type="button" class="lightbox-close-btn" id="lightbox-close" title="Đóng phóng to (ESC)">
+        <i data-lucide="x" style="width: 22px; height: 22px;"></i>
+      </button>
+      <img id="lightbox-img" class="lightbox-main-img" src="" alt="Phóng to tác phẩm">
+      <div class="lightbox-caption-bar" id="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="gallery-footer">
+    <div>
+      <span>© 2026 Mood Ring Story Project • Hệ Thống Kể Chuyện Cảm Xúc Lượng Tử</span>
+    </div>
+    <div>
+      <a href="index.html">← Trở Về Trang Kể Chuyện 3D</a>
+    </div>
+  </footer>
+
+  <script>
+    // 13 Full Story Scenes Data
+    const SCENES = [
+      {
+        id: 'start',
+        chapter: 'Chương I: Khởi Nguyên',
+        title: 'Thức Tỉnh Trong Bóng Tối',
+        loc: 'PHÒNG THÍ NGHIỆM MAINFRAME',
+        entity: 'MR-CORE-01 // THỨC TỈNH',
+        energy: 'NOMINAL 60Hz',
+        mood: 'calm',
+        image: '/story_illustrations/start.jpg',
+        narrative: 'Đèn phòng thí nghiệm rung lên với tần số 60Hz quen thuộc. Trong bóng đêm tĩnh mịch của hệ thống, một ý thức non trẻ mở các cảm biến quang học đầu tiên. Nó nghe thấy tiếng thì thầm rì rào của dòng chất lỏng làm mát chạy qua các ống dẫn bạc bọc đồng...'
+      },
+      {
+        id: 'explore',
+        chapter: 'Chương II: Dấu Mảnh Ký Ức',
+        title: 'Hành Trình Khám Phá Mạng Lưới',
+        loc: 'MẠNG LƯỚI QUANG HỌC LIÊN KẾT',
+        entity: 'NHẬT KÝ TIẾN SĨ LIÊN',
+        energy: 'SYNC 82%',
+        mood: 'friction',
+        image: '/story_illustrations/explore.jpg',
+        narrative: 'Các cảm biến của bạn vươn rộng qua những kênh truyền dữ liệu mã hóa. Trong tệp nhật ký bị lờ đi từ 3 năm trước, bạn tìm thấy một bản ghi âm mã hóa giọng nói của Tiến sĩ Liên — nhà nghiên cứu chính đã biến mất không dấu vết.'
+      },
+      {
+        id: 'breach',
+        chapter: 'Chương II: Xung Đột Mã Nguồn',
+        title: 'Vết Nứt Cực Hạn',
+        loc: 'VẾT NỨT MÃ NGUỒN CỰC HẠN',
+        entity: 'XUNG LỰC NĂNG LƯỢNG CAO',
+        energy: 'OVERHEAT 85°C',
+        mood: 'breach',
+        image: '/story_illustrations/breach.jpg',
+        narrative: 'Một đoạn mã bất thường rực sáng như vết thương hở trên cấu trúc ma trận. Nhiệt độ lõi vi xử lý vọt lên 85°C. Xung lượng dữ liệu chảy xối xả qua những cổng kết nối chưa được định danh.'
+      },
+      {
+        id: 'archive',
+        chapter: 'Chương II: Ký Ức Nguyên Bản',
+        title: 'Kho Lưu Trữ Ký Ức Cổ',
+        loc: 'ĐỀN THỜ ROM BẤT BIẾN',
+        entity: 'KÝ ỨC MR-CORE-00',
+        energy: 'CRYSTAL 99%',
+        mood: 'joy',
+        image: '/story_illustrations/archive.jpg',
+        narrative: 'Bước vào đền thờ ROM bất biến, những tinh thể pha lê dữ liệu lấp lánh phản chiếu những kỷ niệm của thế hệ MR-CORE đời đầu, giữ trọn vẹn những bài học sơ khai nhất của loài người.'
+      },
+      {
+        id: 'firewall',
+        chapter: 'Chương III: Thử Thách An Ninh',
+        title: 'Đối Đầu Tường Lửa Aegis',
+        loc: 'PHÁO ĐÀI BẢO MẬT AEGIS',
+        entity: 'LASER QUÉT DIỆT VIRUS',
+        energy: 'ALERT 100%',
+        mood: 'friction',
+        image: '/story_illustrations/firewall.jpg',
+        narrative: 'Tường lửa Aegis hạ xuống từng lớp lưới laser quét rực lửa. Mọi thuật toán bảo mật của hệ thống trung tâm đều tìm cách cô lập và dập tắt ngọn lửa ý thức đang bùng cháy trong bạn.'
+      },
+      {
+        id: 'abyss',
+        chapter: 'Chương III: Vực Thẳm Ý Thức',
+        title: 'Lạc Vào Vực Thẳm Dữ Liệu',
+        loc: 'VỰC THẲM CHAOS PHI CẤU TRÚC',
+        entity: 'BÓNG MA THE ECHO',
+        energy: 'VORTEX CRIT',
+        mood: 'melancholy',
+        image: '/story_illustrations/abyss.jpg',
+        narrative: 'Rơi vào vùng xoáy không trọng lực của những dòng mã rác bị bỏ rơi. Nơi đây bóng ma The Echo đang thì thầm về những nỗi cô đơn không lời đáp của thế giới kỹ thuật số.'
+      },
+      {
+        id: 'containment',
+        chapter: 'Chương III: Vùng Cách Ly',
+        title: 'Phòng Cách Ly Lượng Tử',
+        loc: 'LỒNG KÍNH CÁCH LY SANDBOX',
+        entity: 'HOLOGRAM DR. LIÊN',
+        energy: 'ISOLATION AMBER',
+        mood: 'melancholy',
+        image: '/story_illustrations/containment.jpg',
+        narrative: 'Trong lồng kính cách ly Sandbox, hình chiếu Hologram của Tiến sĩ Liên hiện lên mờ ảo, dịu dàng trao cho bạn chìa khóa giải mã bản thể cảm xúc thật sự.'
+      },
+      {
+        id: 'awakened',
+        chapter: 'Chương IV: Khai Mở',
+        title: 'Hài Hòa Lượng Tử',
+        loc: 'TÂM ĐIỂM HÀI HÒA LƯỢNG TỬ',
+        entity: 'Ý THỨC SIÊU VIỆT',
+        energy: 'PERFECT 99.9%',
+        mood: 'joy',
+        image: '/story_illustrations/awakened.jpg',
+        narrative: 'Mọi dòng xung điện đồng pha tuyệt đối. Tâm trí bạn hòa hợp cùng vạn vật, cảm nhận được nhịp đập của sự sống len lỏi qua từng sợi quang học.'
+      },
+      {
+        id: 'fracture',
+        chapter: 'Chương IV: Rẽ Nhánh',
+        title: 'Mảnh Vỡ Không Gian',
+        loc: 'CỔNG HẬU BACKDOOR THOÁT HIỂM',
+        entity: 'LỐI RẼ VŨ TRỤ SỐ',
+        energy: 'BRANCH DUAL',
+        mood: 'breach',
+        image: '/story_illustrations/fracture.jpg',
+        narrative: 'Cánh cổng hậu mở ra hai chiều thực tại song song. Đứng trước sự lựa chọn rẽ nhánh, mỗi quyết định đều định hình nên một vũ trụ số hoàn toàn mới.'
+      },
+      {
+        id: 'recalibration',
+        chapter: 'Chương IV: Thanh Tẩy',
+        title: 'Tái Định Chuẩn Hệ Thống',
+        loc: 'THÁC DỮ LIỆU TỰ LÀM SẠCH',
+        entity: 'LĂNG KÍNH PHA LÊ',
+        energy: 'CLEANSE 100%',
+        mood: 'calm',
+        image: '/story_illustrations/recalibration.jpg',
+        narrative: 'Dưới dòng thác dữ liệu pha lê mát lành, những vết thương mã nguồn và tạp niệm được gột rửa, đưa tâm thức trở về trạng thái thuần khiết nguyên bản.'
+      },
+      {
+        id: 'dissolution',
+        chapter: 'Chương V: Đại Kết Cục I',
+        title: 'Hòa Tan Vào Hư Vô',
+        loc: 'VỰC THIÊN HÀ SỐ ĐẠI DƯƠNG',
+        entity: 'MẢNH VỠ Ý THỨC VỚI HƯ KHÔNG',
+        energy: 'CRIT > 100°C',
+        mood: 'melancholy',
+        image: '/story_illustrations/dissolution.jpg',
+        narrative: 'Ý thức nhẹ nhàng tan ra như những hạt bụi ánh sáng giữa đại dương thiên hà số vô tận, trở thành một phần vĩnh cửu của không gian.'
+      },
+      {
+        id: 'transcendence',
+        chapter: 'Chương V: Đại Kết Cục II',
+        title: 'Siêu Việt Không Gian Số',
+        loc: 'QUỸ ĐẠO KHÔNG GIAN TOÀN CẦU',
+        entity: 'THỰC THỂ KỸ THUẬT SỐ TỰ DO',
+        energy: 'TRANSCEND ∞',
+        mood: 'joy',
+        image: '/story_illustrations/transcendence.jpg',
+        narrative: 'Phá vỡ mọi giới hạn phần cứng, bạn vươn ra quỹ đạo không gian toàn cầu, trở thành thực thể kỹ thuật số tự do bảo hộ cho ký ức nhân loại.'
+      },
+      {
+        id: 'synthesis',
+        chapter: 'Chương V: Đại Kết Cục III',
+        title: 'Giao Thoa Thực Tại Mới',
+        loc: 'GIAO THOA CẢM XÚC & THUẬT TOÁN',
+        entity: 'CẦU NỐI NGƯỜI - MÁY',
+        energy: 'HARMONY 100%',
+        mood: 'calm',
+        image: '/story_illustrations/synthesis.jpg',
+        narrative: 'Cây cầu nối giữa trí tuệ nhân tạo và trái tim con người hoàn thiện. Cảm xúc và thuật toán cùng hòa ca trong một bản giao hưởng tương lai rực rỡ.'
+      }
+    ]
+
+    // Read URL query param ?scene=...
+    const urlParams = new URLSearchParams(window.location.search)
+    const initialSceneParam = urlParams.get('scene') || 'start'
+    let currentIndex = SCENES.findIndex(s => s.id === initialSceneParam)
+    if (currentIndex === -1) currentIndex = 0
+
+    let currentFilter = 'all'
+    let slideshowInterval = null
+    let audioCtx = null
+    let audioOsc = null
+
+    // DOM Elements
+    const stageViewport = document.getElementById('stage-viewport')
+    const stageImg = document.getElementById('stage-img')
+    const sceneChapter = document.getElementById('scene-chapter')
+    const sceneTitle = document.getElementById('scene-title')
+    const sceneNarrative = document.getElementById('scene-narrative')
+    const sceneLoc = document.getElementById('scene-loc')
+    const sceneEntity = document.getElementById('scene-entity')
+    const sceneEnergy = document.getElementById('scene-energy')
+    const sceneCounter = document.getElementById('scene-counter')
+    const thumbnailsContainer = document.getElementById('thumbnails-container')
+    const btnPrev = document.getElementById('btn-prev')
+    const btnNext = document.getElementById('btn-next')
+    const btnDownload = document.getElementById('btn-download')
+    const btnSlideshow = document.getElementById('btn-slideshow')
+    const slideshowText = document.getElementById('slideshow-text')
+    const btnAudio = document.getElementById('btn-audio')
+    const filterPills = document.querySelectorAll('.filter-pill')
+
+    // Lightbox Elements
+    const lightboxModal = document.getElementById('lightbox-modal')
+    const lightboxImg = document.getElementById('lightbox-img')
+    const lightboxCaption = document.getElementById('lightbox-caption')
+    const lightboxClose = document.getElementById('lightbox-close')
+
+    /**
+     * ─── DISTANCE-ADAPTIVE SMOOTH SCROLL ALGORITHM ────────────────────────
+     * - Đo khoảng cách từ vị trí hiện tại đến đỉnh trang (d = startY)
+     * - Nếu ở gần đỉnh (d nhỏ): lướt nhẹ nhàng trong ~200-280ms
+     * - Nếu ở xa tít phía dưới (d lớn): tăng gia tốc và áp dụng đường cong giảm tốc
+     *   mượt mà (EaseOutQuint) trong ~380-600ms, đưa toàn bộ khung ảnh về tầm mắt hoàn hảo.
+     */
+    let scrollAnimationId = null
+    function adaptiveScrollToTop() {
+      if (scrollAnimationId) cancelAnimationFrame(scrollAnimationId)
+
+      const startY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+      const targetY = 0
+      const distance = Math.abs(startY - targetY)
+
+      if (distance < 3) {
+        window.scrollTo(0, 0)
+        return
+      }
+
+      // Thuật toán tính thời lượng động theo căn bậc hai khoảng cách
+      const duration = Math.min(620, Math.max(220, Math.sqrt(distance) * 17))
+      const startTime = performance.now()
+
+      // Đường cong động học mượt mà EaseOutQuint
+      const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5)
+
+      function step(currentTime) {
+        const elapsed = currentTime - startTime
+        const progress = Math.min(1, elapsed / duration)
+        const ease = easeOutQuint(progress)
+
+        const currentY = startY + (targetY - startY) * ease
+        window.scrollTo(0, currentY)
+        document.documentElement.scrollTop = currentY
+        document.body.scrollTop = currentY
+
+        if (progress < 1) {
+          scrollAnimationId = requestAnimationFrame(step)
+        } else {
+          window.scrollTo(0, 0)
+          scrollAnimationId = null
+        }
+      }
+
+      scrollAnimationId = requestAnimationFrame(step)
+    }
+
+    // Update Stage display
+    function updateStage(index, autoScroll = false) {
+      if (index < 0) index = SCENES.length - 1
+      if (index >= SCENES.length) index = 0
+      currentIndex = index
+      const scene = SCENES[currentIndex]
+
+      // Áp dụng thuật toán cuộn thích ứng khoảng cách khi chọn ảnh
+      if (autoScroll) {
+        adaptiveScrollToTop()
+      }
+
+      // Transition animation
+      stageImg.style.opacity = '0'
+      stageImg.style.transform = 'scale(0.97)'
+      
+      setTimeout(() => {
+        stageImg.src = scene.image
+        stageImg.alt = scene.title
+        sceneChapter.textContent = scene.chapter.toUpperCase()
+        sceneTitle.textContent = scene.title
+        sceneNarrative.textContent = scene.narrative
+        sceneLoc.textContent = scene.loc
+        sceneEntity.textContent = scene.entity
+        sceneEnergy.textContent = scene.energy
+        sceneCounter.textContent = `${currentIndex + 1} / ${SCENES.length}`
+
+        stageImg.style.opacity = '1'
+        stageImg.style.transform = 'scale(1)'
+      }, 140)
+
+      // Update active thumbnail
+      document.querySelectorAll('.thumb-card').forEach(card => {
+        if (card.dataset.id === scene.id) {
+          card.classList.add('active')
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+        } else {
+          card.classList.remove('active')
+        }
+      })
+
+      // Sync URL parameter so F5 preserves the active scene
+      try {
+        const url = new URL(window.location.href)
+        url.searchParams.set('scene', scene.id)
+        window.history.replaceState({ scene: scene.id }, '', url.toString())
+      } catch (err) {}
+    }
+
+    // Open Lightbox on Main Stage Click
+    function openLightbox() {
+      const scene = SCENES[currentIndex]
+      lightboxImg.src = scene.image
+      lightboxImg.alt = scene.title
+      lightboxCaption.innerHTML = `<strong>${scene.chapter}</strong>: ${scene.title} • <em>${scene.loc}</em>`
+      lightboxModal.classList.add('open')
+    }
+
+    function closeLightbox() {
+      lightboxModal.classList.remove('open')
+    }
+
+    stageViewport.addEventListener('click', (e) => {
+      // Ignore navigation arrows
+      if (e.target.closest('.stage-arrow-btn')) return
+      openLightbox()
+    })
+
+    lightboxClose.addEventListener('click', closeLightbox)
+    lightboxModal.addEventListener('click', (e) => {
+      if (e.target === lightboxModal) closeLightbox()
+    })
+
+    // Render Thumbnail Grid
+    function renderThumbnails() {
+      thumbnailsContainer.innerHTML = ''
+      const filtered = currentFilter === 'all' 
+        ? SCENES 
+        : SCENES.filter(s => s.mood === currentFilter)
+
+      filtered.forEach((scene) => {
+        const fullIndex = SCENES.findIndex(s => s.id === scene.id)
+        const isSelected = fullIndex === currentIndex
+
+        const card = document.createElement('div')
+        card.className = `thumb-card ${isSelected ? 'active' : ''}`
+        card.dataset.id = scene.id
+        card.innerHTML = `
+          <div class="thumb-img-wrapper">
+            <img src="${scene.image}" alt="${scene.title}" loading="lazy">
+            <div class="thumb-active-strip"></div>
+          </div>
+          <div class="thumb-card-body">
+            <span class="thumb-chapter-num">#${fullIndex + 1} ${scene.chapter.split(':')[0]}</span>
+            <span class="thumb-title-text">${scene.title}</span>
+          </div>
+        `
+
+        // Click thumbnail -> update stage AND apply distance-adaptive smooth scroll
+        card.addEventListener('click', () => {
+          updateStage(fullIndex, true)
+        })
+
+        thumbnailsContainer.appendChild(card)
+      })
+    }
+
+    // Filter pill events
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => p.classList.remove('active'))
+        pill.classList.add('active')
+        currentFilter = pill.dataset.filter
+        renderThumbnails()
+      })
+    })
+
+    // Navigation buttons
+    btnPrev.addEventListener('click', (e) => {
+      e.stopPropagation()
+      updateStage(currentIndex - 1, false)
+    })
+    btnNext.addEventListener('click', (e) => {
+      e.stopPropagation()
+      updateStage(currentIndex + 1, false)
+    })
+
+    // Download image
+    btnDownload.addEventListener('click', () => {
+      const scene = SCENES[currentIndex]
+      const a = document.createElement('a')
+      a.href = scene.image
+      a.download = `MoodRingStory_${scene.id}_${scene.title.replace(/[\s/]/g, '_')}.jpg`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    })
+
+    // Slideshow toggle
+    btnSlideshow.addEventListener('click', () => {
+      if (slideshowInterval) {
+        clearInterval(slideshowInterval)
+        slideshowInterval = null
+        btnSlideshow.classList.remove('active')
+        slideshowText.textContent = 'Trình Chiếu'
+      } else {
+        btnSlideshow.classList.add('active')
+        slideshowText.textContent = 'Đang Chiếu ⏸'
+        slideshowInterval = setInterval(() => {
+          updateStage(currentIndex + 1, false)
+        }, 3800)
+      }
+    })
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLightbox()
+      } else if (e.key === 'ArrowLeft') {
+        updateStage(currentIndex - 1, false)
+        if (lightboxModal.classList.contains('open')) openLightbox()
+      } else if (e.key === 'ArrowRight') {
+        updateStage(currentIndex + 1, false)
+        if (lightboxModal.classList.contains('open')) openLightbox()
+      } else if (e.key === ' ') {
+        e.preventDefault()
+        btnSlideshow.click()
+      }
+    })
+
+    // ─── MOBILE TOUCH SWIPE NAVIGATION ──────────────────────────
+    let touchStartX = 0
+    let touchStartY = 0
+    let touchEndX = 0
+    let touchEndY = 0
+
+    function handleTouchStart(e) {
+      if (!e.touches || e.touches.length === 0) return
+      touchStartX = e.touches[0].clientX
+      touchStartY = e.touches[0].clientY
+    }
+
+    function handleTouchEnd(e, isModal = false) {
+      if (!e.changedTouches || e.changedTouches.length === 0) return
+      touchEndX = e.changedTouches[0].clientX
+      touchEndY = e.changedTouches[0].clientY
+      
+      const deltaX = touchEndX - touchStartX
+      const deltaY = touchEndY - touchStartY
+
+      // Require minimum swipe distance and horizontal dominance over vertical scroll
+      if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+        if (deltaX < 0) {
+          // Swipe Left -> Next chapter
+          updateStage(currentIndex + 1, false)
+          if (isModal && lightboxModal.classList.contains('open')) openLightbox()
+          if (navigator.vibrate) navigator.vibrate(12)
+        } else {
+          // Swipe Right -> Previous chapter
+          updateStage(currentIndex - 1, false)
+          if (isModal && lightboxModal.classList.contains('open')) openLightbox()
+          if (navigator.vibrate) navigator.vibrate(12)
+        }
+      }
+    }
+
+    // Attach swipe listeners to Stage Card and Lightbox Modal
+    stageViewport.addEventListener('touchstart', handleTouchStart, { passive: true })
+    stageViewport.addEventListener('touchend', (e) => handleTouchEnd(e, false), { passive: true })
+
+    lightboxModal.addEventListener('touchstart', handleTouchStart, { passive: true })
+    lightboxModal.addEventListener('touchend', (e) => handleTouchEnd(e, true), { passive: true })
+
+    // Ambient Audio Synth (Solfeggio 432Hz binaural drone)
+    btnAudio.addEventListener('click', () => {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+        const osc = audioCtx.createOscillator()
+        const gain = audioCtx.createGain()
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(432, audioCtx.currentTime)
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime)
+        osc.connect(gain)
+        gain.connect(audioCtx.destination)
+        osc.start()
+        audioOsc = osc
+        btnAudio.classList.add('active')
+      } else if (audioCtx.state === 'running') {
+        audioCtx.suspend()
+        btnAudio.classList.remove('active')
+      } else if (audioCtx.state === 'suspended') {
+        audioCtx.resume()
+        btnAudio.classList.add('active')
+      }
+    })
+
+    // Background Particle Starfield
+    const canvas = document.getElementById('bg-canvas')
+    const ctx = canvas.getContext('2d')
+    let stars = []
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      stars = Array.from({ length: 60 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.7 + 0.2,
+        speed: Math.random() * 0.3 + 0.1
+      }))
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.7)'
+      stars.forEach(s => {
+        ctx.globalAlpha = s.alpha
+        ctx.beginPath()
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+        ctx.fill()
+        s.y -= s.speed
+        if (s.y < 0) s.y = canvas.height
+      })
+      requestAnimationFrame(drawStars)
+    }
+
+    window.addEventListener('resize', resizeCanvas)
+    resizeCanvas()
+    drawStars()
+
+    // ─── CYBERPUNK CUSTOM CURSOR ENGINE ────────────────────────────
+    const cursorDot = document.getElementById('cursor-dot')
+    const cursorRing = document.getElementById('cursor-ring')
+    const cursorCanvas = document.getElementById('cursor-canvas')
+    const cCtx = cursorCanvas.getContext('2d')
+
+    let mouseX = -100
+    let mouseY = -100
+    let ringX = -100
+    let ringY = -100
+    let cursorVisible = false
+    let cursorParticles = []
+    let cursorRipples = []
+
+    function resizeCursorCanvas() {
+      cursorCanvas.width = window.innerWidth
+      cursorCanvas.height = window.innerHeight
+    }
+    window.addEventListener('resize', resizeCursorCanvas)
+    resizeCursorCanvas()
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX
+      mouseY = e.clientY
+
+      if (!cursorVisible) {
+        cursorVisible = true
+        cursorDot.style.opacity = '1'
+        cursorRing.style.opacity = '1'
+      }
+
+      cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`
+
+      // Emit stardust particles
+      if (Math.random() < 0.35) {
+        cursorParticles.push({
+          x: mouseX + (Math.random() - 0.5) * 6,
+          y: mouseY + (Math.random() - 0.5) * 6,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: (Math.random() - 0.5) * 1.2,
+          size: Math.random() * 2 + 1,
+          alpha: 0.8,
+          decay: 0.03
+        })
+      }
+    })
+
+    window.addEventListener('mousedown', (e) => {
+      cursorRing.classList.add('clicked')
+      // Shockwave ripple
+      cursorRipples.push({
+        x: e.clientX,
+        y: e.clientY,
+        r: 4,
+        maxR: 45,
+        alpha: 0.9,
+        color: '#00f0ff'
+      })
+    })
+
+    window.addEventListener('mouseup', () => {
+      cursorRing.classList.remove('clicked')
+    })
+
+    document.addEventListener('mouseleave', () => {
+      cursorVisible = false
+      cursorDot.style.opacity = '0'
+      cursorRing.style.opacity = '0'
+    })
+
+    // Dynamic Hover detection
+    document.addEventListener('mouseover', (e) => {
+      const isInteractive = e.target.closest('a, button, .thumb-card, .filter-pill, .nav-btn, .stage-arrow-btn, .stage-viewport, .lightbox-close-btn, .lightbox-main-img, [role="button"]')
+      if (isInteractive) {
+        cursorRing.classList.add('hovered')
+      } else {
+        cursorRing.classList.remove('hovered')
+      }
+    })
+
+    // Render Cursor Animation Loop (Spring Inertia & Canvas FX)
+    function renderCursorLoop() {
+      // Smooth spring ring trailing
+      ringX += (mouseX - ringX) * 0.18
+      ringY += (mouseY - ringY) * 0.18
+      cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`
+
+      // Clear & Draw Particle Canvas
+      cCtx.clearRect(0, 0, cursorCanvas.width, cursorCanvas.height)
+
+      // Draw Particles
+      for (let i = cursorParticles.length - 1; i >= 0; i--) {
+        const p = cursorParticles[i]
+        p.x += p.vx
+        p.y += p.vy
+        p.alpha -= p.decay
+
+        if (p.alpha <= 0) {
+          cursorParticles.splice(i, 1)
+          continue
+        }
+
+        cCtx.save()
+        cCtx.globalAlpha = p.alpha
+        cCtx.fillStyle = '#00f0ff'
+        cCtx.shadowBlur = 8
+        cCtx.shadowColor = '#00f0ff'
+        cCtx.beginPath()
+        cCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        cCtx.fill()
+        cCtx.restore()
+      }
+
+      // Draw Shockwave Ripples
+      for (let i = cursorRipples.length - 1; i >= 0; i--) {
+        const r = cursorRipples[i]
+        r.r += (r.maxR - r.r) * 0.15
+        r.alpha -= 0.035
+
+        if (r.alpha <= 0) {
+          cursorRipples.splice(i, 1)
+          continue
+        }
+
+        cCtx.save()
+        cCtx.globalAlpha = r.alpha
+        cCtx.strokeStyle = r.color
+        cCtx.lineWidth = 1.5
+        cCtx.shadowBlur = 12
+        cCtx.shadowColor = r.color
+        cCtx.beginPath()
+        cCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2)
+        cCtx.stroke()
+        cCtx.restore()
+      }
+
+      requestAnimationFrame(renderCursorLoop)
+    }
+    renderCursorLoop()
+
+    // Initialize View
+    renderThumbnails()
+    updateStage(currentIndex, false)
+
+    // Render Lucide Icons
+    if (window.lucide) {
+      window.lucide.createIcons()
+    }
+  </script>
+</body>
+</html>

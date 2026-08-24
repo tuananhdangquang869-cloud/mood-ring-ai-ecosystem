@@ -1,0 +1,97 @@
+/* ───── Mood Themes ───── */
+:root[data-mood="calm"],
+:root[data-mood="relaxed"] {
+  --bg-main: #02120e;
+  --card-bg: rgba(3, 20, 16, 0.75);
+  --border-color: rgba(16, 185, 129, 0.35);
+  --border-glow: rgba(16, 185, 129, 0.15);
+  --text-primary: #ecfdf5;
+  --text-secondary: rgba(167, 243, 208, 0.7);
+  --accent: #10b981;
+  --accent-rgb: 16, 185, 129;
+  --btn-bg: rgba(16, 185, 129, 0.08);
+  --btn-hover-bg: rgba(16, 185, 129, 0.2);
+  --font-title: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+:root[data-mood="joy"] {
+  --bg-main: #031221;
+  --card-bg: rgba(4, 18, 38, 0.75);
+  --border-color: rgba(0, 240, 255, 0.4);
+  --border-glow: rgba(251, 191, 36, 0.2);
+  --text-primary: #f0fdf4;
+  --text-secondary: rgba(186, 230, 253, 0.75);
+  --accent: #00f0ff;
+  --accent-rgb: 0, 240, 255;
+  --btn-bg: rgba(0, 240, 255, 0.1);
+  --btn-hover-bg: rgba(0, 240, 255, 0.25);
+  --font-title: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+:root[data-mood="melancholy"],
+:root[data-mood="friction"] {
+  --bg-main: #080c1a;
+  --card-bg: rgba(12, 18, 38, 0.8);
+  --border-color: rgba(96, 165, 250, 0.35);
+  --border-glow: rgba(96, 165, 250, 0.15);
+  --text-primary: #eff6ff;
+  --text-secondary: rgba(191, 219, 254, 0.65);
+  --accent: #60a5fa;
+  --accent-rgb: 96, 165, 250;
+  --btn-bg: rgba(96, 165, 250, 0.08);
+  --btn-hover-bg: rgba(96, 165, 250, 0.2);
+  --font-title: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+:root[data-mood="breach"],
+:root[data-mood="anger"] {
+  --bg-main: #140202;
+  --card-bg: rgba(30, 5, 5, 0.85);
+  --border-color: rgba(239, 68, 68, 0.45);
+  --border-glow: rgba(239, 68, 68, 0.25);
+  --text-primary: #fee2e2;
+  --text-secondary: rgba(254, 202, 202, 0.7);
+  --accent: #ef4444;
+  --accent-rgb: 239, 68, 68;
+  --btn-bg: rgba(239, 68, 68, 0.1);
+  --btn-hover-bg: rgba(239, 68, 68, 0.25);
+  --font-title: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ───── Theme Override Palettes ───── */
+:root[data-theme="green-hack"] {
+  --accent: #39ff14 !important;
+  --accent-rgb: 57, 255, 20 !important;
+  --border-color: rgba(57, 255, 20, 0.4) !important;
+  --border-glow: rgba(57, 255, 20, 0.15) !important;
+  --btn-bg: rgba(57, 255, 20, 0.08) !important;
+  --btn-hover-bg: rgba(57, 255, 20, 0.18) !important;
+}
+:root[data-theme="neon-violet"] {
+  --accent: #ff00ff !important;
+  --accent-rgb: 255, 0, 255 !important;
+  --border-color: rgba(255, 0, 255, 0.4) !important;
+  --border-glow: rgba(255, 0, 255, 0.15) !important;
+  --btn-bg: rgba(255, 0, 255, 0.08) !important;
+  --btn-hover-bg: rgba(255, 0, 255, 0.18) !important;
+}
+:root[data-theme="amber-matrix"] {
+  --accent: #ffb000 !important;
+  --accent-rgb: 255, 176, 0 !important;
+  --border-color: rgba(255, 176, 0, 0.4) !important;
+  --border-glow: rgba(255, 176, 0, 0.15) !important;
+  --btn-bg: rgba(255, 176, 0, 0.08) !important;
+  --btn-hover-bg: rgba(255, 176, 0, 0.18) !important;
+}
+:root[data-theme="deep-ocean"] {
+  --accent: #0088ff !important;
+  --accent-rgb: 0, 136, 255 !important;
+  --border-color: rgba(0, 136, 255, 0.4) !important;
+  --border-glow: rgba(0, 136, 255, 0.15) !important;
+  --btn-bg: rgba(0, 136, 255, 0.08) !important;
+  --btn-hover-bg: rgba(0, 136, 255, 0.18) !important;
+}

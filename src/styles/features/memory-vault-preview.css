@@ -1,0 +1,86 @@
+
+/* ───── Memory Vault Preview Cards & Actions ───── */
+.vault-item-img-container {
+  width: 100%;
+  height: 130px;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.vault-preview-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vault-status-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+}
+
+.vault-status-badge.unlocked {
+  background: rgba(57, 255, 20, 0.2);
+  color: #39ff14;
+  border: 1px solid #39ff14;
+}
+
+.vault-status-badge.restricted, .vault-status-badge.classified {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.vault-status-badge.corrupted {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.vault-action-btn {
+  margin-top: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.4rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.vault-action-btn.unlocked {
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
+  color: var(--accent);
+}
+
+.vault-action-btn.unlocked:hover {
+  background: var(--btn-hover-bg);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+}
+
+.vault-action-btn.decrypt {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #f59e0b;
+}
+
+.vault-action-btn.decrypt:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+}

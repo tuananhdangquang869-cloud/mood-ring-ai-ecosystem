@@ -1,0 +1,115 @@
+
+/* ───── Base Reset ───── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.75) rgba(3, 8, 18, 0.92);
+}
+
+/* ───── Lenis Momentum Smooth Scroll & Performance Reset ───── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+html {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  scroll-behavior: auto;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-main);
+  overflow-y: visible;
+  overflow-x: hidden;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeSpeed;
+}
+
+/* Scroll progress indicator line */
+.global-scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #00f0ff, #a855f7, #f59e0b);
+  transform-origin: 0%;
+  z-index: 10000;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+  pointer-events: none;
+}
+
+/* Floating Quick Back-To-Top Button */
+.floating-back-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(10, 17, 34, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 900;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-back-to-top-btn:hover {
+  transform: translateY(-4px) scale(1.08);
+  background: #00f0ff;
+  color: #020617;
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+}
+
+/* Hide on desktop — directional navigator handles navigation */
+@media (min-width: 769px) {
+  .floating-back-to-top-btn {
+    display: none !important;
+  }
+}
+
+
+/* Hardware accelerated background canvases */
+.scene-canvas,
+.environment-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  contain: strict;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}

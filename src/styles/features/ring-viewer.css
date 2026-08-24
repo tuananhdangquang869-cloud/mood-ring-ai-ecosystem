@@ -1,0 +1,757 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   🪐 FULLSCREEN 3D MOOD RING VIEWER & DIRECT LINK STYLES
+   Cyberpunk Glassmorphism, Neon Glows & Responsive Controls
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.ring-viewer-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background: radial-gradient(circle at center, #09131b 0%, #03070c 70%, #000000 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: #e2e8f0;
+  font-family: 'Space Mono', monospace;
+  user-select: none;
+}
+
+/* 3D Canvas Viewport */
+.ring-canvas-viewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  cursor: grab;
+}
+
+.ring-canvas-viewport:active {
+  cursor: grabbing;
+}
+
+/* ─── Top Header Bar ───────────────────────────────────────────────────────── */
+.ring-viewer-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: linear-gradient(180deg, rgba(3, 7, 18, 0.85) 0%, rgba(3, 7, 18, 0.4) 70%, transparent 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+}
+
+.ring-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ring-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+
+.ring-back-btn:hover {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: #00f0ff;
+  transform: translateX(-3px);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.35);
+}
+
+.ring-title-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.ring-main-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ring-sub-title {
+  font-size: 10px;
+  color: #94a3b8;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: ring-pulse 1.8s infinite;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.75); }
+}
+
+.ring-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ring-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ring-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.2);
+}
+
+.ring-action-btn.primary-link-btn {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+  border-color: rgba(0, 240, 255, 0.45);
+  color: #00f0ff;
+  font-weight: 700;
+}
+
+.ring-action-btn.primary-link-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.35) 0%, rgba(16, 185, 129, 0.35) 100%);
+  border-color: #00f0ff;
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+}
+
+/* ─── Left Telemetry Sidebar ────────────────────────────────────────────────── */
+.ring-telemetry-sidebar {
+  position: absolute;
+  top: 90px;
+  left: 24px;
+  z-index: 10;
+  width: 280px;
+  background: rgba(6, 13, 23, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.telemetry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.telemetry-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #00f0ff;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.telemetry-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 11px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.telemetry-label {
+  color: #94a3b8;
+}
+
+.telemetry-val {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.telemetry-val.highlight {
+  color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
+/* ─── Right Controls Panel ──────────────────────────────────────────────────── */
+.ring-controls-sidebar {
+  position: absolute;
+  top: 90px;
+  right: 24px;
+  z-index: 10;
+  width: 310px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  background: rgba(6, 13, 23, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.control-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #00f0ff;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Mood Color Selector Grid */
+.ring-mood-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.ring-mood-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.ring-mood-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.ring-mood-card.active {
+  border-color: var(--card-accent, #00f0ff);
+  background: rgba(15, 23, 42, 0.85);
+  box-shadow: 0 0 15px var(--card-glow, rgba(0, 240, 255, 0.3));
+}
+
+.mood-card-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-bottom: 5px;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.mood-card-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.mood-card-sub {
+  font-size: 9px;
+  color: #94a3b8;
+}
+
+/* Camera Angle Presets Grid */
+.camera-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.cam-preset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cam-preset-btn:hover {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+}
+
+.cam-preset-btn.active {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+}
+
+/* Toggles & Sliders */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #cbd5e1;
+  padding: 4px 0;
+}
+
+.setting-toggle-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.7);
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.setting-toggle-btn.active {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slider-container input[type="range"] {
+  accent-color: #00f0ff;
+  cursor: pointer;
+}
+
+/* ─── Bottom Navigation & Hint Bar ────────────────────────────────────────── */
+.ring-viewer-bottom-bar {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: rgba(6, 13, 23, 0.8);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.15);
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.hint-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hint-key {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #00f0ff;
+  font-weight: 700;
+}
+
+/* ─── Cyber Toast Notification ────────────────────────────────────────────── */
+.cyber-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: rgba(6, 18, 30, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid #00f0ff;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 10px 25px rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ─── Story Card Ring Viewer Trigger Button (Below Narrative) ─────────────── */
+.story-ring-viewer-trigger-box {
+  margin: 14px 0 16px 0;
+  width: 100%;
+}
+
+.story-ring-viewer-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, rgba(8, 24, 40, 0.85) 0%, rgba(15, 23, 42, 0.7) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: 14px;
+  color: #f1f5f9;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(0, 240, 255, 0.08);
+}
+
+.story-ring-viewer-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.18) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border-color: #00f0ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.25), inset 0 0 20px rgba(0, 240, 255, 0.15);
+}
+
+.story-ring-viewer-btn .ring-icon-spin {
+  font-size: 22px;
+  animation: ring-spin-slow 8s linear infinite;
+  flex-shrink: 0;
+}
+
+.story-ring-viewer-btn .ring-btn-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  text-align: left;
+}
+
+.story-ring-viewer-btn .ring-btn-main {
+  font-size: 13px;
+  font-weight: 800;
+  color: #00f0ff;
+  letter-spacing: 0.6px;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.story-ring-viewer-btn .ring-btn-sub {
+  font-size: 10px;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+}
+
+.story-ring-viewer-btn .ring-btn-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.story-ring-viewer-btn:hover .ring-btn-badge {
+  background: #00f0ff;
+  color: #040d1a;
+  box-shadow: 0 0 15px #00f0ff;
+}
+
+@keyframes ring-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+/* ─── Mobile Drawer & Compact Controls ──────────────────────────────────── */
+.mobile-drawer-handle-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding-bottom: 6px;
+  user-select: none;
+}
+
+.drawer-pull-pill {
+  width: 36px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+}
+
+.drawer-handle-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.drawer-handle-title {
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.5px;
+  color: #f1f5f9;
+}
+
+.drawer-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+  font-size: 10px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mobile-compact-mood-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.mobile-mood-scroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  flex: 1;
+  padding: 2px 0;
+  scrollbar-width: none;
+}
+
+.mobile-mood-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-mood-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.6);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.mobile-mood-chip.active {
+  box-shadow: 0 0 10px var(--chip-color, #00f0ff);
+}
+
+.mobile-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mobile-chip-name {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+}
+
+.mobile-quick-cam-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── Responsive adjustments ────────────────────────────────────────────── */
+@media (max-width: 992px) {
+  .ring-telemetry-sidebar {
+    display: none;
+  }
+  .ring-controls-sidebar {
+    width: 280px;
+    right: 16px;
+    top: 80px;
+    padding: 14px;
+  }
+  .ring-viewer-bottom-bar {
+    width: auto;
+    max-width: 90vw;
+    justify-content: center;
+    bottom: 14px;
+    padding: 6px 14px;
+    font-size: 11px;
+  }
+  .homepage-ring-trigger-wrapper {
+    top: 26%;
+  }
+}
+
+@media (max-width: 768px) {
+  .ring-viewer-header {
+    padding: 10px 14px;
+    background: linear-gradient(180deg, rgba(3, 7, 18, 0.95) 0%, rgba(3, 7, 18, 0.6) 80%, transparent 100%);
+  }
+  .ring-main-title {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .ring-sub-title {
+    display: none;
+  }
+  .ring-back-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .ring-header-actions {
+    gap: 6px;
+  }
+  .ring-action-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .ring-action-btn span:not(.btn-icon) {
+    display: none;
+  }
+  .ring-telemetry-sidebar {
+    display: none !important;
+  }
+  .ring-controls-sidebar {
+    top: auto;
+    bottom: 42px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    border-radius: 18px;
+    background: rgba(4, 10, 22, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 25px rgba(0, 240, 255, 0.2);
+    padding: 10px 12px;
+    max-height: 60vh;
+    overflow-y: auto;
+    z-index: 100;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ring-controls-sidebar.compact {
+    max-height: 110px;
+    padding: 8px 10px;
+  }
+  .ring-mood-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .ring-mood-card {
+    padding: 8px 4px;
+  }
+  .mood-card-name {
+    font-size: 10px;
+  }
+  .mood-card-sub {
+    font-size: 8px;
+  }
+  .camera-presets-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .cam-preset-btn {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+  .ring-viewer-bottom-bar {
+    bottom: 8px;
+    padding: 4px 12px;
+    font-size: 9px;
+    border-radius: 20px;
+    background: rgba(3, 7, 18, 0.92);
+    border-color: rgba(0, 240, 255, 0.2);
+    z-index: 105;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ring-controls-sidebar {
+    bottom: 38px;
+    left: 8px;
+    right: 8px;
+  }
+  .ring-mood-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .ring-viewer-bottom-bar {
+    bottom: 6px;
+    font-size: 8.5px;
+    padding: 3px 10px;
+  }
+}

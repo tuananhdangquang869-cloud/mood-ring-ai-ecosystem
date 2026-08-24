@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Space+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════ */
+/* MOOD RING STORY - MASTER MODULAR CSS SYSTEM                            */
+/* ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. BASE & FOUNDATION ────────────────────────────────────────────── */
+@import './styles/base/variables.css';
+@import './styles/base/scrollbar.css';
+@import './styles/base/reset.css';
+@import './styles/base/layout.css';
+
+/* ─── 2. CORE COMPONENTS ──────────────────────────────────────────────── */
+@import './styles/components/hud-panel.css';
+@import './styles/components/story-card.css';
+@import './styles/components/terminal.css';
+@import './styles/components/neural-grid.css';
+@import './styles/components/memory-vault.css';
+@import './styles/components/ai-oracle.css';
+@import './styles/components/mobile-drawer.css';
+@import './styles/components/cursor-effects.css';
+@import './styles/components/splash-error.css';
+@import './styles/components/directional-navigator.css';
+@import './styles/components/story-scene-illustrator.css';
+
+/* ─── 3. MODULAR FEATURES & MODALS ────────────────────────────────────── */
+@import './styles/features/neural-grid-cards.css';
+@import './styles/features/memory-vault-preview.css';
+@import './styles/features/telemetry-modal.css';
+@import './styles/features/realtime-mood-lab.css';
+@import './styles/features/dynamic-environment.css';
+@import './styles/features/multimedia-journal.css';
+@import './styles/features/emotion-detector.css';
+@import './styles/features/story-prompter.css';
+@import './styles/features/audio-visualizer.css';
+@import './styles/features/settings-modal.css';
+@import './styles/features/visual-storyteller.css';
+@import './styles/features/page-transitions.css';
+@import './styles/features/spatial-audio.css';
+@import './styles/features/vault-gallery-3d.css';
+@import './styles/features/dream-journal.css';
+@import './styles/features/time-capsule.css';
+@import './styles/features/burn-mode.css';
+@import './styles/features/zen-mode.css';
+@import './styles/features/semantic-search.css';
+@import './styles/features/mood-calendar.css';
+@import './styles/features/ebook-exporter.css';
+@import './styles/features/story-node-tree.css';
+@import './styles/features/emotional-quests.css';
+@import './styles/features/achievements.css';
+@import './styles/features/whisper-corner.css';
+@import './styles/features/collaborative-writing.css';
+@import './styles/features/stress-relief.css';
+@import './styles/features/emotional-dashboard.css';
+@import './styles/features/wrapped-story.css';
+@import './styles/features/mental-health.css';
+@import './styles/features/offline-sync.css';
+@import './styles/features/version-history.css';
+@import './styles/features/encryption-e2ee.css';
+@import './styles/features/tts-player.css';
+@import './styles/features/ring-viewer.css';
+@import './styles/features/theme-store.css';
+@import './styles/features/custom-dashboard.css';
+@import './styles/features/social-share.css';
+
