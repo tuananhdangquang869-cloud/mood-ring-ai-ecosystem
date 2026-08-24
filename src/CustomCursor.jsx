@@ -28,15 +28,27 @@ export default function CustomCursor({
   const trailPointsRef = useRef([])
   const bubblesRef = useRef([])
 
-  // Touch & Mobile check: never render custom cursor on mobile or touch devices
-  const isTouchDevice = typeof window !== 'undefined' && (
-    'ontouchstart' in window ||
-    navigator.maxTouchPoints > 0 ||
-    window.matchMedia('(pointer: coarse)').matches ||
-    window.innerWidth < 768
-  )
+  const [isDesktopWithMouse, setIsDesktopWithMouse] = useState(() => {
+    if (typeof window === 'undefined') return false
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    const isCoarse = window.matchMedia('(pointer: coarse)').matches
+    const isSmall = window.innerWidth <= 1024
+    return !hasTouch && !isCoarse && !isSmall
+  })
 
-  if (nativeCursor || isTouchDevice) return null
+  useEffect(() => {
+    const check = () => {
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+      const isCoarse = window.matchMedia('(pointer: coarse)').matches
+      const isSmall = window.innerWidth <= 1024
+      setIsDesktopWithMouse(!hasTouch && !isCoarse && !isSmall)
+    }
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  if (nativeCursor || !isDesktopWithMouse) return null
 
   // Motion values for smooth animation
   const mouseX = useMotionValue(-100)
@@ -218,13 +230,6 @@ export default function CustomCursor({
       triggerClickAt(e.clientX, e.clientY)
     }
 
-    const handleTouchStart = (e) => {
-      if (e.touches && e.touches[0]) {
-        updatePosition(e.touches[0].clientX, e.touches[0].clientY)
-        triggerClickAt(e.touches[0].clientX, e.touches[0].clientY)
-      }
-    }
-
     const handleMouseUp = () => setIsClicked(false)
     const handleMouseLeave = () => setIsVisible(false)
     const handleMouseEnter = () => setIsVisible(true)
@@ -349,8 +354,6 @@ export default function CustomCursor({
     window.addEventListener('mousemove', handleMouseMove, { passive: true })
     window.addEventListener('mousedown', handleMouseDown, { passive: true })
     window.addEventListener('mouseup', handleMouseUp, { passive: true })
-    window.addEventListener('touchmove', handleTouchMove, { passive: true })
-    window.addEventListener('touchstart', handleTouchStart, { passive: true })
     document.addEventListener('mouseleave', handleMouseLeave, { passive: true })
     document.addEventListener('mouseenter', handleMouseEnter, { passive: true })
     window.addEventListener('mouseover', handleMouseOver, { passive: true })
@@ -363,8 +366,6 @@ export default function CustomCursor({
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
-      window.removeEventListener('touchmove', handleTouchMove)
-      window.removeEventListener('touchstart', handleTouchStart)
       document.removeEventListener('mouseleave', handleMouseLeave)
       document.removeEventListener('mouseenter', handleMouseEnter)
       window.removeEventListener('mouseover', handleMouseOver)

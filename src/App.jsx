@@ -1466,8 +1466,13 @@ function App() {
 
   return (
     <ErrorBoundary>
-      {/* Custom interactive cursor - rendered at root level so it covers loading screen as well */}
-      <CustomCursor mood={activeMood} nativeCursor={nativeCursor} cursorStyle={cursorStyle} />
+      {/* Custom interactive cursor - rendered only for desktop mouse devices */}
+      {typeof window !== 'undefined' && 
+       !('ontouchstart' in window) && 
+       navigator.maxTouchPoints === 0 && 
+       !nativeCursor && (
+        <CustomCursor mood={activeMood} nativeCursor={nativeCursor} cursorStyle={cursorStyle} />
+      )}
 
       {!isLoaded && <LoadingSplash onComplete={() => setIsLoaded(true)} />}
       
