@@ -2735,12 +2735,12 @@
       sphereCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
       sphereCamera.position.z = 4.8;
 
-      sphereRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      sphereRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false, powerPreference: 'high-performance' });
       sphereRenderer.setSize(width, height);
-      sphereRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      sphereRenderer.setPixelRatio(1.0);
 
       // 1. Core Sphere
-      const sphereGeo = new THREE.IcosahedronGeometry(1.2, 4);
+      const sphereGeo = new THREE.IcosahedronGeometry(1.2, 2);
       const sphereMat = new THREE.MeshBasicMaterial({
         color: targetSphereColor,
         wireframe: true,
@@ -2751,7 +2751,7 @@
       sphereScene.add(mainSphere);
 
       // 2. Wireframe Cage
-      const outerGeo = new THREE.IcosahedronGeometry(1.5, 2);
+      const outerGeo = new THREE.IcosahedronGeometry(1.5, 1);
       const outerMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         wireframe: true,
@@ -2762,7 +2762,7 @@
       sphereScene.add(wireSphere);
 
       // 3. Ring
-      const ringGeo = new THREE.TorusGeometry(1.9, 0.015, 16, 80);
+      const ringGeo = new THREE.TorusGeometry(1.9, 0.015, 8, 48);
       const ringMat = new THREE.MeshBasicMaterial({
         color: targetSphereColor,
         transparent: true,
@@ -2772,9 +2772,9 @@
       ringMesh.rotation.x = Math.PI / 3;
       sphereScene.add(ringMesh);
 
-      // 4. Particles
+      // 4. Particles (Reduced for zero lag)
       const particleGeo = new THREE.BufferGeometry();
-      const pCount = 200;
+      const pCount = 80;
       const posArray = new Float32Array(pCount * 3);
       for (let i = 0; i < pCount * 3; i += 3) {
         const radius = 1.7 + Math.random() * 0.7;
@@ -2793,6 +2793,15 @@
       });
       particleGroup = new THREE.Points(particleGeo, particleMat);
       sphereScene.add(particleGroup);
+
+      // Intersection Observer: Pause rendering when offscreen
+      let isVisible = true;
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          isVisible = entries[0].isIntersecting;
+        }, { threshold: 0.05 });
+        observer.observe(container);
+      }
 
       // Drag Controls
       let isDragging = false;
@@ -2833,6 +2842,8 @@
 
       function animateSphere() {
         requestAnimationFrame(animateSphere);
+        if (!isVisible) return;
+
         mainSphere.rotation.y += 0.005;
         mainSphere.rotation.x += 0.002;
         wireSphere.rotation.y -= 0.003;
@@ -3279,11 +3290,11 @@
       playTone(600, 0.15);
     }
 
-    // --- 12. Ambient Background Canvas ---
+    // --- 12. Ambient Background Canvas (Ultra-Optimized) ---
     (function initBg() {
       const canvas = document.getElementById('bg-particles-canvas');
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { alpha: true });
       let w = canvas.width = window.innerWidth;
       let h = canvas.height = window.innerHeight;
 
@@ -3293,20 +3304,29 @@
       });
 
       const pts = [];
-      const count = window.innerWidth < 768 ? 25 : 45;
+      const count = window.innerWidth < 768 ? 12 : 20;
       for (let i = 0; i < count; i++) {
         pts.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
           r: Math.random() * 1.5 + 1,
-          a: Math.random() * 0.4 + 0.1
+          a: Math.random() * 0.35 + 0.1
         });
       }
 
-      function draw() {
+      let lastDraw = 0;
+      function draw(now) {
+        requestAnimationFrame(draw);
+        if (document.hidden) return;
+        // Limit to ~40fps for background ambient layer to save 100% GPU for 3D
+        if (now - lastDraw < 24) return;
+        lastDraw = now;
+
         ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#00f3ff';
+
         for (let i = 0; i < pts.length; i++) {
           const p = pts[i];
           p.x += p.vx; p.y += p.vy;
@@ -3315,26 +3335,27 @@
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = '#00f3ff';
           ctx.globalAlpha = p.a;
           ctx.fill();
 
           for (let j = i + 1; j < pts.length; j++) {
             const p2 = pts[j];
-            const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-            if (dist < 90) {
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < 6400) { // 80^2
+              const dist = Math.sqrt(distSq);
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
               ctx.lineTo(p2.x, p2.y);
               ctx.strokeStyle = '#00f3ff';
-              ctx.globalAlpha = (1 - dist / 90) * 0.1;
+              ctx.globalAlpha = (1 - dist / 80) * 0.08;
               ctx.stroke();
             }
           }
         }
-        requestAnimationFrame(draw);
       }
-      draw();
+      requestAnimationFrame(draw);
     })();
   </script>
 </body>

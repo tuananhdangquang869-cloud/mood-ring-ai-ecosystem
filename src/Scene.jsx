@@ -13,10 +13,10 @@ function Scene({ mood, activeTab, gyroActive, lowGraphics }) {
     mood === 'relaxed' ? 'calm' : (mood || 'calm')
 
   const sparkleSettings = {
-    calm: { color: 'cyan', speed: 0.25, count: 90, size: 0.8 },
-    joy: { color: '#00f0ff', speed: 0.8, count: 130, size: 1.2 },
-    friction: { color: 'orange', speed: 1.2, count: 140, size: 1.1 },
-    breach: { color: 'red', speed: 2.6, count: 200, size: 1.8 }
+    calm: { color: 'cyan', speed: 0.2, count: 40, size: 0.7 },
+    joy: { color: '#00f0ff', speed: 0.6, count: 60, size: 1.0 },
+    friction: { color: 'orange', speed: 0.8, count: 60, size: 1.0 },
+    breach: { color: 'red', speed: 1.8, count: 80, size: 1.4 }
   }
 
   const sparkles = sparkleSettings[normalizedMood] || sparkleSettings.calm
@@ -24,7 +24,6 @@ function Scene({ mood, activeTab, gyroActive, lowGraphics }) {
   const isPrimary3DTab = activeTab === 'core' || activeTab === 'oracle'
 
   if (activeTab === 'ring') return null
-
 
   return (
     <Canvas
@@ -40,8 +39,8 @@ function Scene({ mood, activeTab, gyroActive, lowGraphics }) {
       }}
       frameloop={!isPrimary3DTab ? 'demand' : 'always'}
       camera={{ position: [0, 0, 20], fov: 45 }}
-      dpr={[1, lowGraphics ? 1 : Math.min(window.devicePixelRatio || 1, 1.2)]}
-      gl={{ powerPreference: 'high-performance', antialias: !lowGraphics, alpha: true }}
+      dpr={[1, 1]}
+      gl={{ powerPreference: 'high-performance', antialias: false, alpha: true }}
     >
           <ResponsiveStars lowGraphics={lowGraphics || !isPrimary3DTab} />
           <ambientLight intensity={0.65} />
@@ -59,7 +58,7 @@ function Scene({ mood, activeTab, gyroActive, lowGraphics }) {
           <AICore mood={normalizedMood} lowGraphics={lowGraphics || !isPrimary3DTab} />
 
           {isPrimary3DTab && (
-            <Float speed={normalizedMood === 'breach' ? 2.2 : normalizedMood === 'friction' ? 1.0 : 0.35} floatIntensity={1.1} rotationIntensity={0.8}>
+            <Float speed={normalizedMood === 'breach' ? 1.6 : normalizedMood === 'friction' ? 0.8 : 0.3} floatIntensity={0.8} rotationIntensity={0.6}>
               <ResponsiveSparkles baseSettings={sparkles} lowGraphics={lowGraphics} />
             </Float>
           )}
@@ -68,10 +67,9 @@ function Scene({ mood, activeTab, gyroActive, lowGraphics }) {
           <CameraDirector activeTab={activeTab} gyroActive={gyroActive} lowGraphics={lowGraphics} isPrimary3DTab={isPrimary3DTab} />
 
           {!lowGraphics && isPrimary3DTab && (
-            <EffectComposer multisampling={0}>
-              <Bloom intensity={0.85} luminanceThreshold={0.25} luminanceSmoothing={0.7} />
-              <Glitch delay={[4, 8]} duration={[0.15, 0.35]} strength={0.2} active={normalizedMood === 'breach'} />
-              <ChromaticAberration offset={[0.0015, 0.0015]} blendFunction={1} active={normalizedMood === 'breach'} />
+            <EffectComposer multisampling={0} disableNormalPass>
+              <Bloom intensity={0.45} luminanceThreshold={0.5} luminanceSmoothing={0.5} />
+              <Glitch delay={[6, 12]} duration={[0.1, 0.25]} strength={0.15} active={normalizedMood === 'breach'} />
             </EffectComposer>
           )}
     </Canvas>
