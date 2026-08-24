@@ -1643,17 +1643,7 @@ function App() {
                 >
                   <span className="nav-icon">✨</span> BÁO CÁO SPOTIFY WRAPPED
                 </button>
-                <button 
-                  onClick={() => { 
-                    setSettingsInitialTab('tts');
-                    setIsSettingsOpen(true); 
-                    setMobileMenuOpen(false); 
-                  }} 
-                  className="mobile-dock-btn"
-                  style={{ color: '#00f0ff', borderColor: 'rgba(0,240,255,0.4)' }}
-                >
-                  <span className="nav-icon">🎙️</span> ĐỌC TRUYỀN CẢM (AI VOICE TTS)
-                </button>
+
                 <button 
                   onClick={() => { 
                     setShowOfflineSyncModal(true);

@@ -606,7 +606,7 @@ export default function SettingsModal({
             {/* FEATURE 41: AI VOICE TTS TAB */}
             <button
               type="button"
-              className={`settings-nav-btn ${activeSettingsTab === 'tts' ? 'active' : ''}`}
+              className={`settings-nav-btn ${activeSettingsTab === 'tts' ? 'active' : ''} hidden md:flex`}
               onClick={() => scrollToSection('tts')}
               title="Xem cài đặt Giọng Đọc AI"
             >
@@ -1105,7 +1105,7 @@ export default function SettingsModal({
                   </div>
 
                   {/* Feature 41: AI Voice TTS Hub Card */}
-                  <div className="feature-hub-card">
+                  <div className="feature-hub-card hidden md:flex">
                     <div className="card-top">
                       <div className="hub-icon-box text-cyan-400">
                         <Mic size={20} />
