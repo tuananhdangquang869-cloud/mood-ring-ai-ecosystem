@@ -36,6 +36,18 @@ export default function CustomCursor({
     return !hasTouch && !isCoarse && !isSmall
   })
 
+  // Motion values for smooth animation - ALWAYS called unconditionally at top
+  const mouseX = useMotionValue(-100)
+  const mouseY = useMotionValue(-100)
+
+  // Spring settings for the outer ring trailing effect
+  const springConfig = { damping: 24, stiffness: 240, mass: 0.4 }
+  const ringX = useSpring(mouseX, springConfig)
+  const ringY = useSpring(mouseY, springConfig)
+
+  const [isKeyMouseActive, setIsKeyMouseActive] = useState(false)
+  const keyStateRef = useRef({ up: false, down: false, left: false, right: false, shift: false, ctrl: false })
+
   useEffect(() => {
     const check = () => {
       const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
@@ -47,17 +59,6 @@ export default function CustomCursor({
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
   }, [])
-
-  if (nativeCursor || !isDesktopWithMouse) return null
-
-  // Motion values for smooth animation
-  const mouseX = useMotionValue(-100)
-  const mouseY = useMotionValue(-100)
-
-  // Spring settings for the outer ring trailing effect
-  const springConfig = { damping: 24, stiffness: 240, mass: 0.4 }
-  const ringX = useSpring(mouseX, springConfig)
-  const ringY = useSpring(mouseY, springConfig)
 
   // Mood color helper
   const getMoodColor = () => {
@@ -82,11 +83,10 @@ export default function CustomCursor({
     }
   }
 
-  const [isKeyMouseActive, setIsKeyMouseActive] = useState(false)
-  const keyStateRef = useRef({ up: false, down: false, left: false, right: false, shift: false, ctrl: false })
-
-  // 1. Unified Mouse, Touch & Virtual Keyboard Tracking
+  // 1. Unified Mouse & Virtual Keyboard Tracking
   useEffect(() => {
+    if (nativeCursor || !isDesktopWithMouse) return
+
     let lastTime = performance.now()
 
     const updatePosition = (clientX, clientY) => {
@@ -377,6 +377,7 @@ export default function CustomCursor({
 
   // 2. High-Performance Canvas Particle / Trail Render Loop (60-120fps)
   useEffect(() => {
+    if (nativeCursor || !isDesktopWithMouse) return
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
@@ -546,6 +547,10 @@ export default function CustomCursor({
   }, [cursorStyle, mood])
 
   const { hex, rgb } = getMoodColor()
+
+  if (nativeCursor || !isDesktopWithMouse) {
+    return null
+  }
 
   // Return DOM container with canvas always mounted so render loop never breaks
   return (
