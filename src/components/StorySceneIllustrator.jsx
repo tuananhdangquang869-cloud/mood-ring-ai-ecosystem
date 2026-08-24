@@ -3,21 +3,23 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Maximize2, Minimize2, Sparkles, Eye, Compass, Image as ImageIcon, ExternalLink, Download, ChevronLeft, ChevronRight, X, Grid, Layers } from 'lucide-react'
 import { playKeyClick } from '../utils/audioSynth.js'
 
+const BASE = (import.meta.env.BASE_URL || './').replace(/\/$/, '') + '/'
+
 // Mapping of story nodes to high-resolution AI artwork illustrations
 export const STORY_ILLUSTRATIONS = {
-  start: '/story_illustrations/start.jpg',
-  explore: '/story_illustrations/explore.jpg',
-  breach: '/story_illustrations/breach.jpg',
-  archive: '/story_illustrations/archive.jpg',
-  firewall: '/story_illustrations/firewall.jpg',
-  abyss: '/story_illustrations/abyss.jpg',
-  containment: '/story_illustrations/containment.jpg',
-  awakened: '/story_illustrations/awakened.jpg',
-  fracture: '/story_illustrations/fracture.jpg',
-  recalibration: '/story_illustrations/recalibration.jpg',
-  dissolution: '/story_illustrations/dissolution.jpg',
-  transcendence: '/story_illustrations/transcendence.jpg',
-  synthesis: '/story_illustrations/synthesis.jpg'
+  start: `${BASE}story_illustrations/start.jpg`,
+  explore: `${BASE}story_illustrations/explore.jpg`,
+  breach: `${BASE}story_illustrations/breach.jpg`,
+  archive: `${BASE}story_illustrations/archive.jpg`,
+  firewall: `${BASE}story_illustrations/firewall.jpg`,
+  abyss: `${BASE}story_illustrations/abyss.jpg`,
+  containment: `${BASE}story_illustrations/containment.jpg`,
+  awakened: `${BASE}story_illustrations/awakened.jpg`,
+  fracture: `${BASE}story_illustrations/fracture.jpg`,
+  recalibration: `${BASE}story_illustrations/recalibration.jpg`,
+  dissolution: `${BASE}story_illustrations/dissolution.jpg`,
+  transcendence: `${BASE}story_illustrations/transcendence.jpg`,
+  synthesis: `${BASE}story_illustrations/synthesis.jpg`
 }
 
 export const STORY_SCENES_METADATA = [
