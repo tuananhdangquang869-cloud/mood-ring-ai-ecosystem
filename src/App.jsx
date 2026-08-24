@@ -366,37 +366,10 @@ function App() {
       } else if (e.altKey && (e.key === 'u' || e.key === 'U')) {
         e.preventDefault()
         setShowThemeStore(prev => !prev)
-      } else if (e.altKey && (e.key === 'd' || e.key === 'D')) {
+      } else if (e.altKey && (e.key === 'b' || e.key === 'B')) {
         e.preventDefault()
-        handleNavigateWithTransition('dashboard')
-      } else if (e.altKey && e.key === '9') {
-        } else if (e.altKey && (e.key === 'a' || e.key === 'A')) {
-          e.preventDefault()
-          setShowA11yModal(prev => !prev)
-        } else if (e.altKey && (e.key === 'd' || e.key === 'D')) {
-          e.preventDefault()
-          const modes = ['auto', 'sunset', 'twilight', 'midnight', 'day', 'off']
-          const curr = getSmartDarkSettings()
-          const nextIdx = (modes.indexOf(curr.mode) + 1) % modes.length
-          saveSmartDarkSettings({ mode: modes[nextIdx] })
-        } else if (e.altKey && (e.key === 'h' || e.key === 'H')) {
-          e.preventDefault()
-          const curr = getA11ySettings()
-          saveA11ySettings({ highContrast: !curr.highContrast })
-        } else if (e.altKey && (e.key === 'f' || e.key === 'F')) {
-          e.preventDefault()
-          const fontKeys = ['default', 'lexend', 'atkinson', 'opendyslexic']
-          const curr = getA11ySettings()
-          const nextIdx = (fontKeys.indexOf(curr.dyslexiaFont) + 1) % fontKeys.length
-          saveA11ySettings({ dyslexiaFont: fontKeys[nextIdx] })
-        } else if (e.altKey && (e.key === 'r' || e.key === 'R')) {
-          e.preventDefault()
-          const curr = getA11ySettings()
-          saveA11ySettings({ readingRulerEnabled: !curr.readingRulerEnabled })
-        } else if (e.altKey && (e.key === 'b' || e.key === 'B')) {
-          e.preventDefault()
-          handleNavigateWithTransition('journal', 'ebook')
-          setIsSettingsOpen(false)
+        handleNavigateWithTransition('journal', 'ebook')
+        setIsSettingsOpen(false)
         } else if (e.altKey && (e.key === 's' || e.key === 'S')) {
           e.preventDefault()
           handleNavigateWithTransition('journal', 'search')
@@ -1690,27 +1663,6 @@ function App() {
                   style={{ color: '#10b981', borderColor: 'rgba(16,185,129,0.4)' }}
                 >
                   <span className="nav-icon">📡</span> TRẠNG THÁI TRỰC TUYẾN (ONLINE)
-                </button>
-
-                <button 
-                  onClick={() => { 
-                    setShowSmartDarkModal(true);
-                    setMobileMenuOpen(false); 
-                  }} 
-                  className="mobile-dock-btn"
-                  style={{ color: '#f59e0b', borderColor: 'rgba(245,158,11,0.4)' }}
-                >
-                  <span className="nav-icon">🌙</span> ĐÊM THÔNG MINH // SMART DARK
-                </button>
-                <button 
-                  onClick={() => { 
-                    setShowA11yModal(true);
-                    setMobileMenuOpen(false); 
-                  }} 
-                  className="mobile-dock-btn"
-                  style={{ color: '#34d399', borderColor: 'rgba(16,185,129,0.4)' }}
-                >
-                  <span className="nav-icon">♿</span> TRỢ NĂNG & DỄ TIẾP CẬN // A11Y
                 </button>
 
                 <button 
