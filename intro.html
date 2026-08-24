@@ -1257,7 +1257,9 @@
       .section-wrap { padding: 50px 16px; }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 768px), (pointer: coarse), (hover: none) {
+      #custom-cursor-container, #cursor-ring, #cursor-dot { display: none !important; }
+      * { cursor: auto !important; }
       .navbar { padding: 10px 14px; }
       .nav-links { display: none; }
       .top-announcement { font-size: 0.72rem; padding: 6px 10px; }

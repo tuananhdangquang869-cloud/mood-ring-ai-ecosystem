@@ -28,7 +28,15 @@ export default function CustomCursor({
   const trailPointsRef = useRef([])
   const bubblesRef = useRef([])
 
-  if (nativeCursor) return null
+  // Touch & Mobile check: never render custom cursor on mobile or touch devices
+  const isTouchDevice = typeof window !== 'undefined' && (
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.innerWidth < 768
+  )
+
+  if (nativeCursor || isTouchDevice) return null
 
   // Motion values for smooth animation
   const mouseX = useMotionValue(-100)

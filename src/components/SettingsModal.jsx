@@ -1788,8 +1788,8 @@ export default function SettingsModal({
                   </div>
                 </div>
 
-                {/* Cursor Style Option & Library Showcase */}
-                <div className="settings-group-box">
+                {/* Cursor Style Option & Library Showcase (Desktop Only) */}
+                <div className="settings-group-box cursor-settings-group hidden md:block">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <span className="group-title mb-0">CON TRỎ CHUỘT HẠT CYBERPUNK</span>

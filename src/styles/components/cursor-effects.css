@@ -17,3 +17,24 @@ body.native-cursor .interactive {
   outline-offset: 3px;
   box-shadow: 0 0 8px var(--accent);
 }
+
+/* ───── Mobile & Touch Screen: Completely disable custom cursor & hide settings ───── */
+@media (pointer: coarse), (max-width: 768px), (hover: none) {
+  .custom-cursor-container,
+  .custom-cursor-canvas,
+  #custom-cursor-container,
+  #cursor-ring,
+  #cursor-dot,
+  .cursor-settings-group,
+  .settings-group-box.cursor-settings-group {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+  }
+
+  body,
+  body * {
+    cursor: auto !important;
+  }
+}
