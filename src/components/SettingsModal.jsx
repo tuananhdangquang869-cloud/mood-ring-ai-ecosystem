@@ -604,9 +604,10 @@ export default function SettingsModal({
             </button>
 
             {/* FEATURE 41: AI VOICE TTS TAB */}
+            {/* FEATURE 41: AI VOICE TTS TAB */}
             <button
               type="button"
-              className={`settings-nav-btn ${activeSettingsTab === 'tts' ? 'active' : ''} hidden md:flex`}
+              className={`settings-nav-btn ${activeSettingsTab === 'tts' ? 'active' : ''} tts-only-desktop`}
               onClick={() => scrollToSection('tts')}
               title="Xem cài đặt Giọng Đọc AI"
             >
@@ -2207,7 +2208,7 @@ export default function SettingsModal({
 
             {/* 4.5. AI VOICE & TTS SETTINGS */}
             {activeSettingsTab === 'tts' && (
-              <section id="settings-sec-tts" className="settings-section" style={{ padding: '0.5rem 0' }}>
+              <section id="settings-sec-tts" className="settings-section tts-only-desktop" style={{ padding: '0.5rem 0' }}>
                 <div className="section-header">
                   <h4>GIỌNG ĐỌC TRUYỀN CẢM AI (NEURAL TTS VOICE)</h4>
                   <p>Tùy chỉnh giọng đọc nhân vật, ngữ điệu cảm xúc tự động và tốc độ đọc truyện.</p>
