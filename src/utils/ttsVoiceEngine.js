@@ -516,6 +516,8 @@ export async function playStoryText(text, title = 'Câu chuyện hiện tại', 
   const voiceId = customOptions.voiceId || ttsState.activeVoiceId || 'south-female-main'
   const targetVoice = CURATED_VOICES.find(v => v.id === voiceId) || CURATED_VOICES[0]
 
+  let errors = []
+
   try {
     initWebAudio()
 
@@ -533,7 +535,10 @@ export async function playStoryText(text, title = 'Câu chuyện hiện tại', 
         audioUrl = await fetchElevenLabsAudio(cleanText, targetVoice.id)
       } catch (elErr) {
         console.warn('[TTS Engine] ElevenLabs synthesis failed, trying Edge Neural:', elErr)
+        errors.push(`ElevenLabs: ${elErr.message}`)
       }
+    } else {
+      errors.push('ElevenLabs: Chưa có API Key hoặc Key mặc định không hoạt động')
     }
 
     // 2. Synthesize via Edge Neural if ElevenLabs is not set or failed
@@ -542,10 +547,11 @@ export async function playStoryText(text, title = 'Câu chuyện hiện tại', 
         audioUrl = await fetchMicrosoftEdgeNeuralAudio(cleanText, targetVoice)
       } catch (edgeErr) {
         console.warn('[TTS Engine] Edge Neural failed, falling back to Web Speech:', edgeErr)
+        errors.push(`Edge Neural: ${edgeErr.message || 'Lỗi kết nối'}`)
       }
     }
 
-    // 2. Play generated audio
+    // 3. Play generated audio
     if (audioUrl) {
       if (!globalAudio) {
         globalAudio = new Audio()
@@ -594,8 +600,10 @@ export async function playStoryText(text, title = 'Câu chuyện hiện tại', 
 
       globalAudio.onerror = (e) => {
         console.warn('[TTS Engine] Audio element playback error, falling back to Web Speech:', e)
+        errors.push('Lỗi trình phát Audio')
         playBrowserWebSpeech(cleanText, targetVoice).catch(err => {
-          ttsState.error = err.message
+          errors.push(`WebSpeech Fallback: ${err.message}`)
+          ttsState.error = errors.join(' | ')
           notifyListeners()
         })
       }
@@ -607,17 +615,19 @@ export async function playStoryText(text, title = 'Câu chuyện hiện tại', 
       return
     }
 
-    // 3. Fallback to Web Speech
+    // 4. Fallback to Web Speech if audioUrl is null
     await playBrowserWebSpeech(cleanText, targetVoice)
 
   } catch (error) {
     console.warn('[TTS Engine] Primary synthesizers failed, falling back to Browser Web Speech:', error.message)
+    errors.push(`Engine: ${error.message}`)
     try {
       await playBrowserWebSpeech(cleanText, targetVoice)
     } catch (fallbackError) {
+      errors.push(`WebSpeech: ${fallbackError.message}`)
       ttsState.isLoading = false
       ttsState.isPlaying = false
-      ttsState.error = `Lỗi phát âm thanh: ${error.message}`
+      ttsState.error = errors.join(' | ')
       notifyListeners()
     }
   }

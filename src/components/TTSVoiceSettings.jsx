@@ -19,7 +19,8 @@ import {
   updateTTSSettings, 
   playStoryText, 
   stopStoryTTS, 
-  togglePauseStoryTTS 
+  togglePauseStoryTTS,
+  saveTTSApiKey 
 } from '../utils/ttsVoiceEngine.js'
 import { playKeyClick } from '../utils/audioSynth.js'
 
@@ -227,6 +228,47 @@ export default function TTSVoiceSettings({ soundEnabled = true }) {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* API Key Management */}
+      <div className="tts-section-box">
+        <div className="tts-section-title">
+          <Sliders size={16} className="text-cyan-400" />
+          <span>CẤU HÌNH ELEVENLABS API KEY</span>
+        </div>
+        <p className="text-xs text-cyan-200/70 mb-3">
+          Nhập API Key ElevenLabs cá nhân của bạn để sử dụng giọng đọc chuẩn (Key sẽ được lưu cục bộ an toàn trên trình duyệt của bạn).
+        </p>
+        <div className="flex gap-2 items-center">
+          <input
+            type="password"
+            value={tts.apiKey || ''}
+            onChange={(e) => {
+              saveTTSApiKey(e.target.value)
+            }}
+            placeholder="Dán API Key ElevenLabs của bạn vào đây (sk_...)"
+            className="tts-playground-textarea"
+            style={{ height: '42px', padding: '10px', fontSize: '0.85rem', flexGrow: 1 }}
+          />
+          {tts.apiKey && tts.apiKey !== 'sk_860664251182a586689048d984f7456486e8454842ab5811' && (
+            <button
+              type="button"
+              className="tts-playground-reset-btn"
+              onClick={() => {
+                if (soundEnabled && typeof playKeyClick === 'function') playKeyClick()
+                saveTTSApiKey('')
+              }}
+              style={{ height: '42px', flexShrink: 0, margin: 0 }}
+            >
+              XÓA KEY
+            </button>
+          )}
+        </div>
+        <p className="text-[10px] text-cyan-400/60 mt-1.5">
+          {tts.apiKey === 'sk_860664251182a586689048d984f7456486e8454842ab5811' || !tts.apiKey ? 
+            '⚠️ Đang sử dụng Key dự phòng hệ thống (dễ bị quá giới hạn lượt đọc). Hãy nhập Key cá nhân của bạn để hoạt động ổn định nhất.' : 
+            '✓ Đã ghi nhận API Key cá nhân của bạn và lưu trên thiết bị này.'}
+        </p>
       </div>
 
       {/* Voice Parameters Tuning & Mode Switches */}
