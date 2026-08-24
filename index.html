@@ -2,6 +2,25 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const hasSpecificState = params.has('tab') || params.has('node') || params.has('direct') || params.has('app');
+          const hasPassedIntro = sessionStorage.getItem('mr-intro-passed') === 'true';
+
+          // First-time visit to root or index.html without query params -> redirect to intro.html
+          if (!hasSpecificState && !hasPassedIntro) {
+            sessionStorage.setItem('mr-intro-passed', 'true');
+            const path = window.location.pathname;
+            const target = path.endsWith('index.html')
+              ? path.replace(/index\.html$/, 'intro.html')
+              : (path.endsWith('/') ? path + 'intro.html' : path + '/intro.html');
+            window.location.replace(target + window.location.search);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />

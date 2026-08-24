@@ -1260,8 +1260,29 @@
     @media (max-width: 768px), (pointer: coarse), (hover: none) {
       #custom-cursor-container, #cursor-ring, #cursor-dot { display: none !important; }
       * { cursor: auto !important; }
-      .navbar { padding: 10px 14px; }
+      .navbar { padding: 8px 12px; }
+      .navbar-inner { gap: 8px; justify-content: space-between; }
       .nav-links { display: none; }
+      .brand { gap: 8px; }
+      .brand-ring { width: 22px; height: 22px; }
+      .brand-text { font-size: 0.95rem; }
+      .nav-actions { gap: 8px; }
+      .btn-sound { 
+        padding: 0; 
+        width: 32px; 
+        height: 32px; 
+        justify-content: center; 
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .btn-sound #sound-status, .btn-sound .sound-txt { display: none !important; }
+      .btn-enter-nav { 
+        padding: 6px 12px; 
+        font-size: 0.78rem; 
+        gap: 4px;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
       .top-announcement { font-size: 0.72rem; padding: 6px 10px; }
       .hero-title { font-size: clamp(1.65rem, 6vw, 2.2rem); }
       .hero-desc { font-size: 0.95rem; margin-bottom: 20px; }
@@ -1275,11 +1296,10 @@
     }
 
     @media (max-width: 480px) {
-      .shortcuts-hud-grid { grid-template-columns: 1fr; }
-      .brand-text { font-size: 1rem; }
-      .brand-ring { width: 22px; height: 22px; }
-      .btn-enter-nav { padding: 6px 12px; font-size: 0.76rem; }
-      .btn-sound span.sound-txt { display: none; }
+      .brand-text { font-size: 0.88rem; }
+      .brand-ring { width: 18px; height: 18px; }
+      .btn-enter-nav { padding: 5px 10px; font-size: 0.75rem; }
+      .btn-sound { width: 28px; height: 28px; font-size: 0.75rem; }
       .telemetry-item { font-size: 0.72rem; padding: 4px 8px; }
     }
   </style>
@@ -1324,7 +1344,7 @@
         <button id="sound-toggle" class="btn-sound" title="Bật/Tắt âm thanh không gian Solfeggio">
           <span>🔊</span> <span id="sound-status">BẬT</span>
         </button>
-        <a href="index.html" class="btn-enter-nav" title="Mở trực tiếp ứng dụng tương tác 3D">
+        <a href="index.html?direct=true" class="btn-enter-nav" title="Mở trực tiếp ứng dụng tương tác 3D">
           <span>Vào Website</span>
           <span>➔</span>
         </a>
@@ -1353,7 +1373,7 @@
         </p>
 
         <div class="hero-actions">
-          <a href="index.html" class="btn-main-cta">
+          <a href="index.html?direct=true" class="btn-main-cta">
             <span>🚀 MỞ WEBSITE TRANG CHỦ</span>
             <span>➔</span>
           </a>
@@ -2607,7 +2627,7 @@
       <div class="cta-card">
         <h2>SẴN SÀNG KHỞI HÀNH CÙNG MR-CORE-01?</h2>
         <p>Thế giới tâm thức 3D, phòng thu AI Voice tự nhiên, mật mã học lượng tử và hàng chục công cụ chữa lành đang chờ đón bạn.</p>
-        <a href="index.html" class="btn-main-cta" style="font-size: 1.1rem; padding: 16px 36px;">
+        <a href="index.html?direct=true" class="btn-main-cta" style="font-size: 1.1rem; padding: 16px 36px;">
           <span>🚀 MỞ WEBSITE TRANG CHỦ NGAY</span>
           <span>➔</span>
         </a>
@@ -2624,7 +2644,7 @@
         <span class="brand-text" style="font-size:1.05rem;">MOOD RING STORY</span>
       </div>
       <ul class="footer-links">
-        <li><a href="index.html">Vào Trang Chủ</a></li>
+        <li><a href="index.html?direct=true">Vào Trang Chủ</a></li>
         <li><a href="#about">6 Trụ Cột</a></li>
         <li><a href="#features-hub">Hệ Sinh Thái 35+</a></li>
         <li><a href="#tts-studio-demo">AI Voice 🎙️</a></li>
