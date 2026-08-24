@@ -26,8 +26,10 @@ import {
   ExternalLink,
   MessageCircle,
   QrCode,
-  Trash2
+  Trash2,
+  Eye
 } from 'lucide-react'
+import { FacebookIcon, XIcon, TelegramIcon } from './SocialIcons.jsx'
 import { 
   MOOD_AURAS, 
   REACTION_TYPES, 
@@ -855,6 +857,7 @@ export default function WhisperCorner({
                     rel="noopener noreferrer"
                     className="social-share-pill fb"
                   >
+                    <FacebookIcon size={16} />
                     <span>Facebook</span>
                   </a>
 
@@ -864,7 +867,8 @@ export default function WhisperCorner({
                     rel="noopener noreferrer"
                     className="social-share-pill tw"
                   >
-                    <span>X / Twitter</span>
+                    <XIcon size={16} />
+                    <span>X</span>
                   </a>
 
                   <a
@@ -873,6 +877,7 @@ export default function WhisperCorner({
                     rel="noopener noreferrer"
                     className="social-share-pill tg"
                   >
+                    <TelegramIcon size={16} />
                     <span>Telegram</span>
                   </a>
                 </div>

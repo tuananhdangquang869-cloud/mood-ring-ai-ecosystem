@@ -25,6 +25,7 @@ import {
   CARD_STYLES, 
   renderStoryQuoteCard 
 } from '../utils/socialShareEngine.js'
+import { SOCIAL_ICON_MAP } from './SocialIcons.jsx'
 import { playKeyClick, playCloudSyncSound } from '../utils/audioSynth.js'
 
 export default function SocialShareModal({
@@ -255,21 +256,26 @@ export default function SocialShareModal({
 
               {/* Social Platforms 1-Click Grid */}
               <div className="social-platforms-grid">
-                {SOCIAL_PLATFORMS.map((p) => (
-                  <a
-                    key={p.id}
-                    href={p.getUrl(shareUrl, shareText)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-platform-card"
-                    style={{ '--brand-color': p.brandColor, '--brand-glow': `${p.brandColor}40` }}
-                    onClick={() => { if (soundEnabled) playKeyClick() }}
-                    title={`Chia sẻ lên ${p.name}`}
-                  >
-                    <span className="social-platform-icon">{p.icon}</span>
-                    <span className="social-platform-name">{p.name}</span>
-                  </a>
-                ))}
+                {SOCIAL_PLATFORMS.map((p) => {
+                  const IconComponent = SOCIAL_ICON_MAP[p.id]
+                  return (
+                    <a
+                      key={p.id}
+                      href={p.getUrl(shareUrl, shareText)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-platform-card"
+                      style={{ '--brand-color': p.brandColor, '--brand-glow': `${p.brandColor}40` }}
+                      onClick={() => { if (soundEnabled) playKeyClick() }}
+                      title={`Chia sẻ lên ${p.name}`}
+                    >
+                      <span className="social-platform-icon">
+                        {IconComponent ? <IconComponent size={26} /> : p.icon}
+                      </span>
+                      <span className="social-platform-name">{p.name}</span>
+                    </a>
+                  )
+                })}
               </div>
 
               {/* QR Code Dynamic Generator Section */}
